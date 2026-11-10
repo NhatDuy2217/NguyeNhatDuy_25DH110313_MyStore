@@ -1,0 +1,272 @@
+﻿
+@model NguyeNhatDuy_25DH110313_MyStore.Models.User
+
+@{
+    ViewBag.Title = "Chi tiết tài khoản";
+    Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
+}
+
+<style>
+    .user-details-page {
+        min-height: 100vh;
+        padding: 35px 20px;
+        background: #f5f7fb;
+    }
+
+    /* Tiêu đề trang */
+    .user-details-header {
+        text-align: center;
+        margin-bottom: 28px;
+    }
+
+        .user-details-header h2 {
+            color: #243247;
+            font-size: 27px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .user-details-header p {
+            color: #8492a6;
+            font-size: 14px;
+            margin: 0;
+        }
+
+    /* Khung thông tin chính */
+    .user-details-container {
+        max-width: 620px;
+        margin: 0 auto;
+    }
+
+    .user-details-card {
+        width: 100%;
+        max-width: 550px;
+        margin: 0 auto;
+        background: #fff;
+        border: 1px solid #edf0f5;
+        border-radius: 16px;
+        padding: 30px 38px;
+        box-shadow: 0 6px 24px rgba(30, 50, 80, 0.07);
+    }
+
+    /* Avatar */
+    .user-avatar {
+        width: 78px;
+        height: 78px;
+        margin: 0 auto 14px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #e8efff, #d7e3ff);
+        color: #3867d6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        font-weight: 700;
+        border: 4px solid #f4f7ff;
+    }
+
+    /* Tên tài khoản */
+    .user-name {
+        text-align: center;
+        color: #243247;
+        font-size: 21px;
+        font-weight: 700;
+        margin-bottom: 25px;
+    }
+
+    .user-subtitle {
+        text-align: center;
+        color: #98a3b3;
+        font-size: 13px;
+        margin-top: -18px;
+        margin-bottom: 23px;
+    }
+
+    /* Các khung thông tin riêng */
+    .detail-item {
+        background: #f7f9fc;
+        border: 1px solid #edf0f5;
+        border-radius: 10px;
+        padding: 12px 17px;
+        margin-bottom: 12px;
+        text-align: left;
+        transition: all 0.2s ease;
+    }
+
+        .detail-item:hover {
+            background: #f0f4fb;
+            border-color: #dce5f5;
+        }
+
+    .detail-label {
+        color: #8492a6;
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+
+    .detail-value {
+        color: #243247;
+        font-size: 14px;
+        font-weight: 600;
+        word-break: break-word;
+    }
+
+    /* Nhãn vai trò */
+    .role-badge {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 20px;
+        background: #e5edff;
+        color: #3867d6;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    /* Khu vực nút */
+    .details-actions {
+        display: flex;
+        justify-content: center;
+        gap: 13px;
+        margin-top: 25px;
+    }
+
+    .btn-edit,
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 135px;
+        padding: 11px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .btn-edit {
+        background: #3867d6;
+        color: #fff;
+    }
+
+        .btn-edit:hover {
+            background: #2853bb;
+            color: #fff;
+            text-decoration: none;
+            transform: translateY(-2px);
+        }
+
+    .btn-back {
+        background: #f0f2f6;
+        color: #536174;
+    }
+
+        .btn-back:hover {
+            background: #e1e6ef;
+            color: #243247;
+            text-decoration: none;
+            transform: translateY(-2px);
+        }
+
+    /* Responsive */
+    @@media (max-width: 576px) {
+        .user-details-page {
+            padding: 25px 12px;
+        }
+
+        .user-details-card {
+            padding: 25px 20px;
+        }
+
+        .user-details-header h2 {
+            font-size: 23px;
+        }
+
+        .details-actions {
+            flex-direction: column;
+        }
+
+        .btn-edit,
+        .btn-back {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="user-details-page">
+
+    <!-- Tiêu đề -->
+    <div class="user-details-header">
+        <h2>Chi tiết tài khoản</h2>
+        <p>Xem thông tin chi tiết của tài khoản trong hệ thống.</p>
+    </div>
+
+    <div class="user-details-container">
+
+        <div class="user-details-card">
+
+            <!-- Avatar tài khoản -->
+            <div class="user-avatar">
+                @(string.IsNullOrEmpty(Model.Username)
+                    ? "U"
+                    : Model.Username.Substring(0, 1).ToUpper())
+            </div>
+
+            <!-- Tên tài khoản -->
+            <div class="user-name">
+                @Model.Username
+            </div>
+
+            <div class="user-subtitle">
+                Thông tin tài khoản người dùng
+            </div>
+
+            <!-- Tên đăng nhập -->
+            <div class="detail-item">
+                <div class="detail-label">Tên đăng nhập</div>
+                <div class="detail-value">
+                    @Model.Username
+                </div>
+            </div>
+
+            <!-- Vai trò -->
+            <div class="detail-item">
+                <div class="detail-label">Vai trò tài khoản</div>
+                <div class="detail-value">
+                    <span class="role-badge">
+                        @Model.UserRole
+                    </span>
+                </div>
+            </div>
+
+            <!-- Mật khẩu -->
+            <div class="detail-item">
+                <div class="detail-label">Mật khẩu</div>
+                <div class="detail-value">
+                    @Model.Password
+                </div>
+            </div>
+
+            <!-- Nút chức năng -->
+            <div class="details-actions">
+
+                @Html.ActionLink(
+                    "Chỉnh sửa",
+                    "Edit",
+                    new { id = Model.Username },
+                    new { @class = "btn-edit" }
+                )
+
+                @Html.ActionLink(
+                    "Quay lại",
+                    "Index",
+                    null,
+                    new { @class = "btn-back" }
+                )
+
+            </div>
+
+        </div>
+    </div>
+</div>

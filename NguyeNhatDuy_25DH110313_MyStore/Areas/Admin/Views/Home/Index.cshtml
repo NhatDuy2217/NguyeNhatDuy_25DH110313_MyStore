@@ -1,0 +1,474 @@
+﻿
+@{
+    ViewBag.Title = "Tổng quan quản trị";
+    Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
+}
+
+<style>
+    .dashboard-page {
+        min-height: 100vh;
+        padding: 30px 25px;
+        background: #f5f7fb;
+    }
+
+    .dashboard-header {
+        margin-bottom: 28px;
+    }
+
+        .dashboard-header h2 {
+            color: #1e293b;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .dashboard-header p {
+            color: #64748b;
+            margin: 0;
+        }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        gap: 18px;
+        margin-bottom: 25px;
+    }
+
+    .dashboard-card {
+        background: white;
+        padding: 23px;
+        border-radius: 14px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+        border: 1px solid #edf0f5;
+        transition: transform 0.2s;
+    }
+
+        .dashboard-card:hover {
+            transform: translateY(-4px);
+        }
+
+    .card-icon {
+        font-size: 28px;
+        margin-bottom: 13px;
+    }
+
+    .card-label {
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .card-number {
+        color: #1e293b;
+        font-size: 29px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .revenue-box {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: white;
+        padding: 27px;
+        border-radius: 14px;
+        margin-bottom: 25px;
+        box-shadow: 0 5px 18px rgba(37,99,235,0.2);
+    }
+
+        .revenue-box span {
+            display: block;
+            font-size: 15px;
+            opacity: 0.9;
+            margin-bottom: 12px;
+        }
+
+        .revenue-box strong {
+            font-size: 30px;
+        }
+
+    .chart-grid {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 22px;
+        margin-bottom: 25px;
+    }
+
+    .chart-card {
+        background: white;
+        padding: 25px;
+        border-radius: 14px;
+        border: 1px solid #edf0f5;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+        min-width: 0;
+    }
+
+    .chart-title {
+        color: #1e293b;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .chart-description {
+        color: #94a3b8;
+        font-size: 13px;
+        margin-bottom: 22px;
+    }
+
+    .chart-container {
+        position: relative;
+        width: 100%;
+        height: 310px;
+    }
+
+    .payment-summary {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .payment-item {
+        background: #f8fafc;
+        padding: 17px;
+        border-radius: 10px;
+    }
+
+        .payment-item span {
+            display: block;
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .payment-item strong {
+            font-size: 21px;
+        }
+
+    @@media (max-width: 900px) {
+        .chart-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .dashboard-page {
+            padding: 20px 12px;
+        }
+
+        .dashboard-header h2 {
+            font-size: 23px;
+        }
+
+        .chart-card {
+            padding: 18px;
+        }
+
+        .chart-container {
+            height: 260px;
+        }
+
+        .payment-summary {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="dashboard-page">
+
+    <!-- TIÊU ĐỀ -->
+    <div class="dashboard-header">
+        <h2>Tổng quan quản trị</h2>
+        <p>Chào mừng bạn đến với hệ thống quản lý nhà sách MyStore!</p>
+    </div>
+
+    <!-- 1. THỐNG KÊ TỔNG QUAN -->
+    <div class="dashboard-grid">
+
+        <div class="dashboard-card">
+            <div class="card-icon">📚</div>
+            <div class="card-label">Tổng số sản phẩm</div>
+            <p class="card-number">@ViewBag.TotalProducts</p>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-icon">📂</div>
+            <div class="card-label">Tổng danh mục</div>
+            <p class="card-number">@ViewBag.TotalCategories</p>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-icon">👥</div>
+            <div class="card-label">Tổng khách hàng</div>
+            <p class="card-number">@ViewBag.TotalCustomers</p>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-icon">👤</div>
+            <div class="card-label">Tổng tài khoản</div>
+            <p class="card-number">@ViewBag.TotalUsers</p>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-icon">🛒</div>
+            <div class="card-label">Tổng đơn hàng</div>
+            <p class="card-number">@ViewBag.TotalOrders</p>
+        </div>
+
+    </div>
+
+    <!-- 2. DOANH THU -->
+    <div class="revenue-box">
+        <span>💰 Tổng doanh thu từ đơn hàng đã thanh toán</span>
+
+        <strong>
+            @String.Format("{0:N0} VNĐ", ViewBag.TotalRevenue)
+        </strong>
+    </div>
+
+    <!-- 3. BIỂU ĐỒ -->
+    <div class="chart-grid">
+
+        <!-- BIỂU ĐỒ CỘT -->
+        <div class="chart-card">
+
+            <div class="chart-title">
+                📊 Thống kê hệ thống
+            </div>
+
+            <div class="chart-description">
+                So sánh số lượng dữ liệu của từng chức năng
+            </div>
+
+            <div class="chart-container">
+                <canvas id="overviewChart"></canvas>
+            </div>
+
+        </div>
+
+        <!-- BIỂU ĐỒ TRÒN -->
+        <div class="chart-card">
+
+            <div class="chart-title">
+                💳 Trạng thái thanh toán
+            </div>
+
+            <div class="chart-description">
+                Tỷ lệ đơn hàng đã thanh toán và chưa thanh toán
+            </div>
+
+            <div class="chart-container">
+                <canvas id="paymentChart"></canvas>
+            </div>
+
+            <div class="payment-summary">
+
+                <div class="payment-item">
+                    <span>Đã thanh toán</span>
+
+                    <strong style="color:#16a34a">
+                        @ViewBag.PaidOrders
+                    </strong>
+                </div>
+
+                <div class="payment-item">
+                    <span>Chưa thanh toán</span>
+
+                    <strong style="color:#dc2626">
+                        @ViewBag.UnpaidOrders
+                    </strong>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- 4. DỮ LIỆU CHO BIỂU ĐỒ -->
+<div id="dashboardData"
+     data-products="@ViewBag.TotalProducts"
+     data-categories="@ViewBag.TotalCategories"
+     data-customers="@ViewBag.TotalCustomers"
+     data-users="@ViewBag.TotalUsers"
+     data-orders="@ViewBag.TotalOrders"
+     data-paid="@ViewBag.PaidOrders"
+     data-unpaid="@ViewBag.UnpaidOrders"
+     style="display:none;">
+</div>
+
+<!-- 5. THƯ VIỆN CHART.JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- 6. KHỞI TẠO BIỂU ĐỒ -->
+<script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // Lấy dữ liệu thống kê từ HTML
+            var dataElement = document.getElementById("dashboardData");
+
+            if (dataElement === null) {
+                console.error("Không tìm thấy dữ liệu Dashboard.");
+                return;
+            }
+
+            // Chuyển dữ liệu sang dạng số
+            var totalProducts =
+                Number(dataElement.getAttribute("data-products")) || 0;
+
+            var totalCategories =
+                Number(dataElement.getAttribute("data-categories")) || 0;
+
+            var totalCustomers =
+                Number(dataElement.getAttribute("data-customers")) || 0;
+
+            var totalUsers =
+                Number(dataElement.getAttribute("data-users")) || 0;
+
+            var totalOrders =
+                Number(dataElement.getAttribute("data-orders")) || 0;
+
+            var paidOrders =
+                Number(dataElement.getAttribute("data-paid")) || 0;
+
+            var unpaidOrders =
+                Number(dataElement.getAttribute("data-unpaid")) || 0;
+
+            // Kiểm tra thư viện Chart.js
+            var ChartLibrary = Reflect.get(window, "Chart");
+
+            if (typeof ChartLibrary !== "function") {
+                console.error("Không tải được thư viện Chart.js.");
+                return;
+            }
+
+            // =================================
+            // BIỂU ĐỒ CỘT THỐNG KÊ HỆ THỐNG
+            // =================================
+
+            var overviewCanvas =
+                document.getElementById("overviewChart");
+
+            if (overviewCanvas !== null) {
+
+                var overviewConfig = {
+                    type: "bar",
+
+                    data: {
+                        labels: [
+                            "Sản phẩm",
+                            "Danh mục",
+                            "Khách hàng",
+                            "Tài khoản",
+                            "Đơn hàng"
+                        ],
+
+                        datasets: [{
+                            label: "Số lượng",
+
+                            data: [
+                                totalProducts,
+                                totalCategories,
+                                totalCustomers,
+                                totalUsers,
+                                totalOrders
+                            ],
+
+                            backgroundColor: [
+                                "#3b82f6",
+                                "#8b5cf6",
+                                "#06b6d4",
+                                "#f59e0b",
+                                "#10b981"
+                            ],
+
+                            borderRadius: 7,
+                            maxBarThickness: 55
+                        }]
+                    },
+
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+
+                                ticks: {
+                                    precision: 0
+                                }
+                            }
+                        }
+                    }
+                };
+
+                Reflect.construct(
+                    ChartLibrary,
+                    [overviewCanvas, overviewConfig]
+                );
+            }
+
+            // =================================
+            // BIỂU ĐỒ TRÒN TRẠNG THÁI THANH TOÁN
+            // =================================
+
+            var paymentCanvas =
+                document.getElementById("paymentChart");
+
+            if (paymentCanvas !== null) {
+
+                var paymentConfig = {
+                    type: "doughnut",
+
+                    data: {
+                        labels: [
+                            "Đã thanh toán",
+                            "Chưa thanh toán"
+                        ],
+
+                        datasets: [{
+                            data: [
+                                paidOrders,
+                                unpaidOrders
+                            ],
+
+                            backgroundColor: [
+                                "#16a34a",
+                                "#ef4444"
+                            ],
+
+                            borderWidth: 2,
+                            borderColor: "#ffffff",
+                            hoverOffset: 8
+                        }]
+                    },
+
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+
+                        plugins: {
+                            legend: {
+                                position: "bottom"
+                            }
+                        },
+
+                        cutout: "65%"
+                    }
+                };
+
+                Reflect.construct(
+                    ChartLibrary,
+                    [paymentCanvas, paymentConfig]
+                );
+            }
+
+        });
+</script>

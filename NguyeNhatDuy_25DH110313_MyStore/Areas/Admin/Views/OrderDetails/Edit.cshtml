@@ -1,0 +1,360 @@
+﻿
+@model NguyeNhatDuy_25DH110313_MyStore.Models.OrderDetail
+
+@{
+    ViewBag.Title = "Chỉnh sửa chi tiết đơn hàng";
+    Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
+}
+
+<style>
+    .detail-edit-page {
+        min-height: 100vh;
+        padding: 35px 20px;
+        background: #f5f7fb;
+    }
+
+    .detail-edit-header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+        .detail-edit-header h2 {
+            color: #243247;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .detail-edit-header p {
+            color: #7b8798;
+            font-size: 14px;
+        }
+
+    .detail-edit-container {
+        max-width: 750px;
+        margin: 0 auto;
+    }
+
+    .detail-edit-card {
+        background: #fff;
+        padding: 30px 35px;
+        border-radius: 14px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+    }
+
+        .detail-edit-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #26364a;
+            margin: 0 0 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+    .detail-form-group {
+        margin-bottom: 20px;
+    }
+
+        .detail-form-group label {
+            display: block;
+            font-weight: 600;
+            color: #344054;
+            margin-bottom: 8px;
+        }
+
+    .detail-input {
+        width: 100%;
+        height: 44px;
+        padding: 10px 13px;
+        border: 1px solid #dce2ea;
+        border-radius: 7px;
+        font-size: 14px;
+        color: #344054;
+        background: #fff;
+        box-sizing: border-box;
+        outline: none;
+    }
+
+        .detail-input:focus {
+            border-color: #367bf5;
+            box-shadow: 0 0 0 3px rgba(54, 123, 245, 0.1);
+        }
+
+    .detail-validation {
+        display: block;
+        color: #dc3545;
+        font-size: 13px;
+        margin-top: 5px;
+    }
+
+    .detail-edit-note {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        color: #1d4ed8;
+        padding: 13px 15px;
+        border-radius: 7px;
+        font-size: 13px;
+        line-height: 1.6;
+        margin-bottom: 22px;
+    }
+
+    .detail-price-note {
+        display: block;
+        color: #7b8798;
+        font-size: 12px;
+        margin-top: 7px;
+    }
+
+    .detail-edit-actions {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #edf0f5;
+    }
+
+    .btn-detail-save {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 11px 25px;
+        border-radius: 7px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+        .btn-detail-save:hover {
+            background: #1d4ed8;
+        }
+
+    .btn-detail-back {
+        background: #eef2f7;
+        color: #475467;
+        padding: 11px 25px;
+        border-radius: 7px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .btn-detail-back:hover {
+            background: #e0e7ef;
+            color: #344054;
+            text-decoration: none;
+        }
+
+    @@media (max-width: 576px) {
+        .detail-edit-card {
+            padding: 22px 18px;
+        }
+
+        .detail-edit-actions {
+            flex-direction: column;
+        }
+
+            .detail-edit-actions a,
+            .detail-edit-actions button {
+                width: 100%;
+                text-align: center;
+                box-sizing: border-box;
+            }
+    }
+</style>
+
+<div class="detail-edit-page">
+
+    <div class="detail-edit-header">
+        <h2>Chỉnh sửa chi tiết đơn hàng</h2>
+        <p>Cập nhật sản phẩm, số lượng và đơn giá trong đơn hàng</p>
+    </div>
+
+    <div class="detail-edit-container">
+
+        <div class="detail-edit-card">
+
+            <h3>Thông tin chi tiết đơn hàng</h3>
+
+            <div class="detail-edit-note">
+                <strong>Lưu ý:</strong>
+                Bạn có thể thay đổi sản phẩm, đơn hàng, số lượng và đơn giá.
+                Khi chọn sản phẩm khác, đơn giá sẽ tự động lấy từ Quản lý sách.
+                Bạn vẫn có thể tùy chỉnh đơn giá trước khi lưu.
+            </div>
+
+            @using (Html.BeginForm("Edit", "OrderDetails", FormMethod.Post, new { area = "Admin" }))
+            {
+                @Html.AntiForgeryToken()
+
+                @Html.HiddenFor(model => model.ID)
+
+                @Html.ValidationSummary(true, "", new { @class = "detail-validation" })
+
+                <div class="detail-form-group">
+
+                    @Html.LabelFor(model => model.OrderID, "Mã đơn hàng")
+
+                    @Html.DropDownList(
+                        "OrderID",
+                        null,
+                        new { @class = "detail-input" }
+                    )
+
+                    @Html.ValidationMessageFor(
+                        model => model.OrderID,
+                        "",
+                        new { @class = "detail-validation" }
+                    )
+
+                </div>
+
+                <div class="detail-form-group">
+
+                    @Html.LabelFor(model => model.ProductID, "Sản phẩm")
+
+                    @Html.DropDownList(
+                        "ProductID",
+                        null,
+                        new
+                        {
+                            @class = "detail-input",
+                            id = "ProductID"
+                        }
+                    )
+
+                    @Html.ValidationMessageFor(
+                        model => model.ProductID,
+                        "",
+                        new { @class = "detail-validation" }
+                    )
+
+                </div>
+
+                <div class="detail-form-group">
+
+                    @Html.LabelFor(model => model.Quantity, "Số lượng")
+
+                    @Html.TextBoxFor(
+                        model => model.Quantity,
+                        new
+                        {
+                            @class = "detail-input",
+                            type = "number",
+                            min = "1",
+                            placeholder = "Nhập số lượng sản phẩm"
+                        }
+                    )
+
+                    @Html.ValidationMessageFor(
+                        model => model.Quantity,
+                        "",
+                        new { @class = "detail-validation" }
+                    )
+
+                </div>
+
+                <div class="detail-form-group">
+
+                    @Html.LabelFor(model => model.UnitPrice, "Đơn giá (VNĐ)")
+
+                    @Html.TextBoxFor(
+                        model => model.UnitPrice,
+                        new
+                        {
+                            @class = "detail-input",
+                            type = "number",
+                            id = "UnitPrice",
+                            step = "0.01",
+                            min = "0",
+                            placeholder = "Nhập đơn giá"
+                        }
+                    )
+
+                    @Html.ValidationMessageFor(
+                        model => model.UnitPrice,
+                        "",
+                        new { @class = "detail-validation" }
+                    )
+
+                    <small class="detail-price-note">
+                        Đơn giá hiện tại được giữ nguyên khi mở trang.
+                        Nếu chọn sản phẩm khác, giá sẽ tự động cập nhật.
+                    </small>
+
+                </div>
+
+                <div class="detail-edit-actions">
+
+                    <button type="submit" class="btn-detail-save">
+                        Lưu thay đổi
+                    </button>
+
+                    @Html.ActionLink(
+                        "Quay lại",
+                        "Index",
+                        null,
+                        new { @class = "btn-detail-back" }
+                    )
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>
+
+@section scripts {
+    <script>
+        (function () {
+            var productElement = document.getElementById("ProductID");
+            var priceElement = document.getElementById("UnitPrice");
+
+            if (!(productElement instanceof HTMLSelectElement)) {
+                return;
+            }
+
+            if (!(priceElement instanceof HTMLInputElement)) {
+                return;
+            }
+
+            var productSelect = productElement;
+            var priceInput = priceElement;
+
+            productSelect.addEventListener("change", function () {
+                var productID = productSelect.value;
+
+                if (productID === "") {
+                    priceInput.value = "";
+                    return;
+                }
+
+                var url = '@Url.Action("GetProductPrice", "OrderDetails", new { area = "Admin" })';
+
+                fetch(url + "?id=" + encodeURIComponent(productID))
+                    .then(function (response) {
+                        if (!response.ok) {
+                            throw new Error("Không thể lấy giá sản phẩm.");
+                        }
+
+                        return response.json();
+                    })
+                    .then(function (data) {
+                        if (data.success) {
+                            priceInput.value = data.price;
+                        } else {
+                            priceInput.value = "";
+                            alert("Không tìm thấy giá sản phẩm.");
+                        }
+                    })
+                    .catch(function (error) {
+                        priceInput.value = "";
+                        console.error(error);
+                        alert("Có lỗi khi lấy giá sản phẩm.");
+                    });
+            });
+        })();
+    </script>
+}

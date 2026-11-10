@@ -1,0 +1,235 @@
+﻿
+@model NguyeNhatDuy_25DH110313_MyStore.Models.Order
+
+@{
+    ViewBag.Title = "Chi tiết đơn hàng";
+    Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
+}
+
+<style>
+    .order-details-page {
+        min-height: 100vh;
+        padding: 35px 20px;
+        background: #f5f7fb;
+    }
+
+    .order-details-header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+        .order-details-header h2 {
+            color: #243247;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .order-details-header p {
+            color: #7b8798;
+            font-size: 14px;
+        }
+
+    .order-details-container {
+        max-width: 750px;
+        margin: 0 auto;
+    }
+
+    .order-details-card {
+        background: #fff;
+        padding: 30px 35px;
+        border-radius: 14px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+    }
+
+        .order-details-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #26364a;
+            margin: 0 0 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+    .order-detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        padding: 16px 5px;
+        border-bottom: 1px solid #edf0f5;
+    }
+
+    .order-detail-label {
+        color: #667085;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .order-detail-value {
+        color: #26364a;
+        font-size: 14px;
+        font-weight: 600;
+        text-align: right;
+        overflow-wrap: anywhere;
+    }
+
+    .order-detail-id {
+        color: #2563eb;
+        font-weight: 700;
+    }
+
+    .order-detail-amount {
+        color: #16a34a;
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .order-details-actions {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #edf0f5;
+    }
+
+    .btn-order-edit {
+        background: #2563eb;
+        color: white;
+        padding: 11px 25px;
+        border-radius: 7px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .btn-order-edit:hover {
+            background: #1d4ed8;
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-order-back {
+        background: #eef2f7;
+        color: #475467;
+        padding: 11px 25px;
+        border-radius: 7px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .btn-order-back:hover {
+            background: #e0e7ef;
+            color: #344054;
+            text-decoration: none;
+        }
+
+    @@media (max-width: 576px) {
+        .order-details-card {
+            padding: 22px 18px;
+        }
+
+        .order-detail-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 7px;
+        }
+
+        .order-detail-value {
+            text-align: left;
+        }
+
+        .order-details-actions {
+            flex-direction: column;
+        }
+
+            .order-details-actions a {
+                text-align: center;
+            }
+    }
+</style>
+
+<div class="order-details-page">
+
+    <div class="order-details-header">
+        <h2>Chi tiết đơn hàng</h2>
+        <p>Xem đầy đủ thông tin của đơn hàng trong hệ thống</p>
+    </div>
+
+    <div class="order-details-container">
+
+        <div class="order-details-card">
+
+            <h3>Thông tin đơn hàng</h3>
+
+            <div class="order-detail-row">
+                <span class="order-detail-label">Mã đơn hàng</span>
+                <span class="order-detail-value order-detail-id">
+                    #@Model.OrderID
+                </span>
+            </div>
+
+            <div class="order-detail-row">
+                <span class="order-detail-label">Khách hàng</span>
+                <span class="order-detail-value">
+                    @(Model.Customer != null ? Model.Customer.CustomerName : "Chưa có thông tin")
+                </span>
+            </div>
+
+            <div class="order-detail-row">
+                <span class="order-detail-label">Ngày đặt hàng</span>
+                <span class="order-detail-value">
+                    @Model.OrderDate.ToString("dd/MM/yyyy")
+                </span>
+            </div>
+
+            <div class="order-detail-row">
+                <span class="order-detail-label">Tổng tiền</span>
+                <span class="order-detail-value order-detail-amount">
+                    @String.Format("{0:N0} ₫", Model.TotalAmount)
+                </span>
+            </div>
+
+            <div class="order-detail-row">
+                <span class="order-detail-label">Trạng thái thanh toán</span>
+                <span class="order-detail-value">
+                    @(String.IsNullOrWhiteSpace(Model.PaymentStatus)
+                        ? "Chưa cập nhật"
+                        : Model.PaymentStatus)
+                </span>
+            </div>
+
+            <div class="order-detail-row">
+                <span class="order-detail-label">Địa chỉ giao hàng</span>
+                <span class="order-detail-value">
+                    @(String.IsNullOrWhiteSpace(Model.AddressDelivery)
+                        ? "Chưa cập nhật"
+                        : Model.AddressDelivery)
+                </span>
+            </div>
+
+            <div class="order-details-actions">
+
+                @Html.ActionLink(
+                    "Chỉnh sửa đơn hàng",
+                    "Edit",
+                    new { id = Model.OrderID },
+                    new { @class = "btn-order-edit" }
+                )
+
+                @Html.ActionLink(
+                    "Quay lại danh sách",
+                    "Index",
+                    null,
+                    new { @class = "btn-order-back" }
+                )
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

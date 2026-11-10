@@ -1,0 +1,388 @@
+﻿
+@model NguyeNhatDuy_25DH110313_MyStore.Models.Product
+
+@{
+    ViewBag.Title = "Xóa sản phẩm";
+    Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
+}
+
+<style>
+    .delete-product-page {
+        padding: 28px;
+        min-height: 100vh;
+        background: #f4f7fb;
+        color: #243247;
+        font-family: Arial, sans-serif;
+    }
+
+    .page-heading {
+        margin-bottom: 25px;
+    }
+
+        .page-heading h2 {
+            margin: 0 0 8px;
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .page-heading p {
+            margin: 0;
+            color: #718096;
+            font-size: 14px;
+        }
+
+    .breadcrumb-text {
+        margin-bottom: 12px;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+        .breadcrumb-text span {
+            color: #dc2626;
+        }
+
+    .delete-product-card {
+        max-width: 1000px;
+        padding: 30px;
+        background: #fff;
+        border: 1px solid #e5eaf2;
+        border-radius: 14px;
+        box-shadow: 0 5px 20px rgba(15, 23, 42, 0.05);
+    }
+
+    .delete-card-heading {
+        margin-bottom: 25px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid #edf0f5;
+    }
+
+        .delete-card-heading h3 {
+            margin: 0 0 8px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .delete-card-heading p {
+            margin: 0;
+            color: #718096;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+    .delete-warning {
+        margin-bottom: 25px;
+        padding: 15px 18px;
+        color: #991b1b;
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        border-radius: 9px;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .product-details-content {
+        display: flex;
+        align-items: flex-start;
+        gap: 32px;
+    }
+
+    .product-cover-section {
+        flex: 0 0 290px;
+        text-align: center;
+    }
+
+    .product-cover {
+        display: block;
+        box-sizing: border-box;
+        width: 260px;
+        height: 350px;
+        object-fit: contain;
+        margin: 0 auto;
+        padding: 8px;
+        background: #f8fafc;
+        border: 1px solid #e5eaf2;
+        border-radius: 10px;
+    }
+
+    .no-product-cover {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        width: 260px;
+        height: 350px;
+        margin: 0 auto;
+        padding: 15px;
+        color: #94a3b8;
+        background: #f8fafc;
+        border: 1px dashed #cbd5e1;
+        border-radius: 10px;
+        font-size: 14px;
+    }
+
+    .product-id {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 7px 12px;
+        color: #475569;
+        background: #f1f5f9;
+        border-radius: 7px;
+        font-size: 13px;
+    }
+
+    .product-info-section {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .product-name {
+        margin: 0 0 22px;
+        color: #1e293b;
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1.4;
+        overflow-wrap: anywhere;
+    }
+
+    .detail-row {
+        padding: 15px 0;
+        border-bottom: 1px solid #edf0f5;
+    }
+
+    .detail-label {
+        display: block;
+        margin-bottom: 7px;
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .detail-value {
+        color: #334155;
+        font-size: 14px;
+        line-height: 1.7;
+        overflow-wrap: anywhere;
+        white-space: pre-line;
+    }
+
+    .product-price {
+        color: #2563eb;
+        font-size: 22px;
+        font-weight: 700;
+    }
+
+    .form-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 30px;
+        padding-top: 22px;
+        border-top: 1px solid #edf0f5;
+    }
+
+    .btn-delete,
+    .btn-cancel {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 43px;
+        padding: 0 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        box-sizing: border-box;
+        cursor: pointer;
+    }
+
+    .btn-delete {
+        color: #fff;
+        background: #dc2626;
+        border: 1px solid #dc2626;
+    }
+
+        .btn-delete:hover {
+            color: #fff;
+            background: #b91c1c;
+            border-color: #b91c1c;
+        }
+
+    .btn-cancel {
+        color: #475569;
+        background: #fff;
+        border: 1px solid #cbd5e1;
+    }
+
+        .btn-cancel:hover {
+            color: #1e293b;
+            background: #f8fafc;
+            text-decoration: none;
+        }
+
+    @@media (max-width: 768px) {
+        .delete-product-page {
+            padding: 16px;
+        }
+
+        .delete-product-card {
+            padding: 20px;
+        }
+
+        .product-details-content {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 25px;
+        }
+
+        .product-cover-section {
+            flex-basis: auto;
+        }
+
+        .product-info-section {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="delete-product-page">
+
+    <div class="page-heading">
+        <div class="breadcrumb-text">
+            Admin / Sản phẩm / <span>Xóa sản phẩm</span>
+        </div>
+
+        <h2>Xóa sản phẩm</h2>
+        <p>Kiểm tra thông tin trước khi xóa sản phẩm khỏi hệ thống MyStore.</p>
+    </div>
+
+    <div class="delete-product-card">
+
+        <div class="delete-card-heading">
+            <h3>Xác nhận xóa sản phẩm</h3>
+            <p>Vui lòng kiểm tra kỹ thông tin sản phẩm trước khi xác nhận.</p>
+        </div>
+
+        <div class="delete-warning">
+            <strong>Lưu ý:</strong>
+            Bạn đang chuẩn bị xóa sản phẩm này. Hãy chắc chắn rằng bạn muốn
+            thực hiện thao tác này trước khi tiếp tục.
+        </div>
+
+        <div class="product-details-content">
+
+            <div class="product-cover-section">
+
+                @if (!string.IsNullOrWhiteSpace(Model.ProductImage))
+                {
+                    <img class="product-cover"
+                         src="@Url.Content(Model.ProductImage)"
+                         alt="@Model.ProductName"
+                         id="deleteBookCoverImage" />
+
+                    <div class="no-product-cover"
+                         id="deleteBookCoverFallback"
+                         style="display:none;">
+                        Không tải được ảnh bìa
+                    </div>
+                }
+                else
+                {
+                    <div class="no-product-cover">
+                        Chưa có ảnh bìa
+                    </div>
+                }
+
+                <div class="product-id">
+                    Mã sản phẩm: #@Model.ProductID
+                </div>
+
+            </div>
+
+            <div class="product-info-section">
+
+                <h3 class="product-name">
+                    @(string.IsNullOrWhiteSpace(Model.ProductName)
+                        ? "Chưa có tên sản phẩm"
+                        : Model.ProductName)
+                </h3>
+
+                <div class="detail-row">
+                    <span class="detail-label">Danh mục sản phẩm</span>
+                    <div class="detail-value">
+                        @(Model.Category != null
+                            ? Model.Category.CategoryName
+                            : "Chưa phân loại")
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <span class="detail-label">Giá sản phẩm</span>
+                    <div class="product-price">
+                        @Model.ProductPrice.ToString("N0") VNĐ
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <span class="detail-label">Mô tả sản phẩm</span>
+                    <div class="detail-value">
+                        @(string.IsNullOrWhiteSpace(Model.ProductDecription)
+                            ? "Chưa có mô tả sản phẩm."
+                            : Model.ProductDecription)
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        @using (Html.BeginForm(
+            "Delete",
+            "Product",
+            new { area = "Admin", id = Model.ProductID },
+            FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.ProductID)
+
+            <div class="form-actions">
+
+                <button type="submit"
+                        class="btn-delete"
+                        onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?');">
+                    Xác nhận xóa
+                </button>
+
+                @Html.ActionLink(
+                    "Hủy",
+                    "Index",
+                    "Product",
+                    new { area = "Admin" },
+                    new { @class = "btn-cancel" }
+                )
+
+            </div>
+        }
+
+    </div>
+</div>
+
+<script>
+        (function () {
+            var imgElement = document.getElementById("deleteBookCoverImage");
+            var fallbackElement = document.getElementById("deleteBookCoverFallback");
+
+            if (imgElement === null || fallbackElement === null) {
+                return;
+            }
+
+            var img = imgElement;
+            var fallback = fallbackElement;
+
+            img.addEventListener("error", function () {
+                img.style.display = "none";
+                fallback.style.display = "flex";
+            });
+        })();
+</script>
+

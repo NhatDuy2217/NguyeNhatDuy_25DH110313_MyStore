@@ -1,0 +1,169 @@
+﻿
+@model IEnumerable<NguyeNhatDuy_25DH110313_MyStore.Models.Category>
+
+@{
+    ViewBag.Title = "Quản lý danh mục";
+    Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
+
+    var categories = Model != null
+        ? Model.ToList()
+        : new List<NguyeNhatDuy_25DH110313_MyStore.Models.Category>();
+
+    int totalCategories = categories.Count;
+    int stt = 0;
+}
+
+<div class="container-fluid">
+
+    <!-- Tiêu đề và nút thêm -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        <div>
+            <h2 style="font-weight: 600; margin-bottom: 8px;">
+                Quản lý danh mục
+            </h2>
+
+            <p style="color: #777; margin: 0;">
+                Danh sách các danh mục sản phẩm trong cửa hàng
+            </p>
+        </div>
+
+        @Html.ActionLink(
+                 "+ Thêm danh mục",
+                 "Create",
+                 "Categories",
+                 new { area = "Admin" },
+                 new
+                 {
+                     @class = "btn btn-primary",
+                     style = "padding: 10px 18px; border-radius: 6px;"
+                 }
+             )
+    </div>
+
+    <!-- Tổng số danh mục -->
+    <div style="
+        background: #fff;
+        padding: 20px 24px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;">
+
+        <div style="
+            width: 48px;
+            height: 48px;
+            background: #e8f0fe;
+            color: #2563eb;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;">
+            <i class="fa fa-list"></i>
+        </div>
+
+        <div>
+            <div style="color: #777; font-size: 14px; margin-bottom: 5px;">
+                Tổng số danh mục
+            </div>
+
+            <div style="font-size: 25px; font-weight: 700; color: #2c3e50;">
+                @totalCategories
+            </div>
+        </div>
+    </div>
+
+    <!-- Bảng danh mục -->
+    <div style="
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+
+        <table class="table table-bordered table-striped" style="margin-bottom: 0;">
+
+            <thead>
+                <tr style="background: #f5f7fa;">
+                    <th style="width: 90px; text-align: center; padding: 14px;">
+                        STT
+                    </th>
+
+                    <th style="width: 150px; padding: 14px;">
+                        Mã danh mục
+                    </th>
+
+                    <th style="padding: 14px;">
+                        Tên danh mục
+                    </th>
+
+                    <th style="width: 220px; text-align: center; padding: 14px;">
+                        Chức năng
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @if (categories.Any())
+                {
+                    foreach (var item in categories)
+                    {
+                        stt++;
+
+                        <tr>
+                            <!-- Số thứ tự -->
+                            <td style="text-align: center; padding: 12px;">
+                                @stt
+                            </td>
+
+                            <!-- Mã danh mục -->
+                            <td style="padding: 12px;">
+                                @item.CategoryID
+                            </td>
+
+                            <!-- Tên danh mục -->
+                            <td style="padding: 12px;">
+                                @item.CategoryName
+                            </td>
+
+                            <!-- Chức năng -->
+                            <td style="text-align: center; padding: 12px;">
+                                @Html.ActionLink(
+                                         "Chi tiết",
+                                         "Details",
+                                         new { id = item.CategoryID }
+                                     )
+                                |
+                                @Html.ActionLink(
+                                         "Sửa",
+                                         "Edit",
+                                         new { id = item.CategoryID }
+                                     )
+                                |
+                                @Html.ActionLink(
+                                         "Xóa",
+                                         "Delete",
+                                         new { id = item.CategoryID }
+                                     )
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4"
+                            style="text-align: center; padding: 25px; color: #777;">
+                            Chưa có danh mục nào. Hãy nhấn
+                            <strong>+ Thêm danh mục</strong>
+                            để tạo danh mục mới.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+
+</div>

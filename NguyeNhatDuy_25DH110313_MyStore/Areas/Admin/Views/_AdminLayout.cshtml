@@ -1,0 +1,263 @@
+﻿
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title - MyStore Admin</title>
+
+    @Styles.Render("~/Content/css")
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background-color: #f4f6f9;
+            font-family: Arial, sans-serif;
+            color: #334155;
+        }
+
+        .admin-header {
+            min-height: 65px;
+            background: #212529;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 28px;
+            gap: 15px;
+        }
+
+        .admin-brand {
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .admin-header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            color: #dee2e6;
+        }
+
+        .admin-navbar {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 3px;
+            background: #343a40;
+            padding: 0 20px;
+        }
+
+            .admin-navbar a {
+                display: block;
+                padding: 16px 15px;
+                color: #e2e5e8;
+                text-decoration: none;
+                font-size: 14px;
+                font-weight: 600;
+                transition: 0.2s;
+                border-bottom: 3px solid transparent;
+            }
+
+                .admin-navbar a:hover {
+                    background: #495057;
+                    color: white;
+                }
+
+                .admin-navbar a.active {
+                    background: #495057;
+                    color: white;
+                    border-bottom-color: #198754;
+                }
+
+        .admin-menu-toggle {
+            display: none;
+            background: #343a40;
+            color: white;
+            border: 1px solid #64748b;
+            border-radius: 6px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .admin-content {
+            min-height: calc(100vh - 155px);
+            padding: 28px;
+            overflow-x: auto;
+        }
+
+        .admin-footer {
+            padding: 18px;
+            text-align: center;
+            color: #64748b;
+            font-size: 13px;
+            border-top: 1px solid #e5e7eb;
+            background: #fff;
+        }
+
+        @@media (max-width: 900px) {
+            .admin-navbar a {
+                padding: 14px 10px;
+                font-size: 13px;
+            }
+        }
+
+        @@media (max-width: 700px) {
+            .admin-header {
+                padding: 14px 16px;
+                flex-wrap: wrap;
+            }
+
+            .admin-brand {
+                font-size: 19px;
+            }
+
+            .admin-menu-toggle {
+                display: block;
+            }
+
+            .admin-navbar {
+                display: none;
+                flex-direction: column;
+                align-items: stretch;
+                padding: 5px 10px;
+            }
+
+                .admin-navbar.show {
+                    display: flex;
+                }
+
+                .admin-navbar a {
+                    padding: 13px 12px;
+                    border-bottom: none;
+                    border-radius: 5px;
+                }
+
+                    .admin-navbar a.active {
+                        border-left: 4px solid #198754;
+                        border-bottom: none;
+                    }
+
+            .admin-content {
+                padding: 16px 12px;
+            }
+
+            .admin-header-right {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="admin-header">
+
+        <a class="admin-brand"
+           href="@Url.Action("Index", "Home", new { area = "Admin" })">
+            MyStore | Admin
+        </a>
+
+        <div class="admin-header-right">
+
+            <span>Quản trị hệ thống</span>
+
+            <button type="button"
+                    class="admin-menu-toggle"
+                    onclick="toggleAdminMenu()">
+                ☰ Menu
+            </button>
+
+        </div>
+
+    </header>
+
+    <!-- MENU ĐIỀU HƯỚNG THEO THỨ TỰ LIÊN KẾT DỮ LIỆU -->
+    <nav class="admin-navbar" id="adminNavbar">
+
+        <!-- 1. TỔNG QUAN -->
+        <a href="@Url.Action("Index", "Home", new { area = "Admin" })"
+           class="@(ViewContext.RouteData.Values["controller"].ToString() == "Home" ? "active" : "")">
+            🏠 Tổng quan
+        </a>
+
+        <!-- 2. QUẢN LÝ DANH MỤC -->
+        <a href="@Url.Action("Index", "Categories", new { area = "Admin" })"
+           class="@(ViewContext.RouteData.Values["controller"].ToString() == "Categories" ? "active" : "")">
+            📁 Quản lý danh mục
+        </a>
+
+        <!-- 3. QUẢN LÝ SẢN PHẨM -->
+        <a href="@Url.Action("Index", "Product", new { area = "Admin" })"
+           class="@(ViewContext.RouteData.Values["controller"].ToString() == "Product" ? "active" : "")">
+            📚 Quản lý sản phẩm
+        </a>
+
+        <!-- 4. QUẢN LÝ TÀI KHOẢN -->
+        <a href="@Url.Action("Index", "Users", new { area = "Admin" })"
+           class="@(ViewContext.RouteData.Values["controller"].ToString() == "Users" ? "active" : "")">
+            🔐 Quản lý tài khoản
+        </a>
+
+        <!-- 5. QUẢN LÝ KHÁCH HÀNG -->
+        <a href="@Url.Action("Index", "Customers", new { area = "Admin" })"
+           class="@(ViewContext.RouteData.Values["controller"].ToString() == "Customers" ? "active" : "")">
+            👥 Quản lý khách hàng
+        </a>
+
+        <!-- 6. QUẢN LÝ ĐƠN HÀNG -->
+        <a href="@Url.Action("Index", "Orders", new { area = "Admin" })"
+           class="@(ViewContext.RouteData.Values["controller"].ToString() == "Orders" ? "active" : "")">
+            🛒 Quản lý đơn hàng
+        </a>
+
+        <!-- 7. CHI TIẾT ĐƠN HÀNG -->
+        <a href="@Url.Action("Index", "OrderDetails", new { area = "Admin" })"
+           class="@(ViewContext.RouteData.Values["controller"].ToString() == "OrderDetails" ? "active" : "")">
+            📋 Chi tiết đơn hàng
+        </a>
+
+        <!-- 8. TRANG CHÍNH -->
+        <a href="@Url.Action("Index", "Home", new { area = "" })">
+            🌐 Về trang chính
+        </a>
+
+    </nav>
+
+    <!-- NỘI DUNG -->
+    <main class="admin-content">
+        @RenderBody()
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="admin-footer">
+        &copy; @DateTime.Now.Year - MyStore Admin |
+        Hệ thống quản lý nhà sách
+    </footer>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+
+    <script>
+                function toggleAdminMenu() {
+                    var menu = document.getElementById("adminNavbar");
+
+                    if (menu !== null) {
+                        menu.classList.toggle("show");
+                    }
+                }
+    </script>
+
+    @RenderSection("scripts", required: false)
+
+</body>
+</html>

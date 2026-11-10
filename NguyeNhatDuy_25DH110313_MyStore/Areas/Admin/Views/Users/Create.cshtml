@@ -1,0 +1,315 @@
+﻿
+@model NguyeNhatDuy_25DH110313_MyStore.Models.User
+
+@{
+    ViewBag.Title = "Thêm tài khoản";
+    Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
+}
+
+<style>
+    .user-create-page {
+        width: 100%;
+        min-height: 650px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 30px 15px;
+        box-sizing: border-box;
+        background: #f5f7fb;
+    }
+
+        .user-create-page * {
+            box-sizing: border-box;
+        }
+
+    .user-create-card {
+        width: 100%;
+        max-width: 650px;
+        margin: 0 auto;
+        padding: 35px 30px;
+        background: #ffffff;
+        border-radius: 14px;
+        box-shadow: 0 5px 22px rgba(0, 0, 0, 0.08);
+    }
+
+    .user-create-title {
+        margin: 0 0 10px;
+        text-align: center;
+        font-size: 26px;
+        font-weight: 700;
+        color: #263445;
+    }
+
+    .user-create-subtitle {
+        margin: 0 0 30px;
+        text-align: center;
+        color: #7b8794;
+        font-size: 14px;
+    }
+
+    .user-create-form {
+        width: 100%;
+        max-width: 360px;
+        margin: 0 auto;
+    }
+
+    .user-create-group {
+        width: 100%;
+        margin: 0 0 20px;
+        padding: 0;
+        text-align: center;
+    }
+
+        .user-create-group label {
+            display: block;
+            width: 100%;
+            margin: 0 0 9px;
+            padding: 0;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #344054;
+        }
+
+        .user-create-group input.form-control,
+        .user-create-group select.form-control {
+            display: block;
+            float: none;
+            width: 100%;
+            height: 42px;
+            margin: 0 auto;
+            padding: 8px 12px;
+            border: 1px solid #d5dce5;
+            border-radius: 7px;
+            background: #fff;
+            font-size: 14px;
+            text-align: center;
+            box-shadow: none;
+        }
+
+            .user-create-group input.form-control:focus,
+            .user-create-group select.form-control:focus {
+                border-color: #3978d4;
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(57, 120, 212, 0.12);
+            }
+
+        .user-create-group .field-validation-error {
+            display: block;
+            margin-top: 6px;
+            font-size: 12px;
+            text-align: center;
+        }
+
+    .user-create-validation {
+        margin-bottom: 15px;
+        text-align: center;
+    }
+
+    .user-create-actions {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        margin: 28px auto 0;
+    }
+
+        .user-create-actions .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 140px;
+            min-height: 42px;
+            margin: 0;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 7px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .btn-user-save {
+        background: #2563eb;
+        color: #fff;
+    }
+
+        .btn-user-save:hover,
+        .btn-user-save:focus {
+            background: #1d4ed8;
+            color: #fff;
+        }
+
+    .btn-user-back {
+        background: #e9edf3;
+        color: #344054;
+    }
+
+        .btn-user-back:hover,
+        .btn-user-back:focus {
+            background: #dce2eb;
+            color: #344054;
+        }
+
+    @@media (max-width: 576px) {
+        .user-create-card {
+            padding: 25px 18px;
+        }
+
+        .user-create-form {
+            max-width: 100%;
+        }
+
+        .user-create-actions {
+            flex-direction: column;
+        }
+
+            .user-create-actions .btn {
+                width: 100%;
+            }
+    }
+</style>
+
+<div class="user-create-page">
+
+    <div class="user-create-card">
+
+        <h2 class="user-create-title">
+            THÊM TÀI KHOẢN
+        </h2>
+
+        <p class="user-create-subtitle">
+            Nhập thông tin để tạo tài khoản mới
+        </p>
+
+        @using (Html.BeginForm(
+            "Create",
+            "Users",
+            new { area = "Admin" },
+            FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="user-create-form">
+
+                <!-- Thông báo lỗi -->
+                @Html.ValidationSummary(
+                         true,
+                         "",
+                         new { @class = "text-danger user-create-validation" }
+                     )
+
+                <!-- Tên đăng nhập -->
+                <div class="user-create-group">
+
+                    @Html.LabelFor(
+                             model => model.Username,
+                             "Tên đăng nhập"
+                         )
+
+                    @Html.TextBoxFor(
+                             model => model.Username,
+                             new
+                             {
+                                 @class = "form-control",
+                                 placeholder = "Nhập tên đăng nhập"
+                             }
+                         )
+
+                    @Html.ValidationMessageFor(
+                             model => model.Username,
+                             "",
+                             new { @class = "text-danger" }
+                         )
+
+                </div>
+
+                <!-- Mật khẩu -->
+                <div class="user-create-group">
+
+                    @Html.LabelFor(
+                             model => model.Password,
+                             "Mật khẩu"
+                         )
+
+                    @Html.PasswordFor(
+                             model => model.Password,
+                             new
+                             {
+                                 @class = "form-control",
+                                 placeholder = "Nhập mật khẩu"
+                             }
+                         )
+
+                    @Html.ValidationMessageFor(
+                             model => model.Password,
+                             "",
+                             new { @class = "text-danger" }
+                         )
+
+                </div>
+
+                <!-- Vai trò tài khoản -->
+                <div class="user-create-group">
+
+                    @Html.LabelFor(
+                             model => model.UserRole,
+                             "Vai trò tài khoản"
+                         )
+
+                    @Html.DropDownListFor(
+                             model => model.UserRole,
+                             new SelectList(
+                                 new[]
+                                 {
+                                new
+                                {
+                                    Value = "Admin",
+                                    Text = "Admin"
+                                },
+                                new
+                                {
+                                    Value = "Customer",
+                                    Text = "Customer"
+                                }
+                             },
+                                 "Value",
+                                 "Text"
+                             ),
+                             "-- Chọn vai trò tài khoản --",
+                             new { @class = "form-control" }
+                         )
+
+                    @Html.ValidationMessageFor(
+                             model => model.UserRole,
+                             "",
+                             new { @class = "text-danger" }
+                         )
+
+                </div>
+
+                <!-- Nút chức năng -->
+                <div class="user-create-actions">
+
+                    <button type="submit" class="btn btn-user-save">
+                        <i class="glyphicon glyphicon-plus"></i>
+                        &nbsp; Thêm tài khoản
+                    </button>
+
+                    @Html.ActionLink(
+                             "Quay lại",
+                             "Index",
+                             "Users",
+                             new { area = "Admin" },
+                             new { @class = "btn btn-user-back" }
+                         )
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+</div>

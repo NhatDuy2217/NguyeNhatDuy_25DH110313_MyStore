@@ -1,0 +1,721 @@
+﻿@model NguyeNhatDuy_25DH110313_MyStore.Models.ViewModel.HomeProductVM
+
+@{
+    ViewBag.Title = "Trang chủ";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<style>
+    .home-page {
+        background: #f5f7fb;
+        padding-bottom: 50px;
+    }
+
+    /* BANNER TRANG CHỦ */
+    .home-banner {
+        background: linear-gradient(120deg, #123b70, #2878bd);
+        color: white;
+        padding: 65px 35px;
+        border-radius: 16px;
+        margin: 25px 0 35px;
+        text-align: center;
+    }
+
+        .home-banner h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .home-banner p {
+            font-size: 17px;
+            margin-bottom: 25px;
+        }
+
+    /* THANH TÌM KIẾM */
+    .home-search {
+        width: 100%;
+        max-width: 700px;
+        height: 56px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 130px;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+        .home-search input {
+            width: 100%;
+            min-width: 0;
+            height: 56px;
+            padding: 15px 18px;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        .home-search button {
+            width: 100%;
+            height: 56px;
+            margin: 0;
+            padding: 0;
+            display: block;
+            background: #f59e0b;
+            color: white;
+            border: none;
+            border-radius: 0;
+            font-weight: 600;
+            cursor: pointer;
+            box-sizing: border-box;
+            transition: .2s;
+        }
+
+            .home-search button:hover {
+                background: #d97706;
+            }
+
+    /* NHÓM NÚT GIỚI THIỆU VÀ LIÊN HỆ */
+    .home-action-buttons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-top: 22px;
+    }
+
+    /* HAI NÚT CÓ CÙNG GIAO DIỆN */
+    .home-about-btn,
+    .home-contact-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        padding: 12px 25px;
+        background: white;
+        color: #1d65a6 !important;
+        border: 2px solid white;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: .2s;
+    }
+
+        /* HIỆU ỨNG KHI DI CHUỘT VÀO */
+        .home-about-btn:hover,
+        .home-contact-btn:hover {
+            background: #f59e0b;
+            border-color: #f59e0b;
+            color: white !important;
+            text-decoration: none;
+            transform: translateY(-2px);
+        }
+
+    /* KHU VỰC SẢN PHẨM */
+    .home-section {
+        margin-top: 35px;
+    }
+
+    .home-section-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 22px;
+        border-bottom: 2px solid #e5eaf1;
+        padding-bottom: 12px;
+    }
+
+        .home-section-title h2 {
+            font-size: 25px;
+            font-weight: 700;
+            color: #173d6b;
+            margin: 0;
+        }
+
+    /* THẺ SẢN PHẨM */
+    .product-card {
+        background: white;
+        border-radius: 12px;
+        padding: 15px;
+        height: 100%;
+        box-shadow: 0 3px 12px rgba(0,0,0,.05);
+        transition: .2s;
+    }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 7px 20px rgba(0,0,0,.1);
+        }
+
+    .product-image {
+        width: 100%;
+        height: 210px;
+        object-fit: contain;
+        margin-bottom: 12px;
+    }
+
+    .product-name {
+        color: #26384d;
+        font-size: 16px;
+        font-weight: 600;
+        min-height: 44px;
+        margin-bottom: 8px;
+    }
+
+    .product-price {
+        color: #dc3545;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+
+    .product-detail-btn {
+        display: block;
+        text-align: center;
+        background: #1d65a6;
+        color: white;
+        padding: 9px;
+        border-radius: 7px;
+        text-decoration: none;
+    }
+
+        .product-detail-btn:hover {
+            background: #124778;
+            color: white;
+            text-decoration: none;
+        }
+
+    /* KHI KHÔNG CÓ SẢN PHẨM */
+    .home-empty {
+        background: white;
+        padding: 35px 20px;
+        border-radius: 12px;
+        text-align: center;
+        color: #777;
+        box-shadow: 0 3px 12px rgba(0,0,0,.04);
+    }
+
+    .home-empty-icon {
+        font-size: 42px;
+        margin-bottom: 12px;
+    }
+
+    .home-empty h3 {
+        color: #173d6b;
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .home-empty p {
+        margin-bottom: 0;
+        font-size: 15px;
+    }
+
+    /* PHÂN TRANG */
+    .home-pagination {
+        margin-top: 25px;
+        text-align: center;
+    }
+
+        .home-pagination a,
+        .home-pagination span {
+            display: inline-block;
+            padding: 8px 13px;
+            margin: 3px;
+            border-radius: 6px;
+            background: white;
+            border: 1px solid #ddd;
+            color: #1d65a6;
+            text-decoration: none;
+        }
+
+        .home-pagination span {
+            background: #1d65a6;
+            color: white;
+            border-color: #1d65a6;
+        }
+
+        .home-pagination a:hover {
+            background: #e8f1fa;
+        }
+
+    /* POPUP GIỚI THIỆU MYSTORE */
+    .about-popup-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.65);
+        z-index: 99999;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .about-popup {
+        position: relative;
+        width: 100%;
+        max-width: 550px;
+        background: white;
+        border-radius: 16px;
+        padding: 35px;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0,0,0,.25);
+        animation: popupShow .35s ease;
+    }
+
+    .about-popup-close {
+        position: absolute;
+        top: 12px;
+        right: 18px;
+        border: none;
+        background: none;
+        color: #777;
+        font-size: 30px;
+        cursor: pointer;
+    }
+
+        .about-popup-close:hover {
+            color: #dc3545;
+        }
+
+    .about-popup-icon {
+        font-size: 48px;
+        margin-bottom: 15px;
+    }
+
+    .about-popup h2 {
+        color: #173d6b;
+        font-size: 26px;
+        font-weight: 700;
+        margin-bottom: 18px;
+    }
+
+    .about-popup p {
+        color: #555;
+        font-size: 15px;
+        line-height: 1.8;
+        margin-bottom: 20px;
+    }
+
+    .about-popup-button {
+        display: inline-block;
+        background: #1d65a6;
+        color: white;
+        padding: 11px 25px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+        .about-popup-button:hover {
+            background: #124778;
+            color: white;
+            text-decoration: none;
+        }
+
+    .about-popup-secondary {
+        display: inline-block;
+        margin-left: 8px;
+        background: #e9ecef;
+        color: #495057;
+        padding: 11px 25px;
+        border-radius: 8px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+        .about-popup-secondary:hover {
+            background: #d6d8db;
+        }
+
+    @@keyframes popupShow {
+        from {
+            opacity: 0;
+            transform: translateY(-20px) scale(.95);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    /* GIAO DIỆN ĐIỆN THOẠI */
+    @@media (max-width: 768px) {
+        .home-banner {
+            padding: 40px 18px;
+        }
+
+            .home-banner h1 {
+                font-size: 27px;
+            }
+
+        .home-search {
+            grid-template-columns: minmax(0, 1fr) 100px;
+        }
+
+            .home-search input {
+                padding: 13px 10px;
+                font-size: 14px;
+            }
+
+            .home-search button {
+                width: 100%;
+                font-size: 14px;
+            }
+
+        .home-about-btn,
+        .home-contact-btn {
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .product-image {
+            height: 160px;
+        }
+
+        .home-section-title h2 {
+            font-size: 21px;
+        }
+
+        .about-popup {
+            padding: 30px 20px;
+        }
+
+            .about-popup h2 {
+                font-size: 22px;
+            }
+
+        .about-popup-secondary {
+            margin: 10px 0 0;
+        }
+    }
+</style>
+
+<div class="home-page">
+    <div class="container">
+
+        <!-- BANNER VÀ TÌM KIẾM -->
+        <section class="home-banner">
+
+            <h1>Chào mừng đến với MyStore</h1>
+
+            <p>
+                Khám phá kho sách phong phú và tìm cuốn sách yêu thích của bạn.
+            </p>
+
+            @using (Html.BeginForm("Index", "Home", FormMethod.Get,
+                new { @class = "home-search" }))
+            {
+                <input type="text"
+                       name="searchString"
+                       value="@ViewBag.SearchString"
+                       placeholder="Nhập tên sách hoặc nội dung cần tìm..." />
+
+                <button type="submit">
+                    Tìm kiếm
+                </button>
+            }
+
+            <!-- NÚT GIỚI THIỆU VÀ LIÊN HỆ -->
+            <div class="home-action-buttons">
+
+                <a href="@Url.Action("About", "Home")"
+                   class="home-about-btn">
+                    <span>ℹ️</span>
+                    <span>Giới thiệu về MyStore</span>
+                </a>
+
+                <a href="@Url.Action("Contact", "Home")"
+                   class="home-contact-btn">
+                    <span>📞</span>
+                    <span>Liên hệ với MyStore</span>
+                </a>
+
+            </div>
+
+        </section>
+
+        <!-- SẢN PHẨM NỔI BẬT -->
+        <section class="home-section">
+
+            <div class="home-section-title">
+                <h2>Sản phẩm nổi bật</h2>
+            </div>
+
+            @if (Model.FeaturedProducts != null &&
+                 Model.FeaturedProducts.Any())
+            {
+                <div class="row">
+
+                    @foreach (var item in Model.FeaturedProducts)
+                    {
+                        <div class="col-lg-3 col-md-4 col-6 mb-4">
+                            <div class="product-card">
+
+                                @if (!String.IsNullOrEmpty(item.ProductImage))
+                                {
+                                    <img src="@Url.Content(item.ProductImage)"
+                                         class="product-image"
+                                         alt="@item.ProductName" />
+                                }
+                                else
+                                {
+                                    <div class="product-image d-flex align-items-center justify-content-center text-muted">
+                                        Chưa có hình ảnh
+                                    </div>
+                                }
+
+                                <div class="product-name">
+                                    @item.ProductName
+                                </div>
+
+                                <div class="product-price">
+                                    @item.ProductPrice.ToString("N0") đ
+                                </div>
+
+                                <a href="@Url.Action("ProductDetail", "Home",
+                                    new { id = item.ProductID })"
+                                   class="product-detail-btn">
+                                    Xem chi tiết
+                                </a>
+
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            }
+            else
+            {
+                <div class="home-empty">
+                    <div class="home-empty-icon">📚</div>
+                    <h3>Chưa có sản phẩm nổi bật</h3>
+                    <p>Hiện tại cửa hàng chưa có sản phẩm nào được hiển thị.</p>
+                </div>
+            }
+
+        </section>
+
+        <!-- SẢN PHẨM MỚI -->
+        <section class="home-section">
+
+            <div class="home-section-title">
+                <h2>Sản phẩm mới</h2>
+            </div>
+
+            @if (Model.NewProducts != null &&
+                 Model.NewProducts.Any())
+            {
+                <div class="row">
+
+                    @foreach (var item in Model.NewProducts)
+                    {
+                        <div class="col-lg-3 col-md-4 col-6 mb-4">
+                            <div class="product-card">
+
+                                @if (!String.IsNullOrEmpty(item.ProductImage))
+                                {
+                                    <img src="@Url.Content(item.ProductImage)"
+                                         class="product-image"
+                                         alt="@item.ProductName" />
+                                }
+                                else
+                                {
+                                    <div class="product-image d-flex align-items-center justify-content-center text-muted">
+                                        Chưa có hình ảnh
+                                    </div>
+                                }
+
+                                <div class="product-name">
+                                    @item.ProductName
+                                </div>
+
+                                <div class="product-price">
+                                    @item.ProductPrice.ToString("N0") đ
+                                </div>
+
+                                <a href="@Url.Action("ProductDetail", "Home",
+                                    new { id = item.ProductID })"
+                                   class="product-detail-btn">
+                                    Xem chi tiết
+                                </a>
+
+                            </div>
+                        </div>
+                    }
+
+                </div>
+
+                <!-- PHÂN TRANG -->
+                if (Model.NewProducts.PageCount > 1)
+                {
+                    <div class="home-pagination">
+
+                        @if (Model.NewProducts.HasPreviousPage)
+                        {
+                            <a href="@Url.Action("Index", "Home", new {
+                                page = Model.NewProducts.PageNumber - 1,
+                                searchString = ViewBag.SearchString
+                            })">
+                                &laquo; Trước
+                            </a>
+                        }
+
+                        @for (int i = 1;
+                              i <= Model.NewProducts.PageCount;
+                              i++)
+                        {
+                            if (i == Model.NewProducts.PageNumber)
+                            {
+                                <span>@i</span>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Index", "Home", new {
+                                    page = i,
+                                    searchString = ViewBag.SearchString
+                                })">
+                                    @i
+                                </a>
+                            }
+                        }
+
+                        @if (Model.NewProducts.HasNextPage)
+                        {
+                            <a href="@Url.Action("Index", "Home", new {
+                                page = Model.NewProducts.PageNumber + 1,
+                                searchString = ViewBag.SearchString
+                            })">
+                                Sau &raquo;
+                            </a>
+                        }
+
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="home-empty">
+                    <div class="home-empty-icon">🛒</div>
+                    <h3>Cửa hàng đang cập nhật sản phẩm</h3>
+                    <p>
+                        Hiện chưa có sản phẩm nào. Vui lòng quay lại sau nhé!
+                    </p>
+                </div>
+            }
+
+        </section>
+
+    </div>
+
+    <!-- POPUP GIỚI THIỆU MYSTORE -->
+    <div class="about-popup-overlay" id="aboutPopup">
+
+        <div class="about-popup">
+
+            <button type="button"
+                    class="about-popup-close"
+                    id="closeAboutPopup"
+                    aria-label="Đóng">
+                &times;
+            </button>
+
+            <div class="about-popup-icon">📚</div>
+
+            <h2>Chào mừng đến với MyStore!</h2>
+
+            <p>
+                MyStore là cửa hàng sách trực tuyến, nơi bạn có thể
+                khám phá và lựa chọn những cuốn sách yêu thích.
+                Chúng tôi mong muốn mang đến trải nghiệm mua sắm
+                thuận tiện, nhanh chóng và thân thiện cho khách hàng.
+            </p>
+
+            <p>
+                Cảm ơn bạn đã ghé thăm MyStore!
+            </p>
+
+            <a href="@Url.Action("About", "Home")"
+               class="about-popup-button">
+                Tìm hiểu thêm
+            </a>
+
+            <button type="button"
+                    class="about-popup-secondary"
+                    id="confirmAboutPopup">
+                Đóng
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            var popupElement = document.getElementById("aboutPopup");
+            var closeButton = document.getElementById("closeAboutPopup");
+            var confirmButton = document.getElementById("confirmAboutPopup");
+
+            var popupKey = "MyStore_AboutPopup_Closed";
+
+            // Kiểm tra popup tồn tại
+            if (popupElement === null) {
+                return;
+            }
+
+            // Lưu popup vào biến sau khi đã kiểm tra
+            var popup = popupElement;
+
+            // Hiển thị popup nếu chưa đóng trong phiên hiện tại
+            if (!sessionStorage.getItem(popupKey)) {
+                popup.style.display = "flex";
+            }
+
+            // Hàm đóng popup
+            function closePopup() {
+                popup.style.display = "none";
+                sessionStorage.setItem(popupKey, "true");
+            }
+
+            // Nhấn dấu X
+            if (closeButton !== null) {
+                closeButton.addEventListener("click", function () {
+                    closePopup();
+                });
+            }
+
+            // Nhấn nút Đóng
+            if (confirmButton !== null) {
+                confirmButton.addEventListener("click", function () {
+                    closePopup();
+                });
+            }
+
+            // Nhấn bên ngoài popup
+            popup.addEventListener("click", function (event) {
+                if (event.target === popup) {
+                    closePopup();
+                }
+            });
+
+            // Nhấn phím ESC
+            document.addEventListener("keydown", function (event) {
+                if (event.key === "Escape") {
+                    closePopup();
+                }
+            });
+
+        });
+</script>

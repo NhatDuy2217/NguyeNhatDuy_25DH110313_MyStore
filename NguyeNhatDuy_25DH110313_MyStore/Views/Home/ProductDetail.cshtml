@@ -1,0 +1,283 @@
+﻿
+@model NguyeNhatDuy_25DH110313_MyStore.Models.Product
+
+@{
+    ViewBag.Title = "Chi tiết sản phẩm";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<style>
+    .product-detail-page {
+        background: #f5f7fb;
+        min-height: 100vh;
+        padding: 40px 0 60px;
+    }
+
+    .detail-container {
+        background: white;
+        padding: 30px;
+        border-radius: 14px;
+        box-shadow: 0 4px 15px rgba(0,0,0,.05);
+    }
+
+    .detail-image {
+        width: 100%;
+        height: 420px;
+        object-fit: contain;
+        padding: 15px;
+        background: #fafafa;
+        border-radius: 10px;
+    }
+
+    .detail-name {
+        color: #173d6b;
+        font-size: 27px;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+    .detail-category {
+        color: #777;
+        margin-bottom: 15px;
+    }
+
+    .detail-price {
+        color: #dc3545;
+        font-size: 27px;
+        font-weight: 700;
+        margin: 20px 0;
+    }
+
+    .detail-description {
+        color: #555;
+        line-height: 1.8;
+        white-space: pre-line;
+        margin-bottom: 25px;
+    }
+
+    .quantity-label {
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .quantity-input {
+        width: 110px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 7px;
+        margin-bottom: 20px;
+    }
+
+    .detail-total {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+        .detail-total span {
+            color: #dc3545;
+        }
+
+    .btn-add-cart {
+        display: inline-block;
+        background: #1d65a6;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 7px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+        .btn-add-cart:hover {
+            background: #124778;
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-back {
+        display: inline-block;
+        margin-left: 10px;
+        color: #1d65a6;
+        text-decoration: none;
+    }
+
+        .btn-back:hover {
+            text-decoration: underline;
+        }
+
+    @@media (max-width: 768px) {
+        .detail-container {
+            padding: 18px;
+        }
+
+        .detail-image {
+            height: 280px;
+            margin-bottom: 25px;
+        }
+
+        .detail-name {
+            font-size: 22px;
+        }
+    }
+</style>
+
+<div class="product-detail-page">
+    <div class="container">
+
+        @if (Model != null)
+        {
+            <div class="detail-container">
+                <div class="row">
+
+                    <!-- HÌNH ẢNH SẢN PHẨM -->
+                    <div class="col-md-5">
+                        @if (!String.IsNullOrEmpty(Model.ProductImage))
+                        {
+                            <img src="@Url.Content(Model.ProductImage)"
+                                 class="detail-image"
+                                 alt="@Model.ProductName" />
+                        }
+                        else
+                        {
+                            <div class="detail-image d-flex align-items-center justify-content-center text-muted">
+                                Chưa có hình ảnh
+                            </div>
+                        }
+                    </div>
+
+                    <!-- THÔNG TIN SẢN PHẨM -->
+                    <div class="col-md-7">
+
+                        <h2 class="detail-name">
+                            @Model.ProductName
+                        </h2>
+
+                        <div class="detail-category">
+                            Danh mục:
+                            @(Model.Category != null
+                                ? Model.Category.CategoryName
+                                : "Chưa phân loại")
+                        </div>
+
+                        <div class="detail-price">
+                            @Model.ProductPrice.ToString("N0") đ
+                        </div>
+
+                        <h4>Mô tả sản phẩm</h4>
+
+                        <div class="detail-description">
+                            @(String.IsNullOrWhiteSpace(Model.ProductDecription)
+                                ? "Chưa có mô tả cho sản phẩm này."
+                                : Model.ProductDecription)
+                        </div>
+
+                        <!-- CHỌN SỐ LƯỢNG -->
+                        <div class="quantity-label">
+                            Số lượng
+                        </div>
+
+                        <input type="number"
+                               id="quantity"
+                               class="quantity-input"
+                               value="1"
+                               min="1"
+                               max="99" />
+
+                        <!-- THÀNH TIỀN -->
+                        <div class="detail-total">
+                            Thành tiền:
+                            <span id="totalPrice">
+                                @Model.ProductPrice.ToString("N0") đ
+                            </span>
+                        </div>
+
+                        <!-- THÊM VÀO GIỎ HÀNG -->
+                        @using (Html.BeginForm("AddToCart", "Cart", FormMethod.Post))
+                        {
+                            @Html.Hidden("id", Model.ProductID)
+
+                            <input type="hidden"
+                                   name="quantity"
+                                   id="cartQuantity"
+                                   value="1" />
+
+                            <button type="submit" class="btn-add-cart">
+                                <i class="glyphicon glyphicon-shopping-cart"></i>
+                                Thêm vào giỏ hàng
+                            </button>
+                        }
+
+                        <a href="@Url.Action("ProductList", "Home")"
+                           class="btn-back">
+                            Quay lại danh sách
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="detail-container text-center">
+                <h3>Không tìm thấy sản phẩm</h3>
+
+                <a href="@Url.Action("ProductList", "Home")">
+                    Quay lại danh sách sản phẩm
+                </a>
+            </div>
+        }
+
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var quantityElement = document.getElementById("quantity");
+            var totalElement = document.getElementById("totalPrice");
+            var cartQuantityElement = document.getElementById("cartQuantity");
+
+            if (!(quantityElement instanceof HTMLInputElement)) {
+                return;
+            }
+
+            if (!(totalElement instanceof HTMLElement)) {
+                return;
+            }
+
+            if (!(cartQuantityElement instanceof HTMLInputElement)) {
+                return;
+            }
+
+            var quantityInput = quantityElement;
+            var totalPrice = totalElement;
+            var cartQuantity = cartQuantityElement;
+
+            var price = Number("@(Model == null ? "0" : Model.ProductPrice.ToString(System.Globalization.CultureInfo.InvariantCulture))");
+
+            quantityInput.addEventListener("input", function () {
+                var quantity = parseInt(quantityInput.value, 10);
+
+                if (isNaN(quantity) || quantity < 1) {
+                    quantity = 1;
+                }
+
+                if (quantity > 99) {
+                    quantity = 99;
+                }
+
+                // Đồng bộ số lượng
+                quantityInput.value = String(quantity);
+                cartQuantity.value = String(quantity);
+
+                // Tính thành tiền
+                var total = price * quantity;
+
+                totalPrice.textContent =
+                    total.toLocaleString("vi-VN") + " đ";
+            });
+        });
+    </script>
+}

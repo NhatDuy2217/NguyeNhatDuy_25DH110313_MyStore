@@ -1,0 +1,225 @@
+﻿
+@model NguyeNhatDuy_25DH110313_MyStore.Models.Category
+
+@{
+    ViewBag.Title = "Xóa danh mục sách";
+    Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
+
+    int productCount = ViewBag.ProductCount != null
+        ? (int)ViewBag.ProductCount
+        : 0;
+}
+
+<style>
+    .category-page {
+        padding: 25px;
+    }
+
+    .category-heading {
+        margin-bottom: 25px;
+    }
+
+        .category-heading h2 {
+            font-size: 26px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .category-heading p {
+            color: #7f8c8d;
+            margin: 0;
+        }
+
+    .category-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 30px;
+        max-width: 750px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .category-warning {
+        padding: 15px;
+        margin-bottom: 22px;
+        background: #fff3cd;
+        border: 1px solid #ffe69c;
+        border-radius: 6px;
+        color: #856404;
+        line-height: 1.6;
+    }
+
+    .category-error {
+        padding: 15px;
+        margin-bottom: 22px;
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        border-radius: 6px;
+        color: #b91c1c;
+        line-height: 1.6;
+    }
+
+    .category-info {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 18px 0;
+        border-bottom: 1px solid #ecf0f1;
+    }
+
+    .category-label {
+        color: #7f8c8d;
+        font-size: 14px;
+    }
+
+    .category-value {
+        color: #2c3e50;
+        font-size: 17px;
+        font-weight: 600;
+        overflow-wrap: anywhere;
+    }
+
+    .category-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 25px;
+        flex-wrap: wrap;
+    }
+
+    .btn-delete-category {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 11px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+        .btn-delete-category:hover:not(:disabled) {
+            background: #c0392b;
+        }
+
+        .btn-delete-category:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+    .btn-back-category {
+        display: inline-block;
+        background: #ecf0f1;
+        color: #34495e;
+        padding: 11px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+    }
+
+        .btn-back-category:hover {
+            background: #dfe6e9;
+            color: #2c3e50;
+            text-decoration: none;
+        }
+
+    @@media (max-width: 600px) {
+        .category-page {
+            padding: 15px;
+        }
+
+        .category-card {
+            padding: 20px;
+        }
+    }
+</style>
+
+<div class="category-page">
+
+    <div class="category-heading">
+        <h2>Xóa danh mục sách</h2>
+        <p>Kiểm tra thông tin trước khi xác nhận xóa.</p>
+    </div>
+
+    <div class="category-card">
+
+        @if (ViewBag.DeleteError != null)
+        {
+            <div class="category-error">
+                <strong>Không thể xóa danh mục!</strong>
+                <br />
+                @ViewBag.DeleteError
+            </div>
+        }
+        else if (productCount > 0)
+        {
+            <div class="category-warning">
+                <strong>Lưu ý:</strong>
+                Danh mục này hiện đang có
+                <strong>@productCount sản phẩm</strong>
+                sử dụng.
+
+                Bạn cần chuyển các sản phẩm đó sang danh mục khác
+                trước khi xóa danh mục này.
+            </div>
+        }
+        else
+        {
+            <div class="category-warning">
+                <strong>Lưu ý:</strong>
+                Bạn có chắc chắn muốn xóa danh mục này không?
+                Danh mục hiện không có sản phẩm sử dụng.
+            </div>
+        }
+
+        <div class="category-info">
+            <span class="category-label">Mã danh mục</span>
+            <span class="category-value">@Model.CategoryID</span>
+        </div>
+
+        <div class="category-info">
+            <span class="category-label">Tên danh mục sách</span>
+            <span class="category-value">@Model.CategoryName</span>
+        </div>
+
+        <div class="category-info">
+            <span class="category-label">Số sản phẩm đang sử dụng</span>
+            <span class="category-value">@productCount</span>
+        </div>
+
+        @using (Html.BeginForm(
+            "Delete",
+            "Categories",
+            new { id = Model.CategoryID, area = "Admin" },
+            FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="category-actions">
+
+                @if (productCount == 0)
+                {
+                    <button type="submit"
+                            class="btn-delete-category"
+                            onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục sách này không?');">
+                        Xác nhận xóa
+                    </button>
+                }
+                else
+                {
+                    <button type="button"
+                            class="btn-delete-category"
+                            disabled>
+                        Danh mục đang được sử dụng
+                    </button>
+                }
+
+                @Html.ActionLink(
+                    "Hủy",
+                    "Index",
+                    "Categories",
+                    new { area = "Admin" },
+                    new { @class = "btn-back-category" }
+                )
+
+            </div>
+        }
+
+    </div>
+</div>

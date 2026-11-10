@@ -1,0 +1,174 @@
+﻿
+@model NguyeNhatDuy_25DH110313_MyStore.Models.Category
+
+@{
+    ViewBag.Title = "Sửa danh mục sách";
+    Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
+}
+
+<style>
+    .category-page {
+        padding: 25px;
+    }
+
+    .category-heading {
+        margin-bottom: 25px;
+    }
+
+        .category-heading h2 {
+            font-size: 26px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .category-heading p {
+            color: #7f8c8d;
+            margin: 0;
+        }
+
+    .category-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 30px;
+        max-width: 750px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .category-field {
+        margin-bottom: 22px;
+    }
+
+        .category-field label {
+            display: block;
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 9px;
+        }
+
+    .category-input {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #dcdfe3;
+        border-radius: 6px;
+        font-size: 15px;
+        box-sizing: border-box;
+    }
+
+        .category-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.12);
+        }
+
+    .category-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 25px;
+        flex-wrap: wrap;
+    }
+
+    .btn-save-category {
+        background: #2980b9;
+        color: white;
+        border: none;
+        padding: 11px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+        .btn-save-category:hover {
+            background: #216a9b;
+            color: white;
+        }
+
+    .btn-back-category {
+        background: #ecf0f1;
+        color: #34495e;
+        padding: 11px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+    }
+
+        .btn-back-category:hover {
+            background: #dfe6e9;
+            color: #2c3e50;
+            text-decoration: none;
+        }
+
+    .text-danger {
+        display: block;
+        color: #e74c3c;
+        margin-top: 6px;
+    }
+
+    .validation-summary-errors {
+        color: #e74c3c;
+        margin-bottom: 15px;
+    }
+
+    @@media (max-width: 600px) {
+        .category-page {
+            padding: 15px;
+        }
+
+        .category-card {
+            padding: 20px;
+        }
+    }
+</style>
+
+<div class="category-page">
+
+    <div class="category-heading">
+        <h2>Sửa danh mục sách</h2>
+        <p>Cập nhật thông tin danh mục trong cửa hàng sách.</p>
+    </div>
+
+    <div class="category-card">
+
+        @using (Html.BeginForm("Edit", "Categories", new { area = "Admin" }, FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.HiddenFor(model => model.CategoryID)
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="category-field">
+                @Html.LabelFor(model => model.CategoryName, "Tên danh mục sách")
+
+                @Html.TextBoxFor(
+                    model => model.CategoryName,
+                    new
+                    {
+                        @class = "category-input",
+                        placeholder = "Ví dụ: Văn học, Ngoại ngữ, Kỹ năng sống"
+                    }
+                )
+
+                @Html.ValidationMessageFor(
+                    model => model.CategoryName,
+                    "",
+                    new { @class = "text-danger" }
+                )
+            </div>
+
+            <div class="category-actions">
+                <button type="submit" class="btn-save-category">
+                    Lưu thay đổi
+                </button>
+
+                @Html.ActionLink(
+                    "Quay lại danh sách",
+                    "Index",
+                    "Categories",
+                    new { area = "Admin" },
+                    new { @class = "btn-back-category" }
+                )
+            </div>
+        }
+
+    </div>
+</div>

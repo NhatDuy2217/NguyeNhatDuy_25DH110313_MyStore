@@ -1,0 +1,99 @@
+﻿
+@{
+    ViewBag.Title = "Đặt hàng thành công";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<style>
+    .success-page {
+        min-height: 70vh;
+        background: #f5f7fb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 15px;
+    }
+
+    .success-card {
+        max-width: 600px;
+        width: 100%;
+        background: white;
+        padding: 45px 30px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 5px 25px rgba(0,0,0,.07);
+    }
+
+    .success-icon {
+        width: 85px;
+        height: 85px;
+        margin: 0 auto 22px;
+        border-radius: 50%;
+        background: #dcfce7;
+        color: #16a34a;
+        font-size: 48px;
+        line-height: 85px;
+    }
+
+    .success-card h2 {
+        color: #16a34a;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+    .success-card p {
+        color: #64748b;
+        font-size: 16px;
+        margin-bottom: 25px;
+    }
+
+    .success-order-code {
+        background: #f1f5f9;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        font-weight: 600;
+    }
+
+    .success-btn {
+        display: inline-block;
+        padding: 12px 25px;
+        background: #2563eb;
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+        .success-btn:hover {
+            background: #1d4ed8;
+            color: white;
+            text-decoration: none;
+        }
+</style>
+
+<div class="success-page">
+    <div class="success-card">
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+        <h2>Đặt hàng thành công!</h2>
+
+        <p>
+            Cảm ơn bạn đã mua sắm tại MyStore.
+            Đơn hàng của bạn đã được ghi nhận.
+        </p>
+
+        <div class="success-order-code">
+            @ViewBag.Message
+        </div>
+
+        <a href="@Url.Action("ProductList", "Home")"
+           class="success-btn">
+            Tiếp tục mua sắm
+        </a>
+
+    </div>
+</div>

@@ -1,0 +1,309 @@
+﻿
+@model List<NguyeNhatDuy_25DH110313_MyStore.Models.CartItem>
+
+@{
+    ViewBag.Title = "Giỏ hàng";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+
+    decimal grandTotal = Model != null
+        ? Model.Sum(x => x.TotalPrice)
+        : 0;
+}
+
+<style>
+    .cart-page {
+        min-height: 100vh;
+        background: #f5f7fb;
+        padding: 40px 0 60px;
+    }
+
+    .cart-title {
+        color: #173d6b;
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 25px;
+    }
+
+    .cart-container {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 3px 15px rgba(0,0,0,.05);
+    }
+
+    .cart-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .cart-table th {
+            background: #edf3f9;
+            color: #173d6b;
+            padding: 15px 10px;
+            text-align: center;
+        }
+
+        .cart-table td {
+            padding: 15px 10px;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+    .cart-product {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-align: left;
+    }
+
+        .cart-product img {
+            width: 75px;
+            height: 85px;
+            object-fit: contain;
+            background: #fafafa;
+            border-radius: 7px;
+        }
+
+    .cart-product-name {
+        font-weight: 600;
+        color: #26384d;
+    }
+
+    .cart-price {
+        color: #dc3545;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .cart-quantity {
+        width: 75px;
+        padding: 7px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        text-align: center;
+    }
+
+    .cart-update-btn {
+        background: #1d65a6;
+        color: white;
+        border: none;
+        padding: 7px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 5px;
+    }
+
+    .cart-remove-btn {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .cart-summary {
+        margin-top: 25px;
+        padding: 20px;
+        background: #f8fafd;
+        border-radius: 10px;
+        text-align: right;
+    }
+
+    .cart-total {
+        font-size: 23px;
+        font-weight: 700;
+        color: #dc3545;
+        margin: 10px 0 20px;
+    }
+
+    .cart-btn {
+        display: inline-block;
+        padding: 11px 20px;
+        border-radius: 7px;
+        text-decoration: none;
+        font-weight: 600;
+        margin-left: 8px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-continue {
+        background: #e9ecef;
+        color: #333;
+    }
+
+    .btn-checkout {
+        background: #1d65a6;
+        color: white;
+    }
+
+    .btn-clear {
+        background: #dc3545;
+        color: white;
+    }
+
+    .cart-empty {
+        background: white;
+        padding: 55px 20px;
+        text-align: center;
+        border-radius: 12px;
+    }
+
+        .cart-empty h3 {
+            color: #173d6b;
+            margin-bottom: 15px;
+        }
+
+    @@media (max-width: 768px) {
+        .cart-container {
+            padding: 12px;
+            overflow-x: auto;
+        }
+
+        .cart-table {
+            min-width: 700px;
+        }
+
+        .cart-title {
+            font-size: 23px;
+        }
+    }
+</style>
+
+<div class="cart-page">
+    <div class="container">
+
+        <h2 class="cart-title">Giỏ hàng của bạn</h2>
+
+        @if (TempData["CartError"] != null)
+        {
+            <div class="alert alert-warning">
+                @TempData["CartError"]
+            </div>
+        }
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="cart-container">
+
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Đơn giá</th>
+                            <th>Số lượng</th>
+                            <th>Thành tiền</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="cart-product">
+                                        @if (!String.IsNullOrEmpty(item.ProductImage))
+                                        {
+                                            <img src="@Url.Content(item.ProductImage)"
+                                                 alt="@item.ProductName" />
+                                        }
+                                        else
+                                        {
+                                            <img src="https://placehold.co/75x85?text=No+Image"
+                                                 alt="Chưa có hình ảnh" />
+                                        }
+
+                                        <span class="cart-product-name">
+                                            @item.ProductName
+                                        </span>
+                                    </div>
+                                </td>
+
+                                <td class="cart-price">
+                                    @item.UnitPrice.ToString("N0") đ
+                                </td>
+
+                                <td>
+                                    @using (Html.BeginForm("UpdateQuantity", "Cart", FormMethod.Post))
+                                    {
+                                        @Html.Hidden("productID", item.ProductID)
+
+                                        <input type="number"
+                                               name="quantity"
+                                               class="cart-quantity"
+                                               value="@item.Quantity"
+                                               min="1"
+                                               max="99" />
+
+                                        <br />
+
+                                        <button type="submit" class="cart-update-btn">
+                                            Cập nhật
+                                        </button>
+                                    }
+                                </td>
+
+                                <td class="cart-price">
+                                    @item.TotalPrice.ToString("N0") đ
+                                </td>
+
+                                <td>
+                                    @using (Html.BeginForm("RemoveFromCart", "Cart", FormMethod.Post))
+                                    {
+                                        @Html.Hidden("productID", item.ProductID)
+
+                                        <button type="submit" class="cart-remove-btn">
+                                            Xóa
+                                        </button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <div class="cart-summary">
+
+                    <form action="@Url.Action("ClearCart", "Cart")"
+                          method="post"
+                          style="display:inline-block;">
+                        <button type="submit" class="cart-btn btn-clear">
+                            Xóa toàn bộ giỏ hàng
+                        </button>
+                    </form>
+
+                    <div class="cart-total">
+                        Tổng tiền: @grandTotal.ToString("N0") đ
+                    </div>
+
+                    <a href="@Url.Action("ProductList", "Home")"
+                       class="cart-btn btn-continue">
+                        Tiếp tục mua hàng
+                    </a>
+
+                    <a href="@Url.Action("Checkout", "Cart")"
+                       class="cart-btn btn-checkout">
+                        Tiến hành đặt hàng
+                    </a>
+
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="cart-empty">
+                <h3>Giỏ hàng đang trống</h3>
+                <p>Bạn chưa có sản phẩm nào trong giỏ hàng.</p>
+
+                <a href="@Url.Action("ProductList", "Home")"
+                   class="cart-btn btn-checkout">
+                    Khám phá sản phẩm
+                </a>
+            </div>
+        }
+
+    </div>
+</div>

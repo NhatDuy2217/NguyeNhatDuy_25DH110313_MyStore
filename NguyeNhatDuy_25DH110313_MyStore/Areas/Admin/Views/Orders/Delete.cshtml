@@ -1,0 +1,335 @@
+﻿
+@model NguyeNhatDuy_25DH110313_MyStore.Models.Order
+
+@{
+    ViewBag.Title = "Xóa đơn hàng";
+    Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
+
+    int orderDetailCount = ViewBag.OrderDetailCount == null
+        ? 0
+        : (int)ViewBag.OrderDetailCount;
+}
+
+<style>
+    .order-delete-page {
+        min-height: 100vh;
+        padding: 35px 20px;
+        background: #f5f7fb;
+    }
+
+    .order-delete-header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+        .order-delete-header h2 {
+            color: #243247;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .order-delete-header p {
+            color: #7b8798;
+            font-size: 14px;
+        }
+
+    .order-delete-container {
+        max-width: 750px;
+        margin: 0 auto;
+    }
+
+    .order-delete-card {
+        background: #fff;
+        padding: 30px 35px;
+        border-radius: 14px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    .order-delete-warning {
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        color: #c2410c;
+        padding: 15px 18px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .order-delete-error {
+        background: #fff0f0;
+        border: 1px solid #ffc9c9;
+        color: #c82333;
+        padding: 15px 18px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .order-delete-card h3 {
+        font-size: 20px;
+        font-weight: 700;
+        color: #26364a;
+        margin: 0 0 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #edf0f5;
+    }
+
+    .order-detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        padding: 16px 5px;
+        border-bottom: 1px solid #edf0f5;
+    }
+
+    .order-detail-label {
+        color: #667085;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .order-detail-value {
+        color: #26364a;
+        font-size: 14px;
+        font-weight: 600;
+        text-align: right;
+        overflow-wrap: anywhere;
+    }
+
+    .order-detail-id {
+        color: #2563eb;
+        font-weight: 700;
+    }
+
+    .order-detail-amount {
+        color: #16a34a;
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .order-delete-actions {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #edf0f5;
+    }
+
+    .btn-order-delete {
+        background: #dc2626;
+        color: white;
+        border: none;
+        padding: 11px 25px;
+        border-radius: 7px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+        .btn-order-delete:hover:not(:disabled) {
+            background: #b91c1c;
+        }
+
+        .btn-order-delete:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+    .btn-order-back {
+        background: #eef2f7;
+        color: #475467;
+        padding: 11px 25px;
+        border-radius: 7px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .btn-order-back:hover {
+            background: #e0e7ef;
+            color: #344054;
+            text-decoration: none;
+        }
+
+    @@media (max-width: 576px) {
+        .order-delete-card {
+            padding: 22px 18px;
+        }
+
+        .order-detail-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 7px;
+        }
+
+        .order-detail-value {
+            text-align: left;
+        }
+
+        .order-delete-actions {
+            flex-direction: column;
+        }
+
+            .order-delete-actions a,
+            .order-delete-actions button {
+                width: 100%;
+                text-align: center;
+                box-sizing: border-box;
+            }
+    }
+</style>
+
+<div class="order-delete-page">
+
+    <div class="order-delete-header">
+        <h2>Xóa đơn hàng</h2>
+        <p>Kiểm tra thông tin trước khi thực hiện xóa</p>
+    </div>
+
+    <div class="order-delete-container">
+
+        <div class="order-delete-card">
+
+            <!-- Cảnh báo xóa -->
+            @if (!string.IsNullOrEmpty(ViewBag.DeleteError as string))
+            {
+                <div class="order-delete-error">
+                    <strong>Không thể xóa đơn hàng!</strong>
+                    <br />
+                    @ViewBag.DeleteError
+                </div>
+            }
+            else if (orderDetailCount > 0)
+            {
+                <div class="order-delete-warning">
+                    <strong>Chú ý!</strong>
+                    <br />
+                    Đơn hàng này đang có
+                    <strong>@orderDetailCount</strong>
+                    chi tiết sản phẩm liên kết.
+                    Bạn không thể xóa đơn hàng này để bảo toàn lịch sử mua hàng.
+                </div>
+            }
+            else
+            {
+                <div class="order-delete-warning">
+                    <strong>Chú ý!</strong>
+                    <br />
+                    Bạn có chắc chắn muốn xóa đơn hàng này không?
+                    Thao tác này không thể hoàn tác.
+                </div>
+            }
+
+            <h3>Thông tin đơn hàng</h3>
+
+            <!-- Mã đơn hàng -->
+            <div class="order-detail-row">
+                <span class="order-detail-label">Mã đơn hàng</span>
+                <span class="order-detail-value order-detail-id">
+                    #@Model.OrderID
+                </span>
+            </div>
+
+            <!-- Khách hàng -->
+            <div class="order-detail-row">
+                <span class="order-detail-label">Khách hàng</span>
+                <span class="order-detail-value">
+                    @(Model.Customer != null
+                        ? Model.Customer.CustomerName
+                        : "Chưa có thông tin")
+                </span>
+            </div>
+
+            <!-- Ngày đặt hàng -->
+            <div class="order-detail-row">
+                <span class="order-detail-label">Ngày đặt hàng</span>
+                <span class="order-detail-value">
+                    @Model.OrderDate.ToString("dd/MM/yyyy")
+                </span>
+            </div>
+
+            <!-- Tổng tiền -->
+            <div class="order-detail-row">
+                <span class="order-detail-label">Tổng tiền</span>
+                <span class="order-detail-value order-detail-amount">
+                    @String.Format("{0:N0} ₫", Model.TotalAmount)
+                </span>
+            </div>
+
+            <!-- Trạng thái thanh toán -->
+            <div class="order-detail-row">
+                <span class="order-detail-label">Trạng thái thanh toán</span>
+                <span class="order-detail-value">
+                    @(String.IsNullOrWhiteSpace(Model.PaymentStatus)
+                        ? "Chưa cập nhật"
+                        : Model.PaymentStatus)
+                </span>
+            </div>
+
+            <!-- Địa chỉ giao hàng -->
+            <div class="order-detail-row">
+                <span class="order-detail-label">Địa chỉ giao hàng</span>
+                <span class="order-detail-value">
+                    @(String.IsNullOrWhiteSpace(Model.AddressDelivery)
+                        ? "Chưa cập nhật"
+                        : Model.AddressDelivery)
+                </span>
+            </div>
+
+            <!-- Số chi tiết đơn hàng -->
+            <div class="order-detail-row">
+                <span class="order-detail-label">Số chi tiết sản phẩm</span>
+                <span class="order-detail-value">
+                    @orderDetailCount
+                </span>
+            </div>
+
+            <!-- Nút chức năng -->
+            @using (Html.BeginForm(
+                "Delete",
+                "Orders",
+                new { area = "Admin", id = Model.OrderID },
+                FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="order-delete-actions">
+
+                    @if (orderDetailCount > 0)
+                    {
+                        <button type="button"
+                                class="btn-order-delete"
+                                disabled>
+                            Không thể xóa
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="submit"
+                                class="btn-order-delete"
+                                onclick="return confirm('Bạn có chắc chắn muốn xóa đơn hàng #@Model.OrderID không?');">
+                            Xác nhận xóa
+                        </button>
+                    }
+
+                    @Html.ActionLink(
+                             "Quay lại",
+                             "Index",
+                             "Orders",
+                             new { area = "Admin" },
+                             new { @class = "btn-order-back" }
+                         )
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>

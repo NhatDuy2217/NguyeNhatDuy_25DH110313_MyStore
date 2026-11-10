@@ -1,0 +1,222 @@
+﻿
+@model NguyeNhatDuy_25DH110313_MyStore.Models.OrderDetail
+
+@{
+    ViewBag.Title = "Xóa chi tiết đơn hàng";
+    Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
+
+    decimal total = Model.Quantity * Model.UnitPrice;
+}
+
+<style>
+    .detail-delete-page {
+        min-height: 100vh;
+        padding: 35px 20px;
+        background: #f5f7fb;
+    }
+
+    .detail-delete-header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+        .detail-delete-header h2 {
+            color: #263445;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .detail-delete-header p {
+            color: #7b8794;
+            margin: 0;
+        }
+
+    .detail-delete-card {
+        max-width: 700px;
+        margin: auto;
+        padding: 30px;
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+    }
+
+    .delete-warning {
+        padding: 15px 18px;
+        margin-bottom: 25px;
+        background: #fff3f3;
+        border: 1px solid #f5c2c7;
+        border-radius: 9px;
+        color: #b02a37;
+    }
+
+        .delete-warning strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+    .detail-info-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #263445;
+        margin-bottom: 18px;
+    }
+
+    .detail-info-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 14px 0;
+        border-bottom: 1px solid #edf0f4;
+    }
+
+    .detail-info-label {
+        color: #718096;
+        font-weight: 500;
+    }
+
+    .detail-info-value {
+        color: #263445;
+        font-weight: 600;
+        text-align: right;
+        word-break: break-word;
+    }
+
+    .detail-total {
+        color: #dc3545;
+        font-size: 19px;
+        font-weight: 700;
+    }
+
+    .detail-delete-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 30px;
+    }
+
+    .btn-delete {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 11px 22px;
+        border-radius: 7px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+        .btn-delete:hover {
+            background: #bb2d3b;
+            color: white;
+        }
+
+    .btn-back {
+        background: #e9ecef;
+        color: #495057;
+        padding: 11px 22px;
+        border-radius: 7px;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+        .btn-back:hover {
+            background: #dfe3e6;
+            color: #343a40;
+            text-decoration: none;
+        }
+
+    @@media (max-width: 576px) {
+        .detail-delete-card {
+            padding: 20px;
+        }
+
+        .detail-delete-actions {
+            flex-direction: column;
+        }
+
+            .detail-delete-actions a,
+            .detail-delete-actions button {
+                width: 100%;
+                text-align: center;
+            }
+    }
+</style>
+
+<div class="detail-delete-page">
+
+    <div class="detail-delete-header">
+        <h2>XÓA CHI TIẾT ĐƠN HÀNG</h2>
+        <p>Xác nhận thông tin trước khi thực hiện xóa</p>
+    </div>
+
+    <div class="detail-delete-card">
+
+        <div class="delete-warning">
+            <strong>⚠ Bạn có chắc chắn muốn xóa?</strong>
+            Chi tiết đơn hàng này sẽ bị xóa khỏi hệ thống. Thao tác này không thể hoàn tác.
+        </div>
+
+        <div class="detail-info-title">
+            Thông tin chi tiết đơn hàng
+        </div>
+
+        <div class="detail-info-row">
+            <span class="detail-info-label">Mã chi tiết</span>
+            <span class="detail-info-value">@Model.ID</span>
+        </div>
+
+        <div class="detail-info-row">
+            <span class="detail-info-label">Mã đơn hàng</span>
+            <span class="detail-info-value">@Model.OrderID</span>
+        </div>
+
+        <div class="detail-info-row">
+            <span class="detail-info-label">Tên sản phẩm</span>
+            <span class="detail-info-value">
+                @(Model.Product == null ? "Không có thông tin" : Model.Product.ProductName)
+            </span>
+        </div>
+
+        <div class="detail-info-row">
+            <span class="detail-info-label">Số lượng</span>
+            <span class="detail-info-value">@Model.Quantity</span>
+        </div>
+
+        <div class="detail-info-row">
+            <span class="detail-info-label">Đơn giá</span>
+            <span class="detail-info-value">@Model.UnitPrice.ToString("N0") VNĐ</span>
+        </div>
+
+        <div class="detail-info-row">
+            <span class="detail-info-label">Tình trạng thanh toán</span>
+            <span class="detail-info-value">
+                @(Model.Order == null ? "Không có thông tin" : Convert.ToString(Model.Order.PaymentStatus))
+            </span>
+        </div>
+
+        <div class="detail-info-row">
+            <span class="detail-info-label">Thành tiền</span>
+            <span class="detail-info-value detail-total">
+                @total.ToString("N0") VNĐ
+            </span>
+        </div>
+
+        @using (Html.BeginForm("Delete", "OrderDetails", FormMethod.Post, new { area = "Admin" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.ID)
+
+            <div class="detail-delete-actions">
+                <a href="@Url.Action("Index", "OrderDetails", new { area = "Admin" })"
+                   class="btn-back">
+                    Quay lại
+                </a>
+
+                <button type="submit" class="btn-delete"
+                        onclick="return confirm('Bạn có chắc chắn muốn xóa chi tiết đơn hàng này không?');">
+                    Xác nhận xóa
+                </button>
+            </div>
+        }
+
+    </div>
+</div>

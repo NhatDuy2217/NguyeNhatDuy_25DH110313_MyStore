@@ -1,0 +1,404 @@
+﻿
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewBag.Title - MyStore</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f8fafc;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #1e293b;
+        }
+
+        /* HEADER */
+        .customer-header {
+            background: #ffffff;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            position: relative;
+            z-index: 100;
+        }
+
+        .customer-header-top {
+            background: #2563eb;
+            color: white;
+            text-align: center;
+            padding: 9px 15px;
+            font-size: 13px;
+        }
+
+        .customer-navbar {
+            max-width: 1200px;
+            margin: auto;
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 25px;
+        }
+
+        .customer-logo {
+            color: #2563eb;
+            font-size: 27px;
+            font-weight: 800;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+            .customer-logo:hover {
+                color: #1d4ed8;
+                text-decoration: none;
+            }
+
+        .customer-nav-links {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+            .customer-nav-links a {
+                color: #334155;
+                text-decoration: none;
+                font-size: 15px;
+                font-weight: 600;
+                transition: 0.2s;
+            }
+
+                .customer-nav-links a:hover {
+                    color: #2563eb;
+                }
+
+        .customer-nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+            .customer-nav-actions a {
+                color: #334155;
+                text-decoration: none;
+                font-size: 14px;
+                font-weight: 600;
+            }
+
+                .customer-nav-actions a:hover {
+                    color: #2563eb;
+                }
+
+        /* GIỎ HÀNG */
+        .customer-cart {
+            background: #eff6ff;
+            color: #2563eb !important;
+            padding: 10px 15px;
+            border-radius: 9px;
+        }
+
+        /* NÚT TRANG QUẢN TRỊ CHỈ DÀNH CHO ADMIN */
+        .customer-admin-link {
+            background: #212529;
+            color: white !important;
+            padding: 10px 15px;
+            border-radius: 9px;
+            transition: 0.2s;
+        }
+
+            .customer-admin-link:hover {
+                background: #343a40;
+                color: white !important;
+                text-decoration: none;
+            }
+
+        /* MAIN CONTENT */
+        .customer-content {
+            min-height: 65vh;
+        }
+
+        /* FOOTER */
+        .customer-footer {
+            background: #172554;
+            color: #cbd5e1;
+            padding: 35px 20px;
+            margin-top: 45px;
+        }
+
+        .customer-footer-container {
+            max-width: 1200px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 30px;
+        }
+
+        .customer-footer h4 {
+            color: white;
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .customer-footer p {
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 7px;
+        }
+
+        .customer-footer-bottom {
+            max-width: 1200px;
+            margin: 25px auto 0;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255,255,255,0.15);
+            text-align: center;
+            font-size: 13px;
+        }
+
+        /* MOBILE MENU */
+        .customer-menu-toggle {
+            display: none;
+            border: none;
+            background: #eff6ff;
+            color: #2563eb;
+            font-size: 23px;
+            padding: 7px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        @@media (max-width: 768px) {
+            .customer-navbar {
+                flex-wrap: wrap;
+            }
+
+            .customer-menu-toggle {
+                display: block;
+            }
+
+            .customer-nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 18px;
+                padding: 15px 0;
+            }
+
+                .customer-nav-links.show {
+                    display: flex;
+                }
+
+            .customer-nav-actions {
+                width: 100%;
+                justify-content: flex-start;
+                padding-bottom: 8px;
+            }
+
+            .customer-footer-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    @RenderSection("styles", required: false)
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="customer-header">
+
+        <div class="customer-header-top">
+            📚 MyStore - Không gian mua sắm sách trực tuyến
+        </div>
+
+        <div class="customer-navbar">
+
+            <!-- LOGO -->
+            @Html.ActionLink(
+                     "📚 MyStore",
+                     "Index",
+                     "Home",
+                     new { area = "" },
+                     new { @class = "customer-logo" }
+                 )
+
+            <!-- NÚT MENU MOBILE -->
+            <button type="button"
+                    class="customer-menu-toggle"
+                    onclick="toggleCustomerMenu()"
+                    aria-label="Mở menu">
+                ☰
+            </button>
+
+            <!-- MENU CHÍNH -->
+            <nav class="customer-nav-links" id="customerNavLinks">
+
+                @Html.ActionLink(
+                         "Trang chủ",
+                         "Index",
+                         "Home",
+                         new { area = "" },
+                         null
+                     )
+
+                @Html.ActionLink(
+                         "Danh mục sách",
+                         "ProductList",
+                         "Home",
+                         new { area = "" },
+                         null
+                     )
+
+                @Html.ActionLink(
+                         "Sản phẩm",
+                         "Index",
+                         "Home",
+                         new { area = "" },
+                         null
+                     )
+
+            </nav>
+
+            <!-- MENU CÁ NHÂN -->
+            <div class="customer-nav-actions">
+
+                @if (Session["Username"] != null)
+                {
+                    <span style="color:#2563eb; font-size:14px; font-weight:600;">
+                        👤 Xin chào, @Session["Username"]
+                    </span>
+
+                    @* CHỈ ADMIN MỚI HIỂN THỊ NÚT TRANG QUẢN TRỊ *@
+                    if (Session["UserRole"] != null &&
+                        Session["UserRole"].ToString() == "Admin")
+                    {
+                        @Html.ActionLink(
+                                 "⚙️ Trang quản trị",
+                                 "Index",
+                                 "Home",
+                                 new { area = "Admin" },
+                                 new { @class = "customer-admin-link" }
+                             )
+                    }
+
+                    @* KHÁCH HÀNG MỚI HIỂN THỊ LỊCH SỬ MUA HÀNG *@
+                    if (Session["UserRole"] != null &&
+                        Session["UserRole"].ToString() == "Customer")
+                    {
+                        @Html.ActionLink(
+                                 "📦 Lịch sử mua hàng",
+                                 "Index",
+                                 "PurchaseHistory",
+                                 new { area = "" },
+                                 null
+                             )
+                    }
+
+                    @Html.ActionLink(
+                             "Đăng xuất",
+                             "Logout",
+                             "Account",
+                             new { area = "" },
+                             null
+                         )
+                }
+                else
+                {
+                    @Html.ActionLink(
+                             "Đăng nhập",
+                             "Login",
+                             "Account",
+                             new { area = "" },
+                             null
+                         )
+
+                    @Html.ActionLink(
+                             "Đăng ký",
+                             "Register",
+                             "Account",
+                             new { area = "" },
+                             null
+                         )
+                }
+
+                <!-- GIỎ HÀNG -->
+                @Html.ActionLink(
+                         "🛒 Giỏ hàng",
+                         "Index",
+                         "Cart",
+                         new { area = "" },
+                         new { @class = "customer-cart" }
+                     )
+
+            </div>
+
+        </div>
+
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="customer-content">
+        @RenderBody()
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="customer-footer">
+
+        <div class="customer-footer-container">
+
+            <div>
+                <h4>📚 MyStore</h4>
+                <p>
+                    Website bán sách trực tuyến MyStore.
+                    Mang đến cho khách hàng không gian mua sắm
+                    sách tiện lợi và dễ dàng.
+                </p>
+            </div>
+
+            <div>
+                <h4>Thông tin</h4>
+                <p>Trang chủ</p>
+                <p>Danh mục sách</p>
+                <p>Sản phẩm</p>
+            </div>
+
+            <div>
+                <h4>Hỗ trợ khách hàng</h4>
+                <p>Tài khoản</p>
+                <p>Giỏ hàng</p>
+                <p>Đơn hàng của tôi</p>
+            </div>
+
+        </div>
+
+        <div class="customer-footer-bottom">
+            © @DateTime.Now.Year MyStore - Website bán sách trực tuyến
+        </div>
+
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+
+    <script>
+                function toggleCustomerMenu() {
+                    var menu = document.getElementById("customerNavLinks");
+
+                    if (menu !== null) {
+                        menu.classList.toggle("show");
+                    }
+                }
+    </script>
+
+    @RenderSection("scripts", required: false)
+
+</body>
+</html>

@@ -1,0 +1,126 @@
+﻿
+@{
+    ViewBag.Title = "Đăng nhập";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<style>
+    .account-page {
+        min-height: 75vh;
+        background: #f5f7fb;
+        padding: 65px 15px;
+    }
+
+    .account-card {
+        max-width: 450px;
+        margin: auto;
+        padding: 38px;
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 5px 25px rgba(0,0,0,.08);
+    }
+
+        .account-card h2 {
+            text-align: center;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+    .account-subtitle {
+        text-align: center;
+        color: #777;
+        margin-bottom: 30px;
+    }
+
+    .account-card label {
+        font-weight: 600;
+        margin-bottom: 7px;
+    }
+
+    .account-card .form-control {
+        height: 45px;
+        border-radius: 7px;
+        margin-bottom: 20px;
+    }
+
+    .account-btn {
+        width: 100%;
+        height: 46px;
+        border: none;
+        border-radius: 7px;
+        background: #0d6efd;
+        color: white;
+        font-weight: 600;
+    }
+
+        .account-btn:hover {
+            background: #0b5ed7;
+        }
+
+    .account-footer {
+        text-align: center;
+        margin-top: 23px;
+    }
+
+    .account-error {
+        color: #dc3545;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+</style>
+
+<div class="account-page">
+    <div class="account-card">
+
+        <h2>Đăng nhập</h2>
+
+        <p class="account-subtitle">
+            Chào mừng bạn quay trở lại MyStore
+        </p>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["Success"]
+            </div>
+        }
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="account-error">
+                @ViewBag.Error
+            </div>
+        }
+
+        @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            <label>Tên đăng nhập</label>
+            <input type="text"
+                   name="username"
+                   class="form-control"
+                   placeholder="Nhập tên đăng nhập"
+                   required />
+
+            <label>Mật khẩu</label>
+            <input type="password"
+                   name="password"
+                   class="form-control"
+                   placeholder="Nhập mật khẩu"
+                   required />
+
+            <button type="submit" class="account-btn">
+                ĐĂNG NHẬP
+            </button>
+        }
+
+        <div class="account-footer">
+            Chưa có tài khoản?
+            <a href="@Url.Action("Register", "Account")">
+                Đăng ký ngay
+            </a>
+        </div>
+
+    </div>
+</div>

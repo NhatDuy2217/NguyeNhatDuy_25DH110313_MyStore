@@ -1,0 +1,241 @@
+﻿
+@{
+    ViewBag.Title = "Giới thiệu MyStore";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<style>
+    .about-page {
+        background: #f5f7fb;
+        padding-bottom: 55px;
+        color: #334155;
+    }
+
+    .about-banner {
+        background: linear-gradient(120deg, #123b70, #2878bd);
+        color: white;
+        padding: 65px 25px;
+        text-align: center;
+        border-radius: 16px;
+        margin: 25px 0 35px;
+    }
+
+        .about-banner h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .about-banner p {
+            font-size: 17px;
+            max-width: 750px;
+            margin: auto;
+            line-height: 1.8;
+        }
+
+    .about-section {
+        background: white;
+        padding: 30px;
+        border-radius: 14px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 15px rgba(0,0,0,.04);
+    }
+
+        .about-section h2 {
+            color: #173d6b;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        .about-section p {
+            line-height: 1.9;
+            font-size: 15px;
+            margin-bottom: 12px;
+        }
+
+    .about-values {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .value-card {
+        background: #f8fafc;
+        border: 1px solid #edf0f5;
+        border-radius: 12px;
+        padding: 25px 18px;
+        text-align: center;
+        height: 100%;
+    }
+
+    .value-icon {
+        font-size: 36px;
+        margin-bottom: 15px;
+    }
+
+    .value-card h3 {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1d65a6;
+        margin-bottom: 10px;
+    }
+
+    .value-card p {
+        font-size: 14px;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    .about-highlight {
+        background: #eaf3fc;
+        border-left: 5px solid #2878bd;
+        padding: 22px;
+        border-radius: 8px;
+        line-height: 1.8;
+        margin-top: 20px;
+    }
+
+    .about-button {
+        display: inline-block;
+        background: #1d65a6;
+        color: white;
+        padding: 12px 25px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        margin-top: 10px;
+    }
+
+        .about-button:hover {
+            background: #124778;
+            color: white;
+            text-decoration: none;
+        }
+
+    @@media (max-width: 768px) {
+        .about-banner {
+            padding: 45px 20px;
+        }
+
+            .about-banner h1 {
+                font-size: 28px;
+            }
+
+        .about-section {
+            padding: 22px;
+        }
+
+        .about-values {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="about-page">
+    <div class="container">
+
+        <!-- BANNER -->
+        <section class="about-banner">
+            <h1>Về MyStore</h1>
+            <p>
+                Không chỉ là nơi mua sách, MyStore mong muốn trở thành
+                người bạn đồng hành trên hành trình khám phá tri thức
+                và phát triển bản thân của mỗi khách hàng.
+            </p>
+        </section>
+
+        <!-- GIỚI THIỆU -->
+        <section class="about-section">
+            <h2>📚 Câu chuyện của MyStore</h2>
+
+            <p>
+                MyStore là cửa hàng sách trực tuyến được xây dựng với
+                mong muốn mang những cuốn sách hữu ích đến gần hơn
+                với mọi người.
+            </p>
+
+            <p>
+                Tại MyStore, khách hàng có thể khám phá nhiều thể loại
+                sách khác nhau như văn học, kỹ năng sống, kinh tế,
+                học tập và phát triển bản thân.
+            </p>
+
+            <p>
+                Chúng tôi hướng đến một không gian mua sắm trực tuyến
+                thuận tiện, giúp khách hàng dễ dàng tìm kiếm và lựa chọn
+                những cuốn sách phù hợp với nhu cầu của mình.
+            </p>
+        </section>
+
+        <!-- SỨ MỆNH -->
+        <section class="about-section">
+            <h2>🎯 Sứ mệnh của chúng tôi</h2>
+
+            <p>
+                MyStore mong muốn lan tỏa văn hóa đọc, khuyến khích
+                tinh thần học hỏi và tạo điều kiện để mọi người tiếp cận
+                với nguồn tri thức đa dạng thông qua sách.
+            </p>
+
+            <div class="about-highlight">
+                <strong>Thông điệp của MyStore:</strong>
+                Mỗi cuốn sách là một cánh cửa mở ra những kiến thức,
+                trải nghiệm và cơ hội mới.
+            </div>
+        </section>
+
+        <!-- GIÁ TRỊ -->
+        <section class="about-section">
+            <h2>⭐ Giá trị mà MyStore hướng đến</h2>
+
+            <div class="about-values">
+
+                <div class="value-card">
+                    <div class="value-icon">📖</div>
+                    <h3>Tri thức</h3>
+                    <p>
+                        Mang đến nhiều lựa chọn sách để khách hàng
+                        không ngừng học hỏi và phát triển.
+                    </p>
+                </div>
+
+                <div class="value-card">
+                    <div class="value-icon">🤝</div>
+                    <h3>Tận tâm</h3>
+                    <p>
+                        Đặt trải nghiệm và sự hài lòng của khách hàng
+                        làm ưu tiên trong quá trình phục vụ.
+                    </p>
+                </div>
+
+                <div class="value-card">
+                    <div class="value-icon">💙</div>
+                    <h3>Tiện lợi</h3>
+                    <p>
+                        Xây dựng trải nghiệm mua sắm trực tuyến
+                        đơn giản, dễ sử dụng và thuận tiện.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- KẾT THÚC -->
+        <section class="about-section text-center">
+            <h2>Cùng MyStore khám phá thế giới sách!</h2>
+
+            <p>
+                Hãy tìm cho mình một cuốn sách yêu thích
+                và bắt đầu hành trình khám phá tri thức.
+            </p>
+
+            <a href="@Url.Action("ProductList", "Home")"
+               class="about-button">
+                Khám phá sản phẩm
+            </a>
+        </section>
+
+    </div>
+</div>

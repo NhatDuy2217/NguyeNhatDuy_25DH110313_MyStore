@@ -1,0 +1,395 @@
+﻿
+@model NguyeNhatDuy_25DH110313_MyStore.Models.Customer
+
+@{
+    ViewBag.Title = "Xóa khách hàng";
+    Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
+
+    int orderCount = ViewBag.OrderCount != null
+        ? (int)ViewBag.OrderCount
+        : -1;
+
+    bool canDelete = ViewBag.DeleteError == null && orderCount == 0;
+}
+
+<style>
+    .customer-delete-page {
+        min-height: 100vh;
+        padding: 35px 20px;
+        background: #f5f7fb;
+    }
+
+    .customer-delete-header {
+        text-align: center;
+        margin-bottom: 28px;
+    }
+
+        .customer-delete-header h2 {
+            color: #243247;
+            font-size: 27px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .customer-delete-header p {
+            color: #8492a6;
+            font-size: 14px;
+            margin: 0;
+        }
+
+    .customer-delete-container {
+        max-width: 620px;
+        margin: 0 auto;
+    }
+
+    .customer-delete-card {
+        max-width: 550px;
+        margin: 0 auto;
+        padding: 30px 38px;
+        background: #fff;
+        border: 1px solid #edf0f5;
+        border-radius: 16px;
+        box-shadow: 0 6px 24px rgba(30, 50, 80, 0.07);
+    }
+
+    .delete-icon {
+        width: 78px;
+        height: 78px;
+        margin: 0 auto 16px;
+        border-radius: 50%;
+        background: #fff0f0;
+        color: #dc3545;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 34px;
+    }
+
+    .delete-customer-name {
+        text-align: center;
+        color: #243247;
+        font-size: 21px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .delete-subtitle {
+        text-align: center;
+        color: #8492a6;
+        font-size: 13px;
+        margin-bottom: 25px;
+    }
+
+    .delete-warning {
+        padding: 13px 16px;
+        margin-bottom: 22px;
+        background: #fff8e8;
+        border: 1px solid #ffe5ad;
+        border-radius: 9px;
+        color: #946200;
+        font-size: 13px;
+        line-height: 1.6;
+        text-align: center;
+    }
+
+    .delete-error {
+        padding: 13px 16px;
+        margin-bottom: 22px;
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        border-radius: 9px;
+        color: #b91c1c;
+        font-size: 13px;
+        line-height: 1.6;
+        text-align: center;
+    }
+
+    .delete-info {
+        padding: 13px 17px;
+        margin-bottom: 12px;
+        background: #f7f9fc;
+        border: 1px solid #edf0f5;
+        border-radius: 10px;
+    }
+
+        .delete-info label {
+            display: block;
+            color: #8492a6;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+
+        .delete-info p {
+            color: #243247;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0;
+            word-break: break-word;
+        }
+
+    .account-badge {
+        display: inline-block;
+        padding: 5px 12px;
+        background: #e8efff;
+        color: #3867d6;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .password-badge {
+        display: inline-block;
+        padding: 5px 12px;
+        background: #f0f2f6;
+        color: #536174;
+        border-radius: 20px;
+        font-size: 13px;
+        letter-spacing: 2px;
+    }
+
+    .delete-actions {
+        display: flex;
+        justify-content: center;
+        gap: 13px;
+        margin-top: 27px;
+    }
+
+    .btn-delete,
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 145px;
+        padding: 11px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-delete {
+        background: #dc3545;
+        color: #fff;
+    }
+
+        .btn-delete:hover:not(:disabled) {
+            background: #bd2130;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .btn-delete:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+    .btn-back {
+        background: #f0f2f6;
+        color: #536174;
+    }
+
+        .btn-back:hover {
+            background: #e1e6ef;
+            color: #243247;
+            text-decoration: none;
+            transform: translateY(-2px);
+        }
+
+    @@media (max-width: 576px) {
+        .customer-delete-page {
+            padding: 25px 12px;
+        }
+
+        .customer-delete-card {
+            padding: 25px 20px;
+        }
+
+        .customer-delete-header h2 {
+            font-size: 23px;
+        }
+
+        .delete-actions {
+            flex-direction: column;
+        }
+
+        .btn-delete,
+        .btn-back {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="customer-delete-page">
+
+    <div class="customer-delete-header">
+        <h2>Xóa khách hàng</h2>
+        <p>Kiểm tra thông tin trước khi xóa khách hàng khỏi hệ thống.</p>
+    </div>
+
+    <div class="customer-delete-container">
+
+        <div class="customer-delete-card">
+
+            <div class="delete-icon">
+                🗑
+            </div>
+
+            <div class="delete-customer-name">
+                @Model.CustomerName
+            </div>
+
+            <div class="delete-subtitle">
+                Thông tin khách hàng cần xóa
+            </div>
+
+            <!-- Thông báo trạng thái xóa -->
+            @if (ViewBag.DeleteError != null)
+            {
+                <div class="delete-error">
+                    <strong>Không thể xóa khách hàng!</strong>
+                    <br />
+                    @ViewBag.DeleteError
+                </div>
+            }
+            else if (orderCount > 0)
+            {
+                <div class="delete-warning">
+                    <strong>⚠ Khách hàng đang có đơn hàng!</strong>
+                    <br />
+                    Khách hàng này hiện có
+                    <strong>@orderCount đơn hàng</strong>
+                    trong hệ thống.
+
+                    Không thể xóa để bảo toàn lịch sử mua hàng.
+                </div>
+            }
+            else if (orderCount == 0)
+            {
+                <div class="delete-warning">
+                    <strong>⚠ Cảnh báo!</strong>
+                    <br />
+                    Bạn có chắc chắn muốn xóa khách hàng này không?
+                    Khách hàng hiện chưa có đơn hàng liên kết.
+                </div>
+            }
+            else
+            {
+                <div class="delete-error">
+                    Không thể xác định số đơn hàng của khách hàng.
+                    Vui lòng tải lại trang trước khi thực hiện.
+                </div>
+            }
+
+            <!-- Mã khách hàng -->
+            <div class="delete-info">
+                <label>Mã khách hàng</label>
+                <p>@Model.CustomerID</p>
+            </div>
+
+            <!-- Tên khách hàng -->
+            <div class="delete-info">
+                <label>Tên khách hàng</label>
+                <p>@Model.CustomerName</p>
+            </div>
+
+            <!-- Số điện thoại -->
+            <div class="delete-info">
+                <label>Số điện thoại</label>
+                <p>
+                    @(string.IsNullOrEmpty(Model.CustomerPhone)
+                        ? "Chưa cập nhật"
+                        : Model.CustomerPhone)
+                </p>
+            </div>
+
+            <!-- Email -->
+            <div class="delete-info">
+                <label>Email</label>
+                <p>
+                    @(string.IsNullOrEmpty(Model.CustomerEmail)
+                        ? "Chưa cập nhật"
+                        : Model.CustomerEmail)
+                </p>
+            </div>
+
+            <!-- Địa chỉ -->
+            <div class="delete-info">
+                <label>Địa chỉ</label>
+                <p>
+                    @(string.IsNullOrEmpty(Model.CustomerAddress)
+                        ? "Chưa cập nhật"
+                        : Model.CustomerAddress)
+                </p>
+            </div>
+
+            <!-- Số đơn hàng -->
+            <div class="delete-info">
+                <label>Số đơn hàng đã đặt</label>
+                <p>
+                    @(orderCount >= 0
+                        ? orderCount.ToString()
+                        : "Chưa xác định")
+                </p>
+            </div>
+
+            <!-- Tài khoản liên kết -->
+            <div class="delete-info">
+                <label>Tài khoản liên kết</label>
+                <p>
+                    @if (Model.User != null)
+                    {
+                        <span class="account-badge">
+                            @Model.Username
+                        </span>
+                    }
+                    else
+                    {
+                        <span>Chưa liên kết tài khoản</span>
+                    }
+                </p>
+            </div>
+
+            <!-- Nút chức năng -->
+            @using (Html.BeginForm("Delete", "Customers",
+                new { id = Model.CustomerID, area = "Admin" },
+                FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="delete-actions">
+
+                    @if (canDelete)
+                    {
+                        <button type="submit"
+                                class="btn-delete"
+                                onclick="return confirm('Bạn có chắc chắn muốn xóa khách hàng này không?');">
+                            Xác nhận xóa
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="button"
+                                class="btn-delete"
+                                disabled>
+                            Không thể xóa khách hàng
+                        </button>
+                    }
+
+                    @Html.ActionLink(
+                             "Quay lại",
+                             "Index",
+                             "Customers",
+                             new { area = "Admin" },
+                             new { @class = "btn-back" }
+                         )
+
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,354 @@
+﻿
+@model PagedList.IPagedList<NguyeNhatDuy_25DH110313_MyStore.Models.Product>
+
+@{
+    ViewBag.Title = "Danh sách sản phẩm";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<style>
+    .product-list-page {
+        background: #f5f7fb;
+        min-height: 100vh;
+        padding: 35px 0 55px;
+    }
+
+    /* TIÊU ĐỀ */
+    .product-list-header {
+        margin-bottom: 25px;
+    }
+
+        .product-list-header h2 {
+            color: #173d6b;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .product-list-header p {
+            color: #777;
+            margin: 0;
+        }
+
+    /* TÌM KIẾM VÀ LỌC DANH MỤC */
+    .product-filter {
+        background: white;
+        padding: 18px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        box-shadow: 0 3px 12px rgba(0,0,0,.04);
+    }
+
+        .product-filter form {
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            gap: 10px;
+            width: 100%;
+            margin: 0;
+        }
+
+        .product-filter input {
+            flex: 1 1 auto;
+            min-width: 0;
+            padding: 11px 14px;
+            border: 1px solid #ddd;
+            border-radius: 7px;
+            outline: none;
+            font-size: 14px;
+        }
+
+            .product-filter input:focus,
+            .product-filter select:focus {
+                border-color: #1d65a6;
+                box-shadow: 0 0 0 2px rgba(29,101,166,.1);
+            }
+
+        .product-filter select {
+            flex: 0 0 210px;
+            width: 210px;
+            padding: 11px 14px;
+            border: 1px solid #ddd;
+            border-radius: 7px;
+            background: white;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .product-filter button {
+            flex: 0 0 auto;
+            padding: 11px 22px;
+            background: #1d65a6;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+            .product-filter button:hover {
+                background: #124778;
+            }
+
+    /* THẺ SẢN PHẨM */
+    .product-card {
+        background: white;
+        border-radius: 12px;
+        padding: 15px;
+        height: 100%;
+        box-shadow: 0 3px 12px rgba(0,0,0,.05);
+        transition: .2s;
+    }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 7px 20px rgba(0,0,0,.1);
+        }
+
+    .product-image {
+        width: 100%;
+        height: 210px;
+        object-fit: contain;
+        margin-bottom: 12px;
+    }
+
+    .product-name {
+        color: #26384d;
+        font-size: 16px;
+        font-weight: 600;
+        min-height: 44px;
+        margin-bottom: 8px;
+    }
+
+    .product-price {
+        color: #dc3545;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+
+    .product-detail-btn {
+        display: block;
+        text-align: center;
+        background: #1d65a6;
+        color: white;
+        padding: 9px;
+        border-radius: 7px;
+        text-decoration: none;
+    }
+
+        .product-detail-btn:hover {
+            background: #124778;
+            color: white;
+            text-decoration: none;
+        }
+
+    /* KHÔNG CÓ SẢN PHẨM */
+    .product-empty {
+        background: white;
+        padding: 35px;
+        border-radius: 10px;
+        text-align: center;
+        color: #777;
+    }
+
+        .product-empty h4 {
+            color: #173d6b;
+            margin-bottom: 10px;
+        }
+
+    /* PHÂN TRANG */
+    .product-pagination {
+        margin-top: 30px;
+        text-align: center;
+    }
+
+        .product-pagination a,
+        .product-pagination span {
+            display: inline-block;
+            padding: 8px 13px;
+            margin: 3px;
+            border-radius: 6px;
+            background: white;
+            border: 1px solid #ddd;
+            color: #1d65a6;
+            text-decoration: none;
+        }
+
+        .product-pagination span {
+            background: #1d65a6;
+            color: white;
+            border-color: #1d65a6;
+        }
+
+        .product-pagination a:hover {
+            background: #e8f1fa;
+        }
+
+    /* RESPONSIVE */
+    @@media (max-width: 768px) {
+        .product-list-header h2 {
+            font-size: 23px;
+        }
+
+        .product-image {
+            height: 160px;
+        }
+
+        .product-filter form {
+            flex-direction: column;
+        }
+
+        .product-filter input,
+        .product-filter select,
+        .product-filter button {
+            width: 100%;
+            flex: 1 1 auto;
+        }
+    }
+</style>
+
+<div class="product-list-page">
+    <div class="container">
+
+        <!-- TIÊU ĐỀ -->
+        <div class="product-list-header">
+            <h2>Danh sách sản phẩm</h2>
+            <p>Khám phá các sản phẩm tại MyStore</p>
+        </div>
+
+        <!-- TÌM KIẾM VÀ LỌC DANH MỤC -->
+        <div class="product-filter">
+
+            @using (Html.BeginForm("ProductList", "Home", FormMethod.Get))
+            {
+                <input type="text"
+                       name="searchString"
+                       value="@ViewBag.SearchString"
+                       placeholder="Nhập tên sách hoặc nội dung cần tìm..." />
+
+                <select name="categoryID">
+                    <option value="">-- Tất cả danh mục --</option>
+
+                    @if (ViewBag.Categories != null)
+                    {
+                        foreach (var category in
+                            (IEnumerable<NguyeNhatDuy_25DH110313_MyStore.Models.Category>)ViewBag.Categories)
+                        {
+                            <option value="@category.CategoryID"
+                                    @(ViewBag.CategoryID != null && (int)ViewBag.CategoryID == category.CategoryID ? "selected" : "")>
+                                @category.CategoryName
+                            </option>
+                        }
+                    }
+                </select>
+
+                <button type="submit">
+                    Lọc sản phẩm
+                </button>
+            }
+
+        </div>
+
+        <!-- DANH SÁCH SẢN PHẨM -->
+        @if (Model != null && Model.Any())
+        {
+            <div class="row">
+
+                @foreach (var item in Model)
+                {
+                    <div class="col-lg-3 col-md-4 col-6 mb-4">
+                        <div class="product-card">
+
+                            @if (!String.IsNullOrEmpty(item.ProductImage))
+                            {
+                                <img src="@Url.Content(item.ProductImage)"
+                                     class="product-image"
+                                     alt="@item.ProductName" />
+                            }
+                            else
+                            {
+                                <div class="product-image d-flex align-items-center justify-content-center text-muted">
+                                    Chưa có hình ảnh
+                                </div>
+                            }
+
+                            <div class="product-name">
+                                @item.ProductName
+                            </div>
+
+                            <div class="product-price">
+                                @item.ProductPrice.ToString("N0") đ
+                            </div>
+
+                            <a href="@Url.Action("ProductDetail", "Home",
+                                new { id = item.ProductID })"
+                               class="product-detail-btn">
+                                Xem chi tiết
+                            </a>
+
+                        </div>
+                    </div>
+                }
+
+            </div>
+
+            <!-- PHÂN TRANG -->
+            if (Model.PageCount > 1)
+            {
+                <div class="product-pagination">
+
+                    @if (Model.HasPreviousPage)
+                    {
+                        <a href="@Url.Action("ProductList", "Home", new {
+                            page = Model.PageNumber - 1,
+                            categoryID = ViewBag.CategoryID,
+                            searchString = ViewBag.SearchString
+                        })">
+                            &laquo; Trước
+                        </a>
+                    }
+
+                    @for (int i = 1; i <= Model.PageCount; i++)
+                    {
+                        if (i == Model.PageNumber)
+                        {
+                            <span>@i</span>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("ProductList", "Home", new {
+                                page = i,
+                                categoryID = ViewBag.CategoryID,
+                                searchString = ViewBag.SearchString
+                            })">
+                                @i
+                            </a>
+                        }
+                    }
+
+                    @if (Model.HasNextPage)
+                    {
+                        <a href="@Url.Action("ProductList", "Home", new {
+                            page = Model.PageNumber + 1,
+                            categoryID = ViewBag.CategoryID,
+                            searchString = ViewBag.SearchString
+                        })">
+                            Sau &raquo;
+                        </a>
+                    }
+
+                </div>
+            }
+        }
+        else
+        {
+            <div class="product-empty">
+                <h4>Không tìm thấy sản phẩm</h4>
+                <p>Vui lòng thử lại với từ khóa hoặc danh mục khác.</p>
+            </div>
+        }
+
+    </div>
+</div>

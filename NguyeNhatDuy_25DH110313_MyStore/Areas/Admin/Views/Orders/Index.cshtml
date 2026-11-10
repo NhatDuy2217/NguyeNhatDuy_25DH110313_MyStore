@@ -1,0 +1,388 @@
+﻿
+@model IEnumerable<NguyeNhatDuy_25DH110313_MyStore.Models.Order>
+
+@{
+    ViewBag.Title = "Quản lý đơn hàng";
+    Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
+}
+
+<style>
+    .orders-page {
+        min-height: 100vh;
+        padding: 30px;
+        background: #f5f7fb;
+    }
+
+    .orders-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+        .orders-header h2 {
+            color: #243247;
+            font-size: 27px;
+            font-weight: 700;
+            margin: 0 0 7px;
+        }
+
+        .orders-header p {
+            color: #8492a6;
+            font-size: 14px;
+            margin: 0;
+        }
+
+    .btn-create-order {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 11px 20px;
+        background: #3867d6;
+        color: white;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+        .btn-create-order:hover {
+            background: #2854b8;
+            color: white;
+            text-decoration: none;
+            transform: translateY(-2px);
+        }
+
+    .orders-summary {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 22px;
+        flex-wrap: wrap;
+    }
+
+    .orders-summary-card {
+        flex: 1;
+        min-width: 180px;
+        padding: 18px 20px;
+        background: white;
+        border: 1px solid #edf0f5;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(30, 50, 80, 0.04);
+    }
+
+        .orders-summary-card span {
+            display: block;
+            color: #8492a6;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .orders-summary-card strong {
+            display: block;
+            color: #243247;
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+    .orders-table-container {
+        background: white;
+        border: 1px solid #edf0f5;
+        border-radius: 13px;
+        box-shadow: 0 5px 20px rgba(30, 50, 80, 0.05);
+        overflow: hidden;
+    }
+
+    .orders-table-header {
+        padding: 20px 23px;
+        border-bottom: 1px solid #edf0f5;
+    }
+
+        .orders-table-header h4 {
+            color: #243247;
+            font-size: 17px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+    .orders-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .orders-table thead {
+            background: #f8faff;
+        }
+
+        .orders-table th {
+            padding: 15px 13px;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: center;
+            white-space: nowrap;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+        .orders-table td {
+            padding: 15px 13px;
+            color: #475569;
+            font-size: 13px;
+            text-align: center;
+            vertical-align: middle;
+            border-bottom: 1px solid #f0f2f6;
+        }
+
+        .orders-table tbody tr:hover {
+            background: #f9fbff;
+        }
+
+    .order-id {
+        color: #3867d6;
+        font-weight: 700;
+    }
+
+    .order-customer {
+        color: #243247;
+        font-weight: 600;
+    }
+
+    .order-amount {
+        color: #16a085;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .order-address {
+        max-width: 180px;
+        text-align: left !important;
+        word-break: break-word;
+    }
+
+    .order-status {
+        display: inline-block;
+        padding: 6px 11px;
+        background: #eef2ff;
+        color: #4f46e5;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .order-actions {
+        display: flex;
+        justify-content: center;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+        .order-actions a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 7px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+    .btn-order-details {
+        background: #e8efff;
+        color: #3867d6;
+    }
+
+    .btn-order-edit {
+        background: #fff4df;
+        color: #d18b16;
+    }
+
+    .btn-order-delete {
+        background: #fff0f0;
+        color: #dc3545;
+    }
+
+    .order-actions a:hover {
+        filter: brightness(0.95);
+        transform: translateY(-1px);
+        text-decoration: none;
+    }
+
+    .orders-empty {
+        padding: 45px 15px !important;
+        color: #94a3b8 !important;
+        font-size: 14px !important;
+    }
+
+    @@media (max-width: 992px) {
+        .orders-page {
+            padding: 20px 15px;
+        }
+
+        .orders-table-container {
+            overflow-x: auto;
+        }
+
+        .orders-table {
+            min-width: 1050px;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .orders-header {
+            align-items: flex-start;
+        }
+
+            .orders-header h2 {
+                font-size: 23px;
+            }
+
+        .btn-create-order {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="orders-page">
+
+    <div class="orders-header">
+        <div>
+            <h2>📦 Quản lý đơn hàng</h2>
+            <p>Quản lý và theo dõi các đơn hàng trong hệ thống MyStore.</p>
+        </div>
+
+        @Html.ActionLink(
+            "＋ Thêm đơn hàng",
+            "Create",
+            null,
+            new { @class = "btn-create-order" }
+        )
+    </div>
+
+    <div class="orders-summary">
+
+        <div class="orders-summary-card">
+            <span>Tổng số đơn hàng</span>
+            <strong>@(Model == null ? 0 : Model.Count())</strong>
+        </div>
+
+        <div class="orders-summary-card">
+            <span>Tổng giá trị đơn hàng</span>
+            <strong>
+                @(Model == null
+                    ? "0 ₫"
+                    : String.Format("{0:N0} ₫", Model.Sum(o => o.TotalAmount)))
+            </strong>
+        </div>
+
+    </div>
+
+    <div class="orders-table-container">
+
+        <div class="orders-table-header">
+            <h4>Danh sách đơn hàng</h4>
+        </div>
+
+        <table class="orders-table">
+
+            <thead>
+                <tr>
+                    <th>MÃ ĐƠN</th>
+                    <th>KHÁCH HÀNG</th>
+                    <th>NGÀY ĐẶT</th>
+                    <th>TỔNG TIỀN</th>
+                    <th>TRẠNG THÁI THANH TOÁN</th>
+                    <th>ĐỊA CHỈ GIAO HÀNG</th>
+                    <th>CHỨC NĂNG</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <span class="order-id">
+                                    #@item.OrderID
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="order-customer">
+                                    @(item.Customer != null
+                                        ? item.Customer.CustomerName
+                                        : "Không xác định")
+                                </span>
+                            </td>
+
+                            <td>
+                                @item.OrderDate.ToString("dd/MM/yyyy")
+                            </td>
+
+                            <td>
+                                <span class="order-amount">
+                                    @String.Format("{0:N0} ₫", item.TotalAmount)
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="order-status">
+                                    @item.PaymentStatus
+                                </span>
+                            </td>
+
+                            <td class="order-address">
+                                @(String.IsNullOrEmpty(item.AddressDelivery)
+                                    ? "Chưa cập nhật"
+                                    : item.AddressDelivery)
+                            </td>
+
+                            <td>
+                                <div class="order-actions">
+
+                                    @Html.ActionLink(
+                                        "Xem",
+                                        "Details",
+                                        new { id = item.OrderID },
+                                        new { @class = "btn-order-details" }
+                                    )
+
+                                    @Html.ActionLink(
+                                        "Sửa",
+                                        "Edit",
+                                        new { id = item.OrderID },
+                                        new { @class = "btn-order-edit" }
+                                    )
+
+                                    @Html.ActionLink(
+                                        "Xóa",
+                                        "Delete",
+                                        new { id = item.OrderID },
+                                        new { @class = "btn-order-delete" }
+                                    )
+
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="orders-empty">
+                            📭 Hiện chưa có đơn hàng nào trong hệ thống.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

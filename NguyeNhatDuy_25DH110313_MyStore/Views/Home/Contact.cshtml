@@ -1,0 +1,516 @@
+﻿
+@{
+    ViewBag.Title = "Liên hệ MyStore";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<style>
+    .contact-page {
+        background: #f5f7fb;
+        padding-bottom: 55px;
+        color: #334155;
+        min-height: 75vh;
+    }
+
+    .contact-banner {
+        background: linear-gradient(120deg, #123b70, #2878bd);
+        color: white;
+        padding: 50px 25px;
+        border-radius: 16px;
+        margin: 25px 0 30px;
+        text-align: center;
+    }
+
+        .contact-banner h1 {
+            font-size: 34px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .contact-banner p {
+            font-size: 16px;
+            margin: 0;
+            line-height: 1.8;
+        }
+
+    .contact-tabs {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+    }
+
+    .contact-tab {
+        padding: 14px 28px;
+        border: 1px solid #dce3ec;
+        background: white;
+        color: #334155;
+        border-radius: 9px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+        .contact-tab:hover {
+            border-color: #2878bd;
+            color: #1d65a6;
+        }
+
+        .contact-tab.active {
+            background: #1d65a6;
+            border-color: #1d65a6;
+            color: white;
+            box-shadow: 0 4px 12px rgba(29,101,166,.2);
+        }
+
+    .contact-content {
+        display: none;
+        animation: fadeIn .25s ease;
+    }
+
+        .contact-content.active {
+            display: block;
+        }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .contact-card {
+        background: white;
+        padding: 30px;
+        border-radius: 14px;
+        box-shadow: 0 4px 15px rgba(0,0,0,.04);
+        border: 1px solid #edf0f5;
+    }
+
+        .contact-card h2 {
+            color: #173d6b;
+            font-size: 23px;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+
+    .contact-info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .contact-info-item {
+        display: flex;
+        gap: 15px;
+        padding: 20px;
+        background: #f8fafc;
+        border: 1px solid #edf0f5;
+        border-radius: 12px;
+        align-items: flex-start;
+    }
+
+    .contact-icon {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #eaf3fc;
+        color: #1d65a6;
+        border-radius: 10px;
+        font-size: 22px;
+    }
+
+    .contact-info-item h3 {
+        color: #1e293b;
+        font-size: 15px;
+        font-weight: 700;
+        margin: 2px 0 7px;
+    }
+
+    .contact-info-item p {
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.7;
+        margin: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .contact-form label {
+        display: block;
+        color: #334155;
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    .contact-form .form-control {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #dce3ec;
+        border-radius: 8px;
+        margin-bottom: 6px;
+        box-shadow: none;
+        height: auto;
+    }
+
+        .contact-form .form-control:focus {
+            border-color: #2878bd;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(40,120,189,.1);
+        }
+
+    .contact-form textarea {
+        min-height: 140px;
+        resize: vertical;
+    }
+
+    .contact-submit {
+        background: #1d65a6;
+        color: white;
+        border: none;
+        padding: 13px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 12px;
+    }
+
+        .contact-submit:hover {
+            background: #124778;
+        }
+
+    .contact-note {
+        margin-top: 20px;
+        padding: 17px;
+        background: #eaf3fc;
+        border-radius: 9px;
+        color: #315b80;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .contact-success {
+        padding: 14px 16px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        background: #e8f7ed;
+        border: 1px solid #b7e4c7;
+        color: #176b36;
+        font-size: 14px;
+    }
+
+    .contact-error {
+        padding: 14px 16px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        background: #fff0f0;
+        border: 1px solid #f2c4c4;
+        color: #b42318;
+        font-size: 14px;
+    }
+
+    .field-error {
+        display: block;
+        color: #dc2626;
+        font-size: 13px;
+        margin: 3px 0 12px;
+    }
+
+    .input-validation-error {
+        border-color: #dc2626 !important;
+    }
+
+    @@media (max-width: 768px) {
+        .contact-banner {
+            padding: 40px 20px;
+        }
+
+            .contact-banner h1 {
+                font-size: 28px;
+            }
+
+        .contact-tabs {
+            flex-direction: column;
+        }
+
+        .contact-tab {
+            width: 100%;
+        }
+
+        .contact-info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .contact-card {
+            padding: 22px;
+        }
+    }
+</style>
+
+<div class="contact-page">
+    <div class="container">
+
+        <!-- BANNER -->
+        <section class="contact-banner">
+            <h1>Liên hệ với MyStore</h1>
+
+            <p>
+                Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn.
+                Hãy chọn nội dung bạn muốn xem bên dưới.
+            </p>
+        </section>
+
+        <!-- HAI NÚT CHUYỂN TAB -->
+        <div class="contact-tabs">
+
+            <button type="button"
+                    class="contact-tab active"
+                    data-tab="contactInfo">
+                🏪 Thông tin liên hệ
+            </button>
+
+            <button type="button"
+                    class="contact-tab"
+                    data-tab="contactForm">
+                ✉️ Gửi yêu cầu hỗ trợ
+            </button>
+
+        </div>
+
+        <!-- TAB 1: THÔNG TIN LIÊN HỆ -->
+        <section id="contactInfo"
+                 class="contact-content active">
+
+            <div class="contact-card">
+
+                <h2>Thông tin liên hệ</h2>
+
+                <div class="contact-info-grid">
+
+                    <div class="contact-info-item">
+                        <div class="contact-icon">🏪</div>
+                        <div>
+                            <h3>Cửa hàng</h3>
+                            <p>Nhà sách trực tuyến MyStore</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-info-item">
+                        <div class="contact-icon">📍</div>
+                        <div>
+                            <h3>Địa chỉ</h3>
+                            <p>Vui lòng cập nhật địa chỉ cửa hàng tại đây.</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-info-item">
+                        <div class="contact-icon">📞</div>
+                        <div>
+                            <h3>Điện thoại</h3>
+                            <p>Vui lòng cập nhật số điện thoại tại đây.</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-info-item">
+                        <div class="contact-icon">✉️</div>
+                        <div>
+                            <h3>Email</h3>
+                            <p>Vui lòng cập nhật email hỗ trợ tại đây.</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-info-item">
+                        <div class="contact-icon">🕒</div>
+                        <div>
+                            <h3>Thời gian hỗ trợ</h3>
+                            <p>Thông tin giờ làm việc sẽ được cập nhật.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="contact-note">
+                    <strong>MyStore cảm ơn bạn đã quan tâm!</strong>
+                    Nếu cần hỗ trợ, bạn có thể chuyển sang mục
+                    "Gửi yêu cầu hỗ trợ".
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- TAB 2: FORM LIÊN HỆ -->
+        <section id="contactForm"
+                 class="contact-content">
+
+            <div class="contact-card">
+
+                <h2>Gửi yêu cầu hỗ trợ</h2>
+
+                @using (Html.BeginForm(
+                    "Contact",
+                    "Home",
+                    FormMethod.Post,
+                    new { @class = "contact-form" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    if (ViewBag.ContactSuccess != null)
+                    {
+                        <div class="contact-success">
+                            <strong>✓ Thành công!</strong>
+                            <br />
+                            @ViewBag.ContactSuccess
+                        </div>
+                    }
+
+                    if (ViewBag.ContactError != null)
+                    {
+                        <div class="contact-error">
+                            @ViewBag.ContactError
+                        </div>
+                    }
+
+                    <label for="contactName">Họ và tên</label>
+
+                    <input type="text"
+                           id="contactName"
+                           name="contactName"
+                           value="@Request.Form["contactName"]"
+                           class="form-control"
+                           placeholder="Nhập họ và tên của bạn"
+                           required />
+
+                    @Html.ValidationMessage(
+                             "contactName", "", new { @class = "field-error" })
+
+                    <label for="contactEmail">Email</label>
+
+                    <input type="email"
+                           id="contactEmail"
+                           name="contactEmail"
+                           value="@Request.Form["contactEmail"]"
+                           class="form-control"
+                           placeholder="Nhập email của bạn"
+                           required />
+
+                    @Html.ValidationMessage(
+                             "contactEmail", "", new { @class = "field-error" })
+
+                    <label for="contactSubject">Tiêu đề</label>
+
+                    <input type="text"
+                           id="contactSubject"
+                           name="contactSubject"
+                           value="@Request.Form["contactSubject"]"
+                           class="form-control"
+                           placeholder="Nhập tiêu đề liên hệ"
+                           required />
+
+                    @Html.ValidationMessage(
+                             "contactSubject", "", new { @class = "field-error" })
+
+                    <label for="contactMessage">Nội dung</label>
+
+                    <textarea id="contactMessage"
+                              name="contactMessage"
+                              class="form-control"
+                              placeholder="Nhập nội dung bạn muốn gửi..."
+                              required>@Request.Form["contactMessage"]</textarea>
+
+                    @Html.ValidationMessage(
+                             "contactMessage", "", new { @class = "field-error" })
+
+                    <button type="submit" class="contact-submit">
+                        Gửi yêu cầu
+                    </button>
+                }
+
+                <div class="contact-note">
+                    <strong>MyStore luôn lắng nghe bạn!</strong>
+                    Hãy cung cấp thông tin chính xác để cửa hàng có thể
+                    hỗ trợ yêu cầu của bạn tốt hơn.
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+</div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    var tabs = document.querySelectorAll(".contact-tab");
+    var contents = document.querySelectorAll(".contact-content");
+
+    tabs.forEach(function (tab) {
+
+        tab.addEventListener("click", function () {
+
+            var target = tab.getAttribute("data-tab");
+
+            // Kiểm tra target trước khi sử dụng
+            if (!target) {
+                return;
+            }
+
+            // Bỏ trạng thái active ở tất cả các nút
+            tabs.forEach(function (item) {
+                item.classList.remove("active");
+            });
+
+            // Ẩn tất cả nội dung
+            contents.forEach(function (content) {
+                content.classList.remove("active");
+            });
+
+            // Kích hoạt nút được chọn
+            tab.classList.add("active");
+
+            // Hiển thị nội dung tương ứng
+            var selectedContent = document.getElementById(target);
+
+            if (selectedContent) {
+                selectedContent.classList.add("active");
+            }
+
+        });
+
+    });
+
+    // Kiểm tra có thông báo lỗi hoặc thành công không
+    var hasFormMessage =
+        document.querySelector(".contact-success") !== null ||
+        document.querySelector(".contact-error") !== null ||
+        document.querySelector(".field-error:not(:empty)") !== null;
+
+    // Nếu có thông báo thì mở tab gửi yêu cầu hỗ trợ
+    if (hasFormMessage) {
+
+        var formTab = document.querySelector(
+            '.contact-tab[data-tab="contactForm"]'
+        );
+
+        if (formTab) {
+            formTab.dispatchEvent(
+                new MouseEvent("click", { bubbles: true })
+            );
+        }
+    }
+
+});
+
+</script>

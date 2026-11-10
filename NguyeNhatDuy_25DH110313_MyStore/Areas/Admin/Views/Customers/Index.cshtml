@@ -1,0 +1,440 @@
+﻿
+@model IEnumerable<NguyeNhatDuy_25DH110313_MyStore.Models.Customer>
+
+@{
+    ViewBag.Title = "Quản lý khách hàng";
+    Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
+
+    int currentPage = ViewBag.CurrentPage == null ? 1 : (int)ViewBag.CurrentPage;
+    int totalPages = ViewBag.TotalPages == null ? 1 : (int)ViewBag.TotalPages;
+    int totalItems = ViewBag.TotalItems == null ? 0 : (int)ViewBag.TotalItems;
+    int pageSizeValue = ViewBag.PageSize == null ? 5 : (int)ViewBag.PageSize;
+
+    string currentFilter = ViewBag.CurrentFilter as string ?? "";
+    string currentSort = ViewBag.CurrentSort as string ?? "";
+}
+
+<style>
+    .customer-page {
+        padding: 28px;
+        min-height: 100vh;
+        background: #f5f7fb;
+    }
+
+    .customer-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+        .customer-header h2 {
+            font-weight: 700;
+            color: #263248;
+            margin: 0 0 6px;
+        }
+
+        .customer-header p {
+            color: #7b8495;
+            margin: 0;
+        }
+
+    .btn-add {
+        background: #2563eb;
+        color: white !important;
+        padding: 11px 18px;
+        border-radius: 8px;
+        text-decoration: none !important;
+        font-weight: 600;
+    }
+
+        .btn-add:hover {
+            background: #1d4ed8;
+        }
+
+    .customer-card {
+        background: white;
+        border-radius: 12px;
+        padding: 22px;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.04);
+    }
+
+    .customer-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+        .customer-table th {
+            background: #f1f5f9;
+            color: #475569;
+            font-weight: 600;
+            padding: 14px 12px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+            .customer-table th a {
+                color: #475569;
+                text-decoration: none;
+            }
+
+                .customer-table th a:hover {
+                    color: #2563eb;
+                }
+
+        .customer-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #edf0f4;
+            color: #475569;
+            vertical-align: middle;
+        }
+
+        .customer-table tr:hover {
+            background: #f8fafc;
+        }
+
+    .customer-actions {
+        white-space: nowrap;
+    }
+
+        .customer-actions a {
+            text-decoration: none;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+    .action-edit {
+        color: #2563eb;
+    }
+
+    .action-details {
+        color: #0891b2;
+    }
+
+    .action-delete {
+        color: #dc2626;
+    }
+
+    .empty-message {
+        text-align: center;
+        padding: 30px;
+        color: #94a3b8;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .customer-search {
+        display: flex;
+        gap: 10px;
+        margin: 20px 0;
+        flex-wrap: wrap;
+    }
+
+        .customer-search input {
+            max-width: 350px;
+            height: 38px;
+        }
+
+    .customer-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .customer-pagination {
+        display: flex;
+        justify-content: center;
+        gap: 6px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+
+        .customer-pagination a {
+            min-width: 36px;
+            text-align: center;
+        }
+</style>
+
+<div class="customer-page">
+
+    <div class="customer-header">
+        <div>
+            <h2>Quản lý khách hàng</h2>
+            <p>Quản lý thông tin khách hàng trong hệ thống MyStore</p>
+        </div>
+
+        <div>
+            @Html.ActionLink(
+                "+ Thêm khách hàng",
+                "Create",
+                "Customers",
+                new { area = "Admin" },
+                new { @class = "btn-add" }
+            )
+        </div>
+    </div>
+
+    <div class="customer-card">
+
+        <h4 style="font-weight: 700; color: #263248;">
+            Danh sách khách hàng
+        </h4>
+
+        <!-- TÌM KIẾM -->
+        @using (Html.BeginForm("Index", "Customers", new { area = "Admin" }, FormMethod.Get))
+        {
+            <div class="customer-search">
+
+                <input type="text"
+                       name="searchString"
+                       value="@currentFilter"
+                       placeholder="Nhập tên khách hàng cần tìm..."
+                       class="form-control" />
+
+                <input type="hidden" name="sortOrder" value="@currentSort" />
+
+                <input type="hidden" name="pageSize" value="@pageSizeValue" />
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="glyphicon glyphicon-search"></i> Tìm kiếm
+                </button>
+
+                <a href="@Url.Action("Index", "Customers", new { area = "Admin" })"
+                   class="btn btn-default">
+                    Làm mới
+                </a>
+
+            </div>
+        }
+
+        <div class="table-responsive">
+
+            <table class="customer-table">
+
+                <thead>
+                    <tr>
+                        <th>Mã KH</th>
+
+                        <th>
+                            @Html.ActionLink(
+                                "Họ tên",
+                                "Index",
+                                new
+                                     {
+                                    searchString = currentFilter,
+                                    sortOrder = ViewBag.NameSortParm,
+                                    pageSize = pageSizeValue
+                                })
+                        </th>
+
+                        <th>
+                            @Html.ActionLink(
+                                "Số điện thoại",
+                                "Index",
+                                new
+                                     {
+                                    searchString = currentFilter,
+                                    sortOrder = ViewBag.PhoneSortParm,
+                                    pageSize = pageSizeValue
+                                })
+                        </th>
+
+                        <th>Email</th>
+                        <th>Địa chỉ</th>
+                        <th>Tài khoản</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.CustomerID</td>
+
+                                <td>
+                                    <strong>@item.CustomerName</strong>
+                                </td>
+
+                                <td>@item.CustomerPhone</td>
+
+                                <td>@item.CustomerEmail</td>
+
+                                <td>@item.CustomerAddress</td>
+
+                                <td>
+                                    @(item.Username ?? "Chưa liên kết")
+                                </td>
+
+                                <td class="customer-actions">
+
+                                    @Html.ActionLink(
+                                        "Sửa",
+                                        "Edit",
+                                        "Customers",
+                                        new { id = item.CustomerID, area = "Admin" },
+                                        new { @class = "action-edit" }
+                                    )
+
+                                    @Html.ActionLink(
+                                        "Chi tiết",
+                                        "Details",
+                                        "Customers",
+                                        new { id = item.CustomerID, area = "Admin" },
+                                        new { @class = "action-details" }
+                                    )
+
+                                    @Html.ActionLink(
+                                        "Xóa",
+                                        "Delete",
+                                        "Customers",
+                                        new { id = item.CustomerID, area = "Admin" },
+                                        new { @class = "action-delete" }
+                                    )
+
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="empty-message">
+                                Không tìm thấy khách hàng nào.
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <!-- CHỌN SỐ DÒNG VÀ THÔNG TIN -->
+        <div class="customer-footer">
+
+            <div>
+                Hiển thị @((Model == null) ? 0 : Model.Count())
+                / @totalItems khách hàng
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px;">
+
+                <span>Số dòng:</span>
+
+                @using (Html.BeginForm("Index", "Customers", new { area = "Admin" }, FormMethod.Get))
+                {
+                    <input type="hidden" name="searchString" value="@currentFilter" />
+                    <input type="hidden" name="sortOrder" value="@currentSort" />
+
+                    <select id="pageSize"
+                            name="pageSize"
+                            class="form-control"
+                            style="width: 85px;">
+
+                        <option value="5" @(pageSizeValue == 5 ? "selected=\"selected\"" : "")>5</option>
+                        <option value="10" @(pageSizeValue == 10 ? "selected=\"selected\"" : "")>10</option>
+                        <option value="20" @(pageSizeValue == 20 ? "selected=\"selected\"" : "")>20</option>
+
+                    </select>
+                }
+
+            </div>
+
+        </div>
+
+        <!-- PHÂN TRANG -->
+        <div class="customer-pagination">
+
+            @if (currentPage > 1)
+            {
+                @Html.ActionLink(
+                    "« Trước",
+                    "Index",
+                    new
+                         {
+                        page = currentPage - 1,
+                        searchString = currentFilter,
+                        sortOrder = currentSort,
+                        pageSize = pageSizeValue
+                    },
+                    new { @class = "btn btn-default" }
+                )
+            }
+
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                @Html.ActionLink(
+                    i.ToString(),
+                    "Index",
+                    new
+                         {
+                        page = i,
+                        searchString = currentFilter,
+                        sortOrder = currentSort,
+                        pageSize = pageSizeValue
+                    },
+                    new
+                         {
+                        @class = i == currentPage
+                            ? "btn btn-primary"
+                            : "btn btn-default"
+                    }
+                )
+            }
+
+            @if (currentPage < totalPages)
+            {
+                @Html.ActionLink(
+                    "Sau »",
+                    "Index",
+                    new
+                         {
+                        page = currentPage + 1,
+                        searchString = currentFilter,
+                        sortOrder = currentSort,
+                        pageSize = pageSizeValue
+                    },
+                    new { @class = "btn btn-default" }
+                )
+            }
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        var pageSizeSelect = document.getElementById("pageSize");
+
+        if (pageSizeSelect instanceof HTMLSelectElement) {
+
+            pageSizeSelect.addEventListener("change", function (event) {
+
+                var target = event.target;
+
+                if (target instanceof HTMLSelectElement && target.form) {
+                    target.form.submit();
+                }
+
+            });
+
+        }
+
+    });
+</script>

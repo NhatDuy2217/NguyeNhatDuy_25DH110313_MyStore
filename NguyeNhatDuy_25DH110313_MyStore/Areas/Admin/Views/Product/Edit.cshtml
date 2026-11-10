@@ -1,0 +1,347 @@
+﻿
+@model NguyeNhatDuy_25DH110313_MyStore.Models.Product
+
+@{
+    ViewBag.Title = "Chỉnh sửa sản phẩm";
+    Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
+}
+
+<style>
+    .edit-product-page {
+        padding: 28px;
+        min-height: 100vh;
+        background: #f4f7fb;
+        color: #243247;
+        font-family: Arial, sans-serif;
+    }
+
+    .page-heading {
+        margin-bottom: 25px;
+    }
+
+        .page-heading h2 {
+            margin: 0 0 8px;
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .page-heading p {
+            margin: 0;
+            color: #718096;
+            font-size: 14px;
+        }
+
+    .breadcrumb-text {
+        margin-bottom: 12px;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+        .breadcrumb-text span {
+            color: #2563eb;
+        }
+
+    .product-form-card {
+        max-width: 900px;
+        padding: 30px;
+        background: #fff;
+        border: 1px solid #e5eaf2;
+        border-radius: 14px;
+        box-shadow: 0 5px 20px rgba(15, 23, 42, 0.05);
+    }
+
+    .form-card-heading {
+        margin-bottom: 25px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid #edf0f5;
+    }
+
+        .form-card-heading h3 {
+            margin: 0 0 7px;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .form-card-heading p {
+            margin: 0;
+            color: #718096;
+            font-size: 13px;
+        }
+
+    .form-row {
+        margin-bottom: 22px;
+    }
+
+        .form-row label {
+            display: block;
+            margin-bottom: 9px;
+            color: #334155;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .form-row input,
+        .form-row select,
+        .form-row textarea {
+            display: block;
+            box-sizing: border-box;
+            width: 100%;
+            min-height: 44px;
+            padding: 11px 13px;
+            color: #334155;
+            background: #fff;
+            border: 1px solid #d8e0eb;
+            border-radius: 8px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-row textarea {
+            min-height: 115px;
+            resize: vertical;
+        }
+
+            .form-row input:focus,
+            .form-row select:focus,
+            .form-row textarea:focus {
+                outline: none;
+                border-color: #3b82f6;
+                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+            }
+
+            .form-row input::placeholder,
+            .form-row textarea::placeholder {
+                color: #a0aec0;
+            }
+
+    .field-validation-error,
+    .validation-summary-errors {
+        display: block;
+        margin-top: 6px;
+        color: #dc2626;
+        font-size: 13px;
+    }
+
+    .validation-summary-valid {
+        display: none;
+    }
+
+    .form-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 30px;
+        padding-top: 22px;
+        border-top: 1px solid #edf0f5;
+    }
+
+    .btn-save,
+    .btn-cancel {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 43px;
+        padding: 0 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        box-sizing: border-box;
+    }
+
+    .btn-save {
+        color: #fff;
+        background: #2563eb;
+        border: 1px solid #2563eb;
+    }
+
+        .btn-save:hover {
+            color: #fff;
+            background: #1d4ed8;
+            border-color: #1d4ed8;
+        }
+
+    .btn-cancel {
+        color: #475569;
+        background: #fff;
+        border: 1px solid #cbd5e1;
+    }
+
+        .btn-cancel:hover {
+            color: #1e293b;
+            background: #f8fafc;
+            text-decoration: none;
+        }
+
+    .current-product-id {
+        display: inline-block;
+        margin-bottom: 20px;
+        padding: 7px 12px;
+        color: #475569;
+        background: #f1f5f9;
+        border-radius: 7px;
+        font-size: 13px;
+    }
+
+    @@media (max-width: 768px) {
+        .edit-product-page {
+            padding: 16px;
+        }
+
+        .product-form-card {
+            padding: 20px;
+        }
+    }
+</style>
+
+<div class="edit-product-page">
+
+    <div class="page-heading">
+        <div class="breadcrumb-text">
+            Admin / Sản phẩm / <span>Chỉnh sửa sản phẩm</span>
+        </div>
+
+        <h2>Chỉnh sửa sản phẩm</h2>
+        <p>Cập nhật thông tin sản phẩm trong hệ thống MyStore.</p>
+    </div>
+
+    <div class="product-form-card">
+
+        <div class="form-card-heading">
+            <h3>Thông tin sản phẩm</h3>
+            <p>Thay đổi thông tin sản phẩm bên dưới rồi lưu lại.</p>
+        </div>
+
+        <div class="current-product-id">
+            Mã sản phẩm: #@Model.ProductID
+        </div>
+
+        @using (Html.BeginForm(
+            "Edit",
+            "Product",
+            new { area = "Admin" },
+            FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.HiddenFor(model => model.ProductID)
+
+            @Html.ValidationSummary(
+                true,
+                "",
+                new { @class = "text-danger" })
+
+        <div class="form-row">
+            @Html.LabelFor(
+                model => model.CategoryID,
+                "Danh mục sản phẩm")
+
+            @Html.DropDownListFor(
+                model => model.CategoryID,
+                ViewBag.Categories as SelectList,
+                "-- Chọn danh mục sản phẩm --",
+                new { @class = "form-control" })
+
+            @Html.ValidationMessageFor(
+                model => model.CategoryID,
+                "",
+                new { @class = "field-validation-error" })
+        </div>
+
+            <div class="form-row">
+                @Html.LabelFor(
+                    model => model.ProductName,
+                    "Tên sản phẩm")
+
+                @Html.TextBoxFor(
+                    model => model.ProductName,
+                    new
+                    {
+                        @class = "form-control",
+                        placeholder = "Ví dụ: Đắc Nhân Tâm"
+                    })
+
+                @Html.ValidationMessageFor(
+                    model => model.ProductName,
+                    "",
+                    new { @class = "field-validation-error" })
+            </div>
+
+            <div class="form-row">
+                @Html.LabelFor(
+                    model => model.ProductDecription,
+                    "Mô tả sản phẩm")
+
+                @Html.TextAreaFor(
+                    model => model.ProductDecription,
+                    new
+                    {
+                        @class = "form-control",
+                        placeholder = "Nhập nội dung giới thiệu sách, tác giả, nhà xuất bản..."
+                    })
+
+                @Html.ValidationMessageFor(
+                    model => model.ProductDecription,
+                    "",
+                    new { @class = "field-validation-error" })
+            </div>
+
+            <div class="form-row">
+                @Html.LabelFor(
+                    model => model.ProductPrice,
+                    "Giá sản phẩm")
+
+                @Html.TextBoxFor(
+                    model => model.ProductPrice,
+                    new
+                    {
+                        @class = "form-control",
+                        placeholder = "Ví dụ: 85000",
+                        type = "number",
+                        step = "any",
+                        min = "0"
+                    })
+
+                @Html.ValidationMessageFor(
+                    model => model.ProductPrice,
+                    "",
+                    new { @class = "field-validation-error" })
+            </div>
+
+            <div class="form-row">
+                @Html.LabelFor(
+                    model => model.ProductImage,
+                    "Đường dẫn hình ảnh")
+
+                @Html.TextBoxFor(
+                    model => model.ProductImage,
+                    new
+                    {
+                        @class = "form-control",
+                        placeholder = "Ví dụ: ~/Content/Images/dac-nhan-tam.jpg"
+                    })
+
+                @Html.ValidationMessageFor(
+                    model => model.ProductImage,
+                    "",
+                    new { @class = "field-validation-error" })
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-save">
+                    Lưu thay đổi
+                </button>
+
+                @Html.ActionLink(
+                    "Quay lại danh sách",
+                    "Index",
+                    "Product",
+                    new { area = "Admin" },
+                    new { @class = "btn-cancel" })
+            </div>
+        }
+    </div>
+</div>

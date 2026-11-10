@@ -1,0 +1,325 @@
+﻿
+@model NguyeNhatDuy_25DH110313_MyStore.Models.User
+
+@{
+    ViewBag.Title = "Xóa tài khoản";
+    Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
+
+    int customerCount = ViewBag.CustomerCount == null
+        ? 0
+        : (int)ViewBag.CustomerCount;
+}
+
+<style>
+    .user-delete-page {
+        min-height: 100vh;
+        padding: 35px 20px;
+        background: #f5f7fb;
+    }
+
+    .user-delete-header {
+        text-align: center;
+        margin-bottom: 28px;
+    }
+
+        .user-delete-header h2 {
+            color: #243247;
+            font-size: 27px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .user-delete-header p {
+            color: #8492a6;
+            font-size: 14px;
+            margin: 0;
+        }
+
+    .user-delete-container {
+        max-width: 620px;
+        margin: 0 auto;
+    }
+
+    .user-delete-card {
+        max-width: 550px;
+        margin: 0 auto;
+        padding: 30px 38px;
+        background: #fff;
+        border: 1px solid #edf0f5;
+        border-radius: 16px;
+        box-shadow: 0 6px 24px rgba(30, 50, 80, 0.07);
+    }
+
+    .delete-icon {
+        width: 78px;
+        height: 78px;
+        margin: 0 auto 16px;
+        border-radius: 50%;
+        background: #fff0f0;
+        color: #dc3545;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 34px;
+    }
+
+    .delete-username {
+        text-align: center;
+        color: #243247;
+        font-size: 21px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .delete-subtitle {
+        text-align: center;
+        color: #8492a6;
+        font-size: 13px;
+        margin-bottom: 25px;
+    }
+
+    .delete-warning {
+        padding: 13px 16px;
+        margin-bottom: 22px;
+        background: #fff8e8;
+        border: 1px solid #ffe5ad;
+        border-radius: 9px;
+        color: #946200;
+        font-size: 13px;
+        line-height: 1.6;
+        text-align: center;
+    }
+
+    .delete-error {
+        padding: 13px 16px;
+        margin-bottom: 22px;
+        background: #fff0f0;
+        border: 1px solid #ffc9c9;
+        border-radius: 9px;
+        color: #c82333;
+        font-size: 13px;
+        line-height: 1.6;
+        text-align: center;
+    }
+
+    .delete-info {
+        padding: 14px 17px;
+        margin-bottom: 13px;
+        background: #f7f9fc;
+        border: 1px solid #edf0f5;
+        border-radius: 10px;
+    }
+
+        .delete-info label {
+            display: block;
+            color: #8492a6;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+
+        .delete-info p {
+            color: #243247;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0;
+            word-break: break-word;
+        }
+
+    .delete-role {
+        display: inline-block;
+        padding: 5px 12px;
+        background: #e8efff;
+        color: #3867d6;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .delete-actions {
+        display: flex;
+        justify-content: center;
+        gap: 13px;
+        margin-top: 27px;
+    }
+
+    .btn-delete,
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 145px;
+        padding: 11px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-delete {
+        background: #dc3545;
+        color: #fff;
+    }
+
+        .btn-delete:hover:not(:disabled) {
+            background: #bd2130;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .btn-delete:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+    .btn-back {
+        background: #f0f2f6;
+        color: #536174;
+    }
+
+        .btn-back:hover {
+            background: #e1e6ef;
+            color: #243247;
+            text-decoration: none;
+            transform: translateY(-2px);
+        }
+
+    @@media (max-width: 576px) {
+        .user-delete-page {
+            padding: 25px 12px;
+        }
+
+        .user-delete-card {
+            padding: 25px 20px;
+        }
+
+        .user-delete-header h2 {
+            font-size: 23px;
+        }
+
+        .delete-actions {
+            flex-direction: column;
+        }
+
+        .btn-delete,
+        .btn-back {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="user-delete-page">
+
+    <div class="user-delete-header">
+        <h2>Xóa tài khoản</h2>
+        <p>Kiểm tra thông tin trước khi xóa tài khoản khỏi hệ thống.</p>
+    </div>
+
+    <div class="user-delete-container">
+
+        <div class="user-delete-card">
+
+            <!-- Biểu tượng cảnh báo -->
+            <div class="delete-icon">
+                🗑
+            </div>
+
+            <!-- Tên tài khoản -->
+            <div class="delete-username">
+                @Model.Username
+            </div>
+
+            <div class="delete-subtitle">
+                Thông tin tài khoản cần xóa
+            </div>
+
+            <!-- Cảnh báo hoặc thông báo lỗi -->
+            @if (!string.IsNullOrEmpty(ViewBag.DeleteError as string))
+            {
+                <div class="delete-error">
+                    <strong>Không thể xóa tài khoản!</strong>
+                    <br />
+                    @ViewBag.DeleteError
+                </div>
+            }
+            else if (customerCount > 0)
+            {
+                <div class="delete-warning">
+                    <strong>⚠ Cảnh báo!</strong>
+                    <br />
+                    Tài khoản này đang được liên kết với
+                    <strong>@customerCount</strong> thông tin khách hàng.
+                    Bạn không thể xóa tài khoản này.
+                </div>
+            }
+            else
+            {
+                <div class="delete-warning">
+                    <strong>⚠ Cảnh báo!</strong>
+                    <br />
+                    Bạn có chắc chắn muốn xóa tài khoản này không?
+                    Thao tác này không thể hoàn tác.
+                </div>
+            }
+
+            <!-- Thông tin Username -->
+            <div class="delete-info">
+                <label>Tên đăng nhập</label>
+                <p>@Model.Username</p>
+            </div>
+
+            <!-- Thông tin UserRole -->
+            <div class="delete-info">
+                <label>Vai trò tài khoản</label>
+                <p>
+                    <span class="delete-role">
+                        @Model.UserRole
+                    </span>
+                </p>
+            </div>
+
+            <!-- Nút chức năng -->
+            @using (Html.BeginForm(
+                "Delete",
+                "Users",
+                new { area = "Admin", id = Model.Username },
+                FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="delete-actions">
+
+                    @if (customerCount > 0)
+                    {
+                        <button type="button"
+                                class="btn-delete"
+                                disabled>
+                            Không thể xóa
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="submit"
+                                class="btn-delete"
+                                onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản @Model.Username không?');">
+                            Xác nhận xóa
+                        </button>
+                    }
+
+                    @Html.ActionLink(
+                             "Quay lại",
+                             "Index",
+                             "Users",
+                             new { area = "Admin" },
+                             new { @class = "btn-back" }
+                         )
+
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

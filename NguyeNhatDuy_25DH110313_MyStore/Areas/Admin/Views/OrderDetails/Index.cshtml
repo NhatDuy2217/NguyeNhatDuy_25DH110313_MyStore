@@ -1,0 +1,356 @@
+﻿
+@model IEnumerable<NguyeNhatDuy_25DH110313_MyStore.Models.OrderDetail>
+
+@{
+    ViewBag.Title = "Quản lý chi tiết đơn hàng";
+    Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
+
+    var totalDetails = Model.Count();
+    var totalQuantity = Model.Sum(x => x.Quantity);
+    var totalAmount = Model.Sum(x => x.Quantity * x.UnitPrice);
+}
+
+<style>
+    .order-details-list-page {
+        min-height: 100vh;
+        padding: 30px 20px;
+        background: #f5f7fb;
+    }
+
+    .order-details-list-header {
+        margin-bottom: 25px;
+    }
+
+        .order-details-list-header h2 {
+            color: #243247;
+            font-size: 27px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .order-details-list-header p {
+            color: #7b8798;
+            font-size: 14px;
+        }
+
+    .order-details-summary {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-bottom: 25px;
+    }
+
+    .order-summary-card {
+        background: white;
+        padding: 22px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    }
+
+        .order-summary-card span {
+            display: block;
+            color: #7b8798;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .order-summary-card h3 {
+            color: #26364a;
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+    .order-details-table-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    }
+
+    .order-details-table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 22px;
+    }
+
+        .order-details-table-header h3 {
+            color: #26364a;
+            font-size: 19px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+    .btn-order-create {
+        display: inline-block;
+        background: #2563eb;
+        color: white;
+        padding: 10px 17px;
+        border-radius: 7px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .btn-order-create:hover {
+            background: #1d4ed8;
+            color: white;
+            text-decoration: none;
+        }
+
+    .order-details-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .order-details-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 850px;
+    }
+
+        .order-details-table thead {
+            background: #f5f7fb;
+        }
+
+        .order-details-table th {
+            padding: 15px 12px;
+            color: #475467;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .order-details-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #edf0f5;
+            color: #475467;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        .order-details-table tbody tr:hover {
+            background: #f9fbff;
+        }
+
+    .detail-id {
+        color: #2563eb;
+        font-weight: 700;
+    }
+
+    .detail-product {
+        color: #26364a;
+        font-weight: 600;
+    }
+
+    .detail-price {
+        color: #16a34a;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .detail-quantity {
+        display: inline-block;
+        background: #eff6ff;
+        color: #2563eb;
+        padding: 5px 11px;
+        border-radius: 20px;
+        font-weight: 600;
+    }
+
+    .detail-actions {
+        display: flex;
+        gap: 7px;
+        white-space: nowrap;
+    }
+
+        .detail-actions a {
+            padding: 6px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+    .btn-detail-view {
+        background: #e0f2fe;
+        color: #0369a1;
+    }
+
+    .btn-detail-edit {
+        background: #fef3c7;
+        color: #b45309;
+    }
+
+    .btn-detail-delete {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .detail-actions a:hover {
+        opacity: 0.8;
+    }
+
+    .order-details-empty {
+        text-align: center;
+        padding: 35px;
+        color: #98a2b3;
+        font-size: 14px;
+    }
+
+    @@media (max-width: 768px) {
+        .order-details-summary {
+            grid-template-columns: 1fr;
+        }
+
+        .order-details-table-card {
+            padding: 18px;
+        }
+
+        .order-details-table-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>
+
+<div class="order-details-list-page">
+
+    <div class="order-details-list-header">
+        <h2>Quản lý chi tiết đơn hàng</h2>
+        <p>Quản lý các sản phẩm được đặt trong từng đơn hàng</p>
+    </div>
+
+    <div class="order-details-summary">
+
+        <div class="order-summary-card">
+            <span>Tổng số dòng chi tiết</span>
+            <h3>@totalDetails</h3>
+        </div>
+
+        <div class="order-summary-card">
+            <span>Tổng số sản phẩm</span>
+            <h3>@totalQuantity</h3>
+        </div>
+
+        <div class="order-summary-card">
+            <span>Tổng giá trị chi tiết</span>
+            <h3>@String.Format("{0:N0} ₫", totalAmount)</h3>
+        </div>
+
+    </div>
+
+    <div class="order-details-table-card">
+
+        <div class="order-details-table-header">
+            <h3>Danh sách chi tiết đơn hàng</h3>
+
+            @Html.ActionLink(
+                "+ Thêm sản phẩm vào đơn hàng",
+                "Create",
+                null,
+                new { @class = "btn-order-create" }
+            )
+        </div>
+
+        <div class="order-details-table-wrapper">
+
+            <table class="order-details-table">
+
+                <thead>
+                    <tr>
+                        <th>Mã chi tiết</th>
+                        <th>Mã đơn hàng</th>
+                        <th>Sản phẩm</th>
+                        <th>Số lượng</th>
+                        <th>Đơn giá</th>
+                        <th>Thành tiền</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @if (Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="detail-id">
+                                    #@item.ID
+                                </td>
+
+                                <td>
+                                    #@item.OrderID
+                                </td>
+
+                                <td class="detail-product">
+                                    @(item.Product != null
+                                        ? item.Product.ProductName
+                                        : "Không xác định")
+                                </td>
+
+                                <td>
+                                    <span class="detail-quantity">
+                                        @item.Quantity
+                                    </span>
+                                </td>
+
+                                <td>
+                                    @String.Format("{0:N0} ₫", item.UnitPrice)
+                                </td>
+
+                                <td class="detail-price">
+                                    @String.Format("{0:N0} ₫", item.Quantity * item.UnitPrice)
+                                </td>
+
+                                <td>
+                                    <div class="detail-actions">
+
+                                        @Html.ActionLink(
+                                            "Chi tiết",
+                                            "Details",
+                                            new { id = item.ID },
+                                            new { @class = "btn-detail-view" }
+                                        )
+
+                                        @Html.ActionLink(
+                                            "Sửa",
+                                            "Edit",
+                                            new { id = item.ID },
+                                            new { @class = "btn-detail-edit" }
+                                        )
+
+                                        @Html.ActionLink(
+                                            "Xóa",
+                                            "Delete",
+                                            new { id = item.ID },
+                                            new { @class = "btn-detail-delete" }
+                                        )
+
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="order-details-empty">
+                                Chưa có sản phẩm nào trong chi tiết đơn hàng.
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,637 @@
+﻿
+@model IEnumerable<NguyeNhatDuy_25DH110313_MyStore.Models.Product>
+
+@{
+    ViewBag.Title = "Quản lý sản phẩm";
+    Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
+
+    int currentPage = ViewBag.CurrentPage == null ? 1 : (int)ViewBag.CurrentPage;
+    int totalPages = ViewBag.TotalPages == null ? 1 : (int)ViewBag.TotalPages;
+    int totalItems = ViewBag.TotalItems == null ? 0 : (int)ViewBag.TotalItems;
+    int pageSizeValue = ViewBag.PageSize == null ? 5 : (int)ViewBag.PageSize;
+
+    string currentFilter = ViewBag.CurrentFilter as string ?? "";
+    string currentSort = ViewBag.CurrentSort as string ?? "";
+}
+
+<style>
+    .product-page {
+        color: #343a40;
+    }
+
+    .product-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+
+        .product-heading h2 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 26px;
+        }
+
+        .product-heading p {
+            color: #6c757d;
+            margin: 6px 0 0;
+        }
+
+    .btn-add-product {
+        display: inline-block;
+        background: #198754;
+        color: white !important;
+        padding: 10px 16px;
+        border-radius: 6px;
+        text-decoration: none !important;
+        font-weight: 600;
+    }
+
+        .btn-add-product:hover {
+            background: #157347;
+        }
+
+    .product-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-bottom: 16px;
+    }
+
+    .product-search {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        flex: 1;
+    }
+
+        .product-search input[type="text"] {
+            width: 280px;
+            max-width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            outline: none;
+        }
+
+            .product-search input[type="text"]:focus {
+                border-color: #86b7fe;
+                box-shadow: 0 0 0 3px rgba(13, 110, 253, .12);
+            }
+
+    .btn-search, .btn-reset {
+        display: inline-block;
+        padding: 10px 14px;
+        border: none;
+        border-radius: 6px;
+        text-decoration: none !important;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .btn-search {
+        background: #0d6efd;
+        color: white !important;
+    }
+
+        .btn-search:hover {
+            background: #0b5ed7;
+        }
+
+    .btn-reset {
+        background: #e9ecef;
+        color: #343a40 !important;
+    }
+
+        .btn-reset:hover {
+            background: #dee2e6;
+        }
+
+    .page-size-selector {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #495057;
+        font-size: 14px;
+    }
+
+        .page-size-selector select {
+            padding: 9px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            background: white;
+        }
+
+    .product-sort-links {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 18px;
+    }
+
+    .sort-label {
+        font-weight: 600;
+        color: #495057;
+        margin-right: 3px;
+    }
+
+    .product-sort-links a {
+        display: inline-block;
+        padding: 8px 12px;
+        background: #e7f1ff;
+        color: #084298;
+        border: 1px solid #cfe2ff;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 13px;
+    }
+
+        .product-sort-links a:hover,
+        .product-sort-links a.sort-active {
+            background: #0d6efd;
+            border-color: #0d6efd;
+            color: white;
+        }
+
+    .product-count {
+        color: #6c757d;
+        margin-bottom: 14px;
+    }
+
+    .product-table-wrapper {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+        overflow-x: auto;
+    }
+
+    .product-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 0;
+        table-layout: auto;
+    }
+
+        .product-table th {
+            background: #f1f3f5;
+            color: #495057;
+            padding: 14px 12px;
+            text-align: left;
+            white-space: nowrap;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .product-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: middle;
+        }
+
+        .product-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+    .product-name {
+        font-weight: 600;
+        width: 180px;
+        min-width: 150px;
+        max-width: 180px;
+        overflow-wrap: anywhere;
+    }
+
+    .product-description {
+        width: 260px;
+        min-width: 200px;
+        max-width: 260px;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+
+    .product-description-text {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+        overflow: hidden;
+    }
+
+    .product-price {
+        color: #198754;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .product-image-column {
+        width: 125px;
+        min-width: 125px;
+    }
+
+    .product-cover {
+        width: 125px;
+        height: 165px;
+        object-fit: contain;
+        background: #f8f9fa;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        display: block;
+    }
+
+    .product-no-image {
+        width: 100px;
+        height: 130px;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f1f5f9;
+        color: #64748b;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        font-size: 12px;
+        text-align: center;
+    }
+
+    .product-actions {
+        white-space: nowrap;
+        min-width: 190px;
+    }
+
+        .product-actions a {
+            display: inline-block;
+            margin: 2px;
+            padding: 6px 9px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+    .action-edit {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .action-details {
+        background: #cfe2ff;
+        color: #084298;
+    }
+
+    .action-delete {
+        background: #f8d7da;
+        color: #842029;
+    }
+
+    .empty-products {
+        text-align: center;
+        color: #6c757d;
+        padding: 30px !important;
+    }
+
+    .product-pagination {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 20px;
+    }
+
+    .pagination-info {
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+    .pagination-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 5px;
+    }
+
+        .pagination-buttons a,
+        .pagination-buttons span {
+            display: inline-block;
+            min-width: 36px;
+            padding: 8px 11px;
+            text-align: center;
+            border-radius: 5px;
+            text-decoration: none;
+            border: 1px solid #dee2e6;
+            font-size: 14px;
+        }
+
+        .pagination-buttons a {
+            color: #0d6efd;
+            background: white;
+        }
+
+            .pagination-buttons a:hover {
+                background: #e7f1ff;
+            }
+
+        .pagination-buttons .active-page {
+            background: #0d6efd;
+            color: white;
+            border-color: #0d6efd;
+        }
+
+        .pagination-buttons .disabled-page {
+            color: #adb5bd;
+            background: #f8f9fa;
+        }
+
+    @@media (max-width: 768px) {
+        .product-table-wrapper {
+            padding: 12px;
+        }
+
+        .product-heading h2 {
+            font-size: 22px;
+        }
+
+        .product-cover, .product-no-image {
+            width: 85px;
+            height: 115px;
+        }
+
+        .product-image-column {
+            min-width: 105px;
+        }
+
+        .product-search input[type="text"] {
+            width: 100%;
+        }
+
+        .product-toolbar {
+            align-items: stretch;
+        }
+
+        .product-pagination {
+            align-items: flex-start;
+        }
+    }
+</style>
+
+<div class="product-page">
+
+    <div class="product-heading">
+        <div>
+            <h2>Quản lý sản phẩm</h2>
+            <p>Danh sách sản phẩm trong cửa hàng MyStore</p>
+        </div>
+
+        <div>
+            @Html.ActionLink(
+                "+ Thêm sản phẩm",
+                "Create",
+                "Product",
+                new { area = "Admin" },
+                new { @class = "btn-add-product" }
+            )
+        </div>
+    </div>
+
+    @using (Html.BeginForm("Index", "Product", new { area = "Admin" }, FormMethod.Get))
+    {
+        <div class="product-toolbar">
+            <div class="product-search">
+                <input type="text"
+                       name="searchString"
+                       value="@currentFilter"
+                       placeholder="Nhập tên sản phẩm cần tìm..." />
+
+                <input type="hidden"
+                       name="sortOrder"
+                       value="@currentSort" />
+
+                <button type="submit" class="btn-search">Tìm kiếm</button>
+
+                @Html.ActionLink(
+                    "Làm mới",
+                    "Index",
+                    "Product",
+                    new { area = "Admin" },
+                    new { @class = "btn-reset" }
+                )
+            </div>
+
+            <div class="page-size-selector">
+                <label for="pageSize">Sản phẩm/trang:</label>
+                <select id="pageSize" name="pageSize">
+                    <option value="5" @(pageSizeValue == 5 ? "selected=\"selected\"" : "")>5</option>
+                    <option value="10" @(pageSizeValue == 10 ? "selected=\"selected\"" : "")>10</option>
+                    <option value="20" @(pageSizeValue == 20 ? "selected=\"selected\"" : "")>20</option>
+                </select>
+            </div>
+        </div>
+    }
+
+    <div class="product-sort-links">
+        <span class="sort-label">Sắp xếp:</span>
+
+        @Html.ActionLink("Tên A → Z", "Index",
+            new { searchString = currentFilter, sortOrder = "name_asc", pageSize = pageSizeValue },
+            new { @class = currentSort == "name_asc" ? "sort-active" : "" })
+
+        @Html.ActionLink("Tên Z → A", "Index",
+            new { searchString = currentFilter, sortOrder = "name_desc", pageSize = pageSizeValue },
+            new { @class = currentSort == "name_desc" ? "sort-active" : "" })
+
+        @Html.ActionLink("Giá thấp → cao", "Index",
+            new { searchString = currentFilter, sortOrder = "price_asc", pageSize = pageSizeValue },
+            new { @class = currentSort == "price_asc" ? "sort-active" : "" })
+
+        @Html.ActionLink("Giá cao → thấp", "Index",
+            new { searchString = currentFilter, sortOrder = "price_desc", pageSize = pageSizeValue },
+            new { @class = currentSort == "price_desc" ? "sort-active" : "" })
+    </div>
+
+    <div class="product-count">
+        Tìm thấy <strong>@totalItems</strong> sản phẩm
+        @if (!string.IsNullOrWhiteSpace(currentFilter))
+        {
+            <span>với từ khóa "<strong>@currentFilter</strong>"</span>
+        }
+    </div>
+
+    <div class="product-table-wrapper">
+        <table class="product-table">
+            <thead>
+                <tr>
+                    <th>Tên sản phẩm</th>
+                    <th>Mô tả</th>
+                    <th>Giá bán</th>
+                    <th>Ảnh bìa</th>
+                    <th>Danh mục</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="product-name">@item.ProductName</td>
+
+                            <td class="product-description">
+                                <div class="product-description-text">
+                                    @item.ProductDecription
+                                </div>
+                            </td>
+
+                            <td class="product-price">
+                                @item.ProductPrice.ToString("N0") VNĐ
+                            </td>
+
+                            <td class="product-image-column">
+                                @if (!string.IsNullOrWhiteSpace(item.ProductImage))
+                                {
+                                    <img src="@Url.Content(item.ProductImage)"
+                                         alt="@item.ProductName"
+                                         class="product-cover" />
+                                }
+                                else
+                                {
+                                    <div class="product-no-image">Chưa có ảnh</div>
+                                }
+                            </td>
+
+                            <td>
+                                @(item.Category == null
+                                    ? "Chưa phân loại"
+                                    : item.Category.CategoryName)
+                            </td>
+
+                            <td class="product-actions">
+                                @Html.ActionLink("Sửa", "Edit", "Product",
+                                    new { id = item.ProductID, area = "Admin" },
+                                    new { @class = "action-edit" })
+
+                                @Html.ActionLink("Chi tiết", "Details", "Product",
+                                    new { id = item.ProductID, area = "Admin" },
+                                    new { @class = "action-details" })
+
+                                @Html.ActionLink("Xóa", "Delete", "Product",
+                                    new { id = item.ProductID, area = "Admin" },
+                                    new { @class = "action-delete" })
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="empty-products">
+                            @if (!string.IsNullOrWhiteSpace(currentFilter))
+                            {
+                                <span>Không tìm thấy sản phẩm phù hợp với từ khóa "@currentFilter".</span>
+                            }
+                            else
+                            {
+                                <span>Chưa có sản phẩm nào trong cửa hàng.</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="product-pagination">
+            <div class="pagination-info">
+                @if (totalItems > 0)
+                {
+                    <span>
+                        Hiển thị
+                        <strong>@((currentPage - 1) * pageSizeValue + 1)</strong>
+
+                        <strong>@Math.Min(currentPage * pageSizeValue, totalItems)</strong>
+                        trong tổng số <strong>@totalItems</strong> sản phẩm
+                    </span>
+                }
+                else
+                {
+                    <span>Không có kết quả để hiển thị.</span>
+                }
+            </div>
+
+            <div class="pagination-buttons">
+                @if (currentPage > 1)
+                {
+                    @Html.ActionLink("« Trước", "Index",
+                        new
+                             {
+                            searchString = currentFilter,
+                            sortOrder = currentSort,
+                            page = currentPage - 1,
+                            pageSize = pageSizeValue
+                        })
+                }
+                else
+                {
+                    <span class="disabled-page">« Trước</span>
+                }
+
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    if (i == currentPage)
+                    {
+                        <span class="active-page">@i</span>
+                    }
+                    else
+                    {
+                        @Html.ActionLink(i.ToString(), "Index",
+                            new
+                                 {
+                                searchString = currentFilter,
+                                sortOrder = currentSort,
+                                page = i,
+                                pageSize = pageSizeValue
+                            })
+                    }
+                }
+
+                @if (currentPage < totalPages)
+                {
+                    @Html.ActionLink("Sau »", "Index",
+                        new
+                             {
+                            searchString = currentFilter,
+                            sortOrder = currentSort,
+                            page = currentPage + 1,
+                            pageSize = pageSizeValue
+                        })
+                }
+                else
+                {
+                    <span class="disabled-page">Sau »</span>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var pageSizeSelect = document.getElementById("pageSize");
+
+                if (pageSizeSelect instanceof HTMLSelectElement) {
+                    pageSizeSelect.addEventListener("change", function (event) {
+                        var target = event.target;
+
+                        if (target instanceof HTMLSelectElement && target.form) {
+                            target.form.submit();
+                        }
+                    });
+                }
+            });
+</script>

@@ -1,0 +1,351 @@
+﻿
+@model NguyeNhatDuy_25DH110313_MyStore.Models.Order
+
+@{
+    ViewBag.Title = "Chi tiết đơn hàng";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<style>
+    .order-detail-page {
+        min-height: 100vh;
+        background: #f5f7fb;
+        padding: 40px 20px 60px;
+    }
+
+    .order-detail-container {
+        max-width: 1050px;
+        margin: auto;
+    }
+
+    .order-detail-header {
+        margin-bottom: 25px;
+    }
+
+        .order-detail-header h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .order-detail-header p {
+            color: #64748b;
+        }
+
+    .order-detail-card {
+        background: #fff;
+        border-radius: 14px;
+        padding: 28px;
+        margin-bottom: 22px;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+    }
+
+        .order-detail-card h4 {
+            color: #1e293b;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+    .order-info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .order-info-item {
+        padding: 12px 15px;
+        background: #f8fafc;
+        border-radius: 8px;
+    }
+
+        .order-info-item label {
+            display: block;
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .order-info-item span {
+            color: #1e293b;
+            font-weight: 600;
+            word-break: break-word;
+        }
+
+    .order-product-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .order-product-table th {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 14px 12px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .order-product-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: center;
+            vertical-align: middle;
+            color: #334155;
+        }
+
+    .order-product-name {
+        font-weight: 600;
+        text-align: left !important;
+    }
+
+        .order-product-name img {
+            width: 55px;
+            height: 65px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+    .order-total {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 25px;
+        margin-top: 22px;
+        padding-top: 18px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+        .order-total strong {
+            font-size: 22px;
+            color: #dc2626;
+        }
+
+    .order-status-paid {
+        color: #15803d;
+        background: #dcfce7;
+        padding: 7px 13px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .order-status-unpaid {
+        color: #b45309;
+        background: #fef3c7;
+        padding: 7px 13px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .order-detail-actions {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .btn-order-back {
+        display: inline-block;
+        background: #64748b;
+        color: white;
+        padding: 11px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+        .btn-order-back:hover {
+            background: #475569;
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-order-shopping {
+        display: inline-block;
+        background: #2563eb;
+        color: white;
+        padding: 11px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+        .btn-order-shopping:hover {
+            background: #1d4ed8;
+            color: white;
+            text-decoration: none;
+        }
+
+    @@media (max-width: 768px) {
+        .order-detail-card {
+            padding: 18px;
+            overflow-x: auto;
+        }
+
+        .order-info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .order-product-table {
+            min-width: 650px;
+        }
+
+        .order-detail-header h2 {
+            font-size: 23px;
+        }
+    }
+</style>
+
+<div class="order-detail-page">
+    <div class="order-detail-container">
+
+        <div class="order-detail-header">
+            <h2>📦 Chi tiết đơn hàng #@Model.OrderID</h2>
+            <p>Thông tin chi tiết đơn hàng của bạn tại MyStore.</p>
+        </div>
+
+        <!-- THÔNG TIN ĐƠN HÀNG -->
+        <div class="order-detail-card">
+            <h4>Thông tin đơn hàng</h4>
+
+            <div class="order-info-grid">
+
+                <div class="order-info-item">
+                    <label>Mã đơn hàng</label>
+                    <span>#@Model.OrderID</span>
+                </div>
+
+                <div class="order-info-item">
+                    <label>Ngày đặt hàng</label>
+                    <span>
+                        @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")
+                    </span>
+                </div>
+
+                <div class="order-info-item">
+                    <label>Khách hàng</label>
+                    <span>
+                        @(Model.Customer != null
+                            ? Model.Customer.CustomerName
+                            : "Không có thông tin")
+                    </span>
+                </div>
+
+                <div class="order-info-item">
+                    <label>Số điện thoại</label>
+                    <span>
+                        @(Model.Customer != null
+                            ? Model.Customer.CustomerPhone
+                            : "Không có thông tin")
+                    </span>
+                </div>
+
+                <div class="order-info-item">
+                    <label>Email</label>
+                    <span>
+                        @(Model.Customer != null
+                            ? Model.Customer.CustomerEmail
+                            : "Không có thông tin")
+                    </span>
+                </div>
+
+                <div class="order-info-item">
+                    <label>Trạng thái thanh toán</label>
+
+                    @if (Model.PaymentStatus != null &&
+                         Model.PaymentStatus.Trim() == "Đã thanh toán")
+                    {
+                        <span class="order-status-paid">
+                            Đã thanh toán
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="order-status-unpaid">
+                            @Model.PaymentStatus
+                        </span>
+                    }
+                </div>
+
+                <div class="order-info-item" style="grid-column: 1 / -1;">
+                    <label>Địa chỉ giao hàng</label>
+                    <span>@Model.AddressDelivery</span>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- DANH SÁCH SẢN PHẨM -->
+        <div class="order-detail-card">
+            <h4>Danh sách sản phẩm</h4>
+
+            <table class="order-product-table">
+                <thead>
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Đơn giá</th>
+                        <th>Số lượng</th>
+                        <th>Thành tiền</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model.OrderDetails)
+                    {
+                        <tr>
+                            <td class="order-product-name">
+                                @if (item.Product != null &&
+                                     !String.IsNullOrEmpty(item.Product.ProductImage))
+                                {
+                                    <img src="@Url.Content(item.Product.ProductImage)"
+                                         alt="@item.Product.ProductName" />
+                                }
+
+                                @(item.Product != null
+                                    ? item.Product.ProductName
+                                    : "Sản phẩm không tồn tại")
+                            </td>
+
+                            <td>
+                                @item.UnitPrice.ToString("N0") đ
+                            </td>
+
+                            <td>
+                                @item.Quantity
+                            </td>
+
+                            <td>
+                                @((item.UnitPrice * item.Quantity).ToString("N0")) đ
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="order-total">
+                <span>Tổng thanh toán:</span>
+                <strong>@Model.TotalAmount.ToString("N0") đ</strong>
+            </div>
+        </div>
+
+        <!-- NÚT ĐIỀU HƯỚNG -->
+        <div class="order-detail-actions">
+
+            <a href="@Url.Action("Index", "PurchaseHistory")"
+               class="btn-order-back">
+                ← Quay lại lịch sử mua hàng
+            </a>
+
+            <a href="@Url.Action("ProductList", "Home")"
+               class="btn-order-shopping">
+                Tiếp tục mua sắm
+            </a>
+
+        </div>
+
+    </div>
+</div>

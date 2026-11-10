@@ -1,0 +1,246 @@
+﻿
+@model PagedList.IPagedList<NguyeNhatDuy_25DH110313_MyStore.Models.Order>
+@using PagedList.Mvc
+
+@{
+    ViewBag.Title = "Lịch sử mua hàng";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<style>
+    .history-page {
+        min-height: 100vh;
+        padding: 40px 20px 60px;
+        background: #f5f7fb;
+    }
+
+    .history-container {
+        max-width: 1100px;
+        margin: auto;
+    }
+
+    .history-header {
+        margin-bottom: 28px;
+    }
+
+        .history-header h2 {
+            color: #1e293b;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .history-header p {
+            color: #64748b;
+            margin: 0;
+        }
+
+    .history-card {
+        background: #fff;
+        border-radius: 14px;
+        padding: 25px;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+    }
+
+    .history-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .history-table th {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 15px 12px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .history-table td {
+            padding: 17px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: center;
+            color: #334155;
+            vertical-align: middle;
+        }
+
+        .history-table tr:hover {
+            background: #f8fafc;
+        }
+
+    .order-id {
+        color: #2563eb;
+        font-weight: 700;
+    }
+
+    .order-total {
+        color: #dc2626;
+        font-weight: 700;
+    }
+
+    .status-paid {
+        color: #15803d;
+        background: #dcfce7;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .status-unpaid {
+        color: #b45309;
+        background: #fef3c7;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .btn-history-detail {
+        display: inline-block;
+        padding: 8px 14px;
+        color: #fff;
+        background: #2563eb;
+        border-radius: 7px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+        .btn-history-detail:hover {
+            background: #1d4ed8;
+            color: #fff;
+            text-decoration: none;
+        }
+
+    .history-empty {
+        text-align: center;
+        padding: 45px 15px;
+        color: #64748b;
+    }
+
+        .history-empty a {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            color: #fff;
+            background: #2563eb;
+            border-radius: 7px;
+            text-decoration: none;
+        }
+
+    .history-pagination {
+        margin-top: 25px;
+        text-align: center;
+    }
+
+    @@media (max-width: 768px) {
+        .history-card {
+            padding: 12px;
+            overflow-x: auto;
+        }
+
+        .history-table {
+            min-width: 750px;
+        }
+
+        .history-header h2 {
+            font-size: 23px;
+        }
+    }
+</style>
+
+<div class="history-page">
+    <div class="history-container">
+
+        <div class="history-header">
+            <h2>📦 Lịch sử mua hàng</h2>
+            <p>Theo dõi các đơn hàng bạn đã đặt tại MyStore.</p>
+        </div>
+
+        <div class="history-card">
+
+            @if (Model == null || !Model.Any())
+            {
+                <div class="history-empty">
+                    <h4>Bạn chưa có đơn hàng nào</h4>
+                    <p>Hãy khám phá sản phẩm và đặt hàng ngay hôm nay.</p>
+
+                    <a href="@Url.Action("ProductList", "Home")">
+                        Mua sắm ngay
+                    </a>
+                </div>
+            }
+            else
+            {
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Mã đơn hàng</th>
+                            <th>Ngày đặt</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Địa chỉ giao hàng</th>
+                            <th>Chi tiết</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="order-id">
+                                    #@item.OrderID
+                                </td>
+
+                                <td>
+                                    @item.OrderDate.ToString("dd/MM/yyyy HH:mm")
+                                </td>
+
+                                <td class="order-total">
+                                    @item.TotalAmount.ToString("N0") đ
+                                </td>
+
+                                <td>
+                                    @if (item.PaymentStatus != null &&
+                                         item.PaymentStatus.Trim() == "Đã thanh toán")
+                                    {
+                                        <span class="status-paid">
+                                            Đã thanh toán
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-unpaid">
+                                            @item.PaymentStatus
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @item.AddressDelivery
+                                </td>
+
+                                <td>
+                                    <a href="@Url.Action("Details", "PurchaseHistory", new { id = item.OrderID })"
+                                       class="btn-history-detail">
+                                        Xem chi tiết
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <div class="history-pagination">
+                    @Html.PagedListPager(
+                        Model,
+                        page => Url.Action("Index", new { page })
+                    )
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

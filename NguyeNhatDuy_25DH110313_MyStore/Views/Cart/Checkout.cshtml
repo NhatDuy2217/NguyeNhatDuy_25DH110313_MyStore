@@ -1,0 +1,211 @@
+﻿
+@model NguyeNhatDuy_25DH110313_MyStore.Models.Customer
+
+@using NguyeNhatDuy_25DH110313_MyStore.Models
+@using System.Collections.Generic
+@using System.Linq
+
+@{
+    ViewBag.Title = "Xác nhận đặt hàng";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+
+    var cart = Session["Cart"] as List<CartItem>
+               ?? new List<CartItem>();
+
+    decimal total = cart.Sum(x => x.UnitPrice * x.Quantity);
+}
+
+<style>
+    .checkout-page {
+        background: #f5f7fb;
+        min-height: 75vh;
+        padding: 40px 15px;
+    }
+
+    .checkout-container {
+        max-width: 1100px;
+        margin: auto;
+    }
+
+    .checkout-title {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 25px;
+    }
+
+    .checkout-card {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 18px rgba(0,0,0,.05);
+        margin-bottom: 22px;
+    }
+
+        .checkout-card h4 {
+            font-weight: 700;
+            margin-bottom: 22px;
+        }
+
+        .checkout-card label {
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+
+        .checkout-card .form-control {
+            height: 43px;
+            border-radius: 7px;
+            margin-bottom: 17px;
+        }
+
+    .checkout-product {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 13px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .checkout-total {
+        display: flex;
+        justify-content: space-between;
+        font-size: 20px;
+        font-weight: 700;
+        color: #dc3545;
+        margin-top: 20px;
+    }
+
+    .checkout-btn {
+        width: 100%;
+        border: none;
+        border-radius: 8px;
+        padding: 14px;
+        background: #2563eb;
+        color: white;
+        font-weight: 700;
+        font-size: 16px;
+    }
+
+        .checkout-btn:hover {
+            background: #1d4ed8;
+        }
+
+    .checkout-error {
+        color: #dc3545;
+        margin-bottom: 15px;
+    }
+</style>
+
+<div class="checkout-page">
+    <div class="checkout-container">
+
+        <h2 class="checkout-title">
+            Xác nhận đặt hàng
+        </h2>
+
+        @using (Html.BeginForm("Checkout", "Cart", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary(
+                false,
+                "",
+                new { @class = "checkout-error" }
+            )
+
+            <div class="row">
+
+                <!-- THÔNG TIN GIAO HÀNG -->
+                <div class="col-md-7">
+                    <div class="checkout-card">
+
+                        <h4>Thông tin giao hàng</h4>
+
+                        <label>Họ và tên</label>
+                        @Html.TextBoxFor(
+                            m => m.CustomerName,
+                            new
+                                 {
+                                @class = "form-control",
+                                required = "required"
+                            }
+                        )
+
+                        <label>Số điện thoại</label>
+                        @Html.TextBoxFor(
+                            m => m.CustomerPhone,
+                            new
+                                 {
+                                @class = "form-control",
+                                required = "required"
+                            }
+                        )
+
+                        <label>Email</label>
+                        @Html.TextBoxFor(
+                            m => m.CustomerEmail,
+                            new
+                                 {
+                                @class = "form-control",
+                                type = "email",
+                                required = "required"
+                            }
+                        )
+
+                        <label>Địa chỉ giao hàng</label>
+                        @Html.TextBoxFor(
+                            m => m.CustomerAddress,
+                            new
+                                 {
+                                @class = "form-control",
+                                required = "required"
+                            }
+                        )
+
+                    </div>
+                </div>
+
+                <!-- ĐƠN HÀNG -->
+                <div class="col-md-5">
+                    <div class="checkout-card">
+
+                        <h4>Đơn hàng của bạn</h4>
+
+                        @foreach (var item in cart)
+                        {
+                            <div class="checkout-product">
+                                <div>
+                                    <strong>@item.ProductName</strong>
+                                    <div class="text-muted">
+                                        Số lượng: @item.Quantity
+                                    </div>
+                                </div>
+
+                                <strong>
+                                    @((item.UnitPrice * item.Quantity)
+                                        .ToString("N0")) đ
+                                </strong>
+                            </div>
+                        }
+
+                        <div class="checkout-total">
+                            <span>Tổng tiền:</span>
+                            <span>@total.ToString("N0") đ</span>
+                        </div>
+
+                        <p class="text-muted" style="margin-top:15px;">
+                            Phương thức thanh toán:
+                            Thanh toán khi nhận hàng (COD).
+                        </p>
+
+                        <button type="submit" class="checkout-btn">
+                            XÁC NHẬN ĐẶT HÀNG
+                        </button>
+
+                    </div>
+                </div>
+
+            </div>
+        }
+
+    </div>
+</div>

@@ -1,0 +1,543 @@
+﻿
+@model IEnumerable<NguyeNhatDuy_25DH110313_MyStore.Models.User>
+
+@{
+    ViewBag.Title = "Quản lý tài khoản";
+    Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
+}
+
+<style>
+    .users-page {
+        padding: 30px;
+        min-height: 100vh;
+        background: #f5f7fb;
+    }
+
+    .users-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .users-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .users-title h2 {
+        font-size: 28px;
+        font-weight: 700;
+        color: #243247;
+        margin: 0 0 8px;
+    }
+
+    .users-title p {
+        color: #8492a6;
+        margin: 0;
+    }
+
+    .btn-create {
+        display: inline-block;
+        padding: 11px 20px;
+        background: #2563eb;
+        color: white !important;
+        border-radius: 8px;
+        text-decoration: none !important;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+        .btn-create:hover {
+            background: #1d4ed8;
+        }
+
+    .users-card {
+        background: white;
+        border-radius: 14px;
+        padding: 25px;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.04);
+    }
+
+    .users-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 22px;
+        flex-wrap: wrap;
+    }
+
+    .search-form {
+        display: flex;
+        gap: 10px;
+        flex: 1;
+        max-width: 500px;
+    }
+
+    .search-input {
+        flex: 1;
+        min-width: 150px;
+        height: 42px;
+        padding: 0 14px;
+        border: 1px solid #dce2eb;
+        border-radius: 8px;
+        outline: none;
+    }
+
+        .search-input:focus {
+            border-color: #2563eb;
+        }
+
+    .btn-search {
+        border: none;
+        padding: 0 20px;
+        border-radius: 8px;
+        background: #2563eb;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .btn-reset {
+        display: inline-flex;
+        align-items: center;
+        padding: 0 15px;
+        height: 42px;
+        border: 1px solid #dce2eb;
+        border-radius: 8px;
+        color: #64748b;
+        text-decoration: none;
+    }
+
+    .page-size select {
+        height: 40px;
+        padding: 0 12px;
+        border: 1px solid #dce2eb;
+        border-radius: 8px;
+        outline: none;
+        cursor: pointer;
+    }
+
+    .users-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .users-table th {
+            padding: 16px 14px;
+            text-align: left;
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 700;
+            border-bottom: 1px solid #e8edf4;
+            white-space: nowrap;
+        }
+
+        .users-table td {
+            padding: 17px 14px;
+            border-bottom: 1px solid #edf0f5;
+            color: #334155;
+            vertical-align: middle;
+        }
+
+        .users-table tr:hover {
+            background: #fafcff;
+        }
+
+    .sort-link {
+        color: #64748b;
+        text-decoration: none;
+    }
+
+        .sort-link:hover {
+            color: #2563eb;
+        }
+
+    .username-text {
+        font-weight: 600;
+        color: #243247;
+    }
+
+    .role-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        background: #e8f1ff;
+        color: #2563eb;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .action-links {
+        display: flex;
+        gap: 7px;
+        flex-wrap: wrap;
+    }
+
+        .action-links a {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+    .btn-details {
+        color: #2563eb;
+        background: #eff6ff;
+    }
+
+    .btn-edit {
+        color: #b7791f;
+        background: #fffbeb;
+    }
+
+    .btn-delete {
+        color: #dc2626;
+        background: #fef2f2;
+    }
+
+    .users-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 22px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .pagination {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+        .pagination a,
+        .pagination span {
+            min-width: 36px;
+            height: 36px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 7px;
+            text-decoration: none;
+            border: 1px solid #e2e8f0;
+            color: #475569;
+            padding: 0 10px;
+        }
+
+        .pagination .active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+
+    .empty-message {
+        text-align: center;
+        padding: 35px !important;
+        color: #94a3b8 !important;
+    }
+
+    .success-message {
+        padding: 13px 16px;
+        background: #ecfdf5;
+        color: #047857;
+        border-radius: 8px;
+        margin-bottom: 18px;
+    }
+
+    .error-message {
+        padding: 13px 16px;
+        background: #fef2f2;
+        color: #dc2626;
+        border-radius: 8px;
+        margin-bottom: 18px;
+    }
+
+    @@media (max-width: 768px) {
+        .users-page {
+            padding: 15px;
+        }
+
+        .users-card {
+            padding: 15px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .users-footer {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="users-page">
+    <div class="users-container">
+
+        <!-- TIÊU ĐỀ -->
+        <div class="users-header">
+            <div class="users-title">
+                <h2>Quản lý tài khoản</h2>
+                <p>Quản lý thông tin và quyền truy cập của tài khoản</p>
+            </div>
+
+            <div>
+                @Html.ActionLink("+ Thêm tài khoản", "Create", null, new { @class = "btn-create" })
+            </div>
+        </div>
+
+        <!-- THÔNG BÁO -->
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="success-message">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="error-message">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+
+        <div class="users-card">
+
+            <!-- THANH TÌM KIẾM VÀ CHỌN SỐ LƯỢNG -->
+            <div class="users-toolbar">
+
+                @using (Html.BeginForm("Index", "Users", FormMethod.Get, new { @class = "search-form" }))
+                {
+                    <input type="text"
+                           name="searchString"
+                           value="@ViewBag.CurrentFilter"
+                           class="search-input"
+                           placeholder="Tìm kiếm tên đăng nhập hoặc vai trò..." />
+
+                    <input type="hidden"
+                           name="sortOrder"
+                           value="@ViewBag.CurrentSort" />
+
+                    <input type="hidden"
+                           name="pageSize"
+                           value="@ViewBag.PageSize" />
+
+                    <button type="submit" class="btn-search">
+                        Tìm kiếm
+                    </button>
+
+                    @Html.ActionLink("Đặt lại", "Index", null, new { @class = "btn-reset" })
+                }
+
+                <!-- CHỌN SỐ LƯỢNG TÀI KHOẢN MỖI TRANG -->
+                <div class="page-size">
+                    @using (Html.BeginForm("Index", "Users", FormMethod.Get))
+                    {
+                        <input type="hidden"
+                               name="searchString"
+                               value="@ViewBag.CurrentFilter" />
+
+                        <input type="hidden"
+                               name="sortOrder"
+                               value="@ViewBag.CurrentSort" />
+
+                        <select name="pageSize" onchange="this.form.submit()">
+                            <option value="5" @(ViewBag.PageSize == 5 ? "selected" : "")>
+                                5 / trang
+                            </option>
+
+                            <option value="10" @(ViewBag.PageSize == 10 ? "selected" : "")>
+                                10 / trang
+                            </option>
+
+                            <option value="20" @(ViewBag.PageSize == 20 ? "selected" : "")>
+                                20 / trang
+                            </option>
+                        </select>
+                    }
+                </div>
+
+            </div>
+
+            <!-- BẢNG DANH SÁCH TÀI KHOẢN -->
+            <div class="table-responsive">
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+
+                            <th>
+                                @Html.ActionLink(
+                                    "Tên đăng nhập",
+                                    "Index",
+                                    new
+                                    {
+                                        searchString = ViewBag.CurrentFilter,
+                                        sortOrder = ViewBag.UsernameSortParm,
+                                        pageSize = ViewBag.PageSize
+                                    },
+                                    new { @class = "sort-link" }
+                                )
+                            </th>
+
+                            <th>
+                                @Html.ActionLink(
+                                    "Vai trò",
+                                    "Index",
+                                    new
+                                    {
+                                        searchString = ViewBag.CurrentFilter,
+                                        sortOrder = ViewBag.RoleSortParm,
+                                        pageSize = ViewBag.PageSize
+                                    },
+                                    new { @class = "sort-link" }
+                                )
+                            </th>
+
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            int stt = ((ViewBag.CurrentPage - 1) * ViewBag.PageSize) + 1;
+
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@stt</td>
+
+                                    <td>
+                                        <span class="username-text">
+                                            @item.Username
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="role-badge">
+                                            @item.UserRole
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <div class="action-links">
+                                            @Html.ActionLink(
+                                                "Chi tiết",
+                                                "Details",
+                                                new { id = item.Username },
+                                                new { @class = "btn-details" }
+                                            )
+
+                                            @Html.ActionLink(
+                                                "Sửa",
+                                                "Edit",
+                                                new { id = item.Username },
+                                                new { @class = "btn-edit" }
+                                            )
+
+                                            @Html.ActionLink(
+                                                "Xóa",
+                                                "Delete",
+                                                new { id = item.Username },
+                                                new { @class = "btn-delete" }
+                                            )
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                stt++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" class="empty-message">
+                                    Không tìm thấy tài khoản nào.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PHÂN TRANG -->
+            <div class="users-footer">
+
+                <div>
+                    <span style="color:#64748b; font-size:13px;">
+                        Tổng số:
+                        <strong>@ViewBag.TotalItems</strong>
+                        tài khoản
+                    </span>
+                </div>
+
+                <div class="pagination">
+
+                    @if (ViewBag.CurrentPage > 1)
+                    {
+                        @Html.ActionLink(
+                            "‹",
+                            "Index",
+                            new
+                            {
+                                page = ViewBag.CurrentPage - 1,
+                                searchString = ViewBag.CurrentFilter,
+                                sortOrder = ViewBag.CurrentSort,
+                                pageSize = ViewBag.PageSize
+                            }
+                        )
+                    }
+
+                    @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                    {
+                        if (i == ViewBag.CurrentPage)
+                        {
+                            <span class="active">@i</span>
+                        }
+                        else
+                        {
+                            @Html.ActionLink(
+                                i.ToString(),
+                                "Index",
+                                new
+                                {
+                                    page = i,
+                                    searchString = ViewBag.CurrentFilter,
+                                    sortOrder = ViewBag.CurrentSort,
+                                    pageSize = ViewBag.PageSize
+                                }
+                            )
+                        }
+                    }
+
+                    @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                    {
+                        @Html.ActionLink(
+                            "›",
+                            "Index",
+                            new
+                            {
+                                page = ViewBag.CurrentPage + 1,
+                                searchString = ViewBag.CurrentFilter,
+                                sortOrder = ViewBag.CurrentSort,
+                                pageSize = ViewBag.PageSize
+                            }
+                        )
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

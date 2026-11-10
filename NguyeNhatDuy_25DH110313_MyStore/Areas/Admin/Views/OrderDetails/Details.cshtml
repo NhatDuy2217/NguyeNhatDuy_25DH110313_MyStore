@@ -1,0 +1,237 @@
+﻿
+@model NguyeNhatDuy_25DH110313_MyStore.Models.OrderDetail
+
+@{
+    ViewBag.Title = "Chi tiết đơn hàng";
+    Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
+
+    decimal total = Model.Quantity * Model.UnitPrice;
+}
+
+<style>
+    .detail-details-page {
+        min-height: 100vh;
+        padding: 35px 20px;
+        background: #f5f7fb;
+    }
+
+    .detail-details-header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+        .detail-details-header h2 {
+            color: #243247;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .detail-details-header p {
+            color: #7b8798;
+            font-size: 14px;
+        }
+
+    .detail-details-container {
+        max-width: 750px;
+        margin: 0 auto;
+    }
+
+    .detail-details-card {
+        background: #fff;
+        padding: 30px 35px;
+        border-radius: 14px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+    }
+
+        .detail-details-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #26364a;
+            margin: 0 0 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+    .detail-info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        padding: 16px 0;
+        border-bottom: 1px solid #edf0f5;
+    }
+
+    .detail-info-label {
+        color: #667085;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .detail-info-value {
+        color: #26364a;
+        font-size: 14px;
+        font-weight: 600;
+        text-align: right;
+        overflow-wrap: anywhere;
+    }
+
+    .detail-total-row {
+        background: #eff6ff;
+        border-radius: 8px;
+        padding: 17px 15px;
+        margin-top: 20px;
+    }
+
+        .detail-total-row .detail-info-label,
+        .detail-total-row .detail-info-value {
+            color: #1d4ed8;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+    .detail-details-actions {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #edf0f5;
+    }
+
+    .btn-detail-edit {
+        background: #2563eb;
+        color: white;
+        padding: 11px 25px;
+        border-radius: 7px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .btn-detail-edit:hover {
+            background: #1d4ed8;
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-detail-back {
+        background: #eef2f7;
+        color: #475467;
+        padding: 11px 25px;
+        border-radius: 7px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .btn-detail-back:hover {
+            background: #e0e7ef;
+            color: #344054;
+            text-decoration: none;
+        }
+
+    @@media (max-width: 576px) {
+        .detail-details-card {
+            padding: 22px 18px;
+        }
+
+        .detail-info-row {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .detail-info-value {
+            text-align: left;
+        }
+
+        .detail-details-actions {
+            flex-direction: column;
+        }
+
+            .detail-details-actions a {
+                text-align: center;
+            }
+    }
+</style>
+
+<div class="detail-details-page">
+
+    <div class="detail-details-header">
+        <h2>Chi tiết đơn hàng</h2>
+        <p>Xem thông tin sản phẩm được thêm vào đơn hàng</p>
+    </div>
+
+    <div class="detail-details-container">
+
+        <div class="detail-details-card">
+
+            <h3>Thông tin chi tiết</h3>
+
+            <div class="detail-info-row">
+                <span class="detail-info-label">Mã chi tiết</span>
+                <span class="detail-info-value">@Model.ID</span>
+            </div>
+
+            <div class="detail-info-row">
+                <span class="detail-info-label">Mã đơn hàng</span>
+                <span class="detail-info-value">@Model.OrderID</span>
+            </div>
+
+            <div class="detail-info-row">
+                <span class="detail-info-label">Tên sản phẩm</span>
+                <span class="detail-info-value">
+                    @(Model.Product != null ? Model.Product.ProductName : "Không có dữ liệu")
+                </span>
+            </div>
+
+            <div class="detail-info-row">
+                <span class="detail-info-label">Số lượng</span>
+                <span class="detail-info-value">@Model.Quantity</span>
+            </div>
+
+            <div class="detail-info-row">
+                <span class="detail-info-label">Đơn giá</span>
+                <span class="detail-info-value">
+                    @Model.UnitPrice.ToString("N0") VNĐ
+                </span>
+            </div>
+
+            <div class="detail-info-row">
+                <span class="detail-info-label">Trạng thái thanh toán</span>
+                <span class="detail-info-value">
+                    @(Model.Order != null ? Model.Order.PaymentStatus : "Không có dữ liệu")
+                </span>
+            </div>
+
+            <div class="detail-info-row detail-total-row">
+                <span class="detail-info-label">Thành tiền</span>
+                <span class="detail-info-value">
+                    @total.ToString("N0") VNĐ
+                </span>
+            </div>
+
+            <div class="detail-details-actions">
+
+                @Html.ActionLink(
+                    "Chỉnh sửa",
+                    "Edit",
+                    new { id = Model.ID },
+                    new { @class = "btn-detail-edit" }
+                )
+
+                @Html.ActionLink(
+                    "Quay lại",
+                    "Index",
+                    null,
+                    new { @class = "btn-detail-back" }
+                )
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
