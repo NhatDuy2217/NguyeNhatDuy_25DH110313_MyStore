@@ -8,181 +8,466 @@
     int productCount = ViewBag.ProductCount != null
         ? (int)ViewBag.ProductCount
         : 0;
+
+    bool hasDeleteError = ViewBag.DeleteError != null;
+    bool canDelete = productCount == 0 && !hasDeleteError;
 }
 
 <style>
-    .category-page {
-        padding: 25px;
+    .category-delete-page {
+        padding: 10px 5px 35px;
+        color: #1e293b;
+        min-height: 80vh;
     }
 
+    /* Tiêu đề */
     .category-heading {
         margin-bottom: 25px;
     }
 
-        .category-heading h2 {
-            font-size: 26px;
+    .category-breadcrumb {
+        font-size: 13px;
+        color: #94a3b8;
+        margin-bottom: 12px;
+    }
+
+        .category-breadcrumb span {
+            color: #dc2626;
             font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 8px;
         }
 
-        .category-heading p {
-            color: #7f8c8d;
-            margin: 0;
-        }
-
-    .category-card {
-        background: #fff;
-        border-radius: 10px;
-        padding: 30px;
-        max-width: 750px;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    .category-heading h2 {
+        margin: 0 0 8px;
+        font-size: 27px;
+        font-weight: 750;
+        color: #172554;
     }
 
-    .category-warning {
-        padding: 15px;
-        margin-bottom: 22px;
-        background: #fff3cd;
-        border: 1px solid #ffe69c;
-        border-radius: 6px;
-        color: #856404;
-        line-height: 1.6;
-    }
-
-    .category-error {
-        padding: 15px;
-        margin-bottom: 22px;
-        background: #fef2f2;
-        border: 1px solid #fecaca;
-        border-radius: 6px;
-        color: #b91c1c;
-        line-height: 1.6;
-    }
-
-    .category-info {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        padding: 18px 0;
-        border-bottom: 1px solid #ecf0f1;
-    }
-
-    .category-label {
-        color: #7f8c8d;
+    .category-heading p {
+        margin: 0;
+        color: #64748b;
         font-size: 14px;
     }
 
-    .category-value {
-        color: #2c3e50;
-        font-size: 17px;
+    /* Khung nội dung */
+    .category-delete-card {
+        max-width: 800px;
+        background: #fff;
+        border: 1px solid #e8edf5;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 4px 15px rgba(15, 23, 42, .04);
+    }
+
+    .category-card-heading {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding-bottom: 22px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #edf1f7;
+    }
+
+    .category-card-icon {
+        width: 52px;
+        height: 52px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 13px;
+        background: linear-gradient(135deg, #ef4444, #b91c1c);
+        color: #fff;
+        font-size: 22px;
+        box-shadow: 0 5px 12px rgba(220, 38, 38, .18);
+    }
+
+    .category-card-heading h3 {
+        margin: 0 0 6px;
+        color: #172554;
+        font-size: 19px;
+        font-weight: 700;
+    }
+
+    .category-card-heading p {
+        margin: 0;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    /* Cảnh báo và lỗi */
+    .category-warning,
+    .category-error {
+        display: flex;
+        align-items: flex-start;
+        gap: 13px;
+        padding: 16px;
+        margin-bottom: 22px;
+        border-radius: 10px;
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .category-warning {
+        background: #fffbeb;
+        border: 1px solid #fde68a;
+        color: #92400e;
+    }
+
+    .category-error {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #b91c1c;
+    }
+
+    .notice-icon {
+        font-size: 19px;
+        margin-top: 1px;
+        flex-shrink: 0;
+    }
+
+    .notice-content strong {
+        display: block;
+        margin-bottom: 3px;
+        font-size: 14px;
+    }
+
+    /* Thông tin danh mục */
+    .category-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 20px 5px;
+        border-bottom: 1px solid #edf1f7;
+    }
+
+        .category-info:last-of-type {
+            border-bottom: none;
+        }
+
+    .category-info-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #64748b;
+        font-size: 14px;
         font-weight: 600;
+    }
+
+        .category-info-label i {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: #eff6ff;
+            color: #2563eb;
+            font-size: 14px;
+        }
+
+    .category-info-value {
+        color: #172554;
+        font-size: 15px;
+        font-weight: 700;
+        text-align: right;
         overflow-wrap: anywhere;
     }
 
-    .category-actions {
-        display: flex;
-        gap: 12px;
-        margin-top: 25px;
-        flex-wrap: wrap;
+    .category-id-value {
+        display: inline-block;
+        padding: 7px 13px;
+        background: #eff6ff;
+        color: #2563eb;
+        border-radius: 8px;
+        font-size: 13px;
     }
 
-    .btn-delete-category {
-        background: #e74c3c;
-        color: white;
-        border: none;
+    .product-count-value {
+        display: inline-block;
+        padding: 7px 13px;
+        background: #fff7ed;
+        color: #ea580c;
+        border-radius: 8px;
+        font-size: 13px;
+    }
+
+    /* Trạng thái */
+    .category-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .status-available {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .status-in-use {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+    /* Nhóm nút */
+    .category-actions {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding-top: 25px;
+        margin-top: 10px;
+        border-top: 1px solid #edf1f7;
+    }
+
+    .category-action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 44px;
         padding: 11px 20px;
-        border-radius: 6px;
+        border-radius: 9px;
+        font-size: 14px;
+        font-weight: 650;
+        text-decoration: none !important;
+        transition: all .25s ease;
+    }
+
+        .category-action-btn:hover:not(:disabled) {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 13px rgba(15, 23, 42, .15);
+        }
+
+        .category-action-btn:active:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+    .btn-delete-category {
+        background: linear-gradient(135deg, #dc2626, #b91c1c);
+        color: #fff;
+        border: 1px solid #dc2626;
         cursor: pointer;
+        box-shadow: 0 4px 10px rgba(220, 38, 38, .15);
     }
 
         .btn-delete-category:hover:not(:disabled) {
-            background: #c0392b;
+            background: linear-gradient(135deg, #b91c1c, #991b1b);
         }
 
         .btn-delete-category:disabled {
-            opacity: 0.5;
+            background: #cbd5e1;
+            border-color: #cbd5e1;
+            color: #64748b;
             cursor: not-allowed;
+            opacity: .8;
         }
 
     .btn-back-category {
-        display: inline-block;
-        background: #ecf0f1;
-        color: #34495e;
-        padding: 11px 20px;
-        border-radius: 6px;
-        text-decoration: none;
+        background: #f1f5f9;
+        color: #475569 !important;
+        border: 1px solid #e2e8f0;
     }
 
         .btn-back-category:hover {
-            background: #dfe6e9;
-            color: #2c3e50;
-            text-decoration: none;
+            background: #e2e8f0;
         }
 
-    @@media (max-width: 600px) {
-        .category-page {
-            padding: 15px;
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .category-delete-page {
+            padding: 5px 0 25px;
         }
 
-        .category-card {
+        .category-heading h2 {
+            font-size: 23px;
+        }
+
+        .category-delete-card {
             padding: 20px;
+        }
+
+        .category-info {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .category-info-value {
+            padding-left: 42px;
+            text-align: left;
+        }
+
+        .category-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .category-action-btn {
+            width: 100%;
+            box-sizing: border-box;
         }
     }
 </style>
 
-<div class="category-page">
+<div class="container-fluid category-delete-page">
 
+    <!-- Tiêu đề trang -->
     <div class="category-heading">
+
+        <div class="category-breadcrumb">
+            BookOra / Trang quản trị / Quản lý danh mục /
+            <span>Xóa danh mục</span>
+        </div>
+
         <h2>Xóa danh mục sách</h2>
-        <p>Kiểm tra thông tin trước khi xác nhận xóa.</p>
+
+        <p>
+            Kiểm tra thông tin danh mục trước khi xác nhận thao tác xóa.
+        </p>
+
     </div>
 
-    <div class="category-card">
+    <!-- Khung xác nhận xóa -->
+    <div class="category-delete-card">
 
-        @if (ViewBag.DeleteError != null)
+        <div class="category-card-heading">
+
+            <div class="category-card-icon">
+                <i class="fa fa-trash"></i>
+            </div>
+
+            <div>
+                <h3>Thông tin danh mục cần xóa</h3>
+                <p>Vui lòng kiểm tra kỹ thông tin bên dưới.</p>
+            </div>
+
+        </div>
+
+        <!-- Thông báo lỗi -->
+        @if (hasDeleteError)
         {
             <div class="category-error">
-                <strong>Không thể xóa danh mục!</strong>
-                <br />
-                @ViewBag.DeleteError
+                <i class="fa fa-exclamation-circle notice-icon"></i>
+
+                <div class="notice-content">
+                    <strong>Không thể xóa danh mục!</strong>
+                    @ViewBag.DeleteError
+                </div>
             </div>
         }
         else if (productCount > 0)
         {
             <div class="category-warning">
-                <strong>Lưu ý:</strong>
-                Danh mục này hiện đang có
-                <strong>@productCount sản phẩm</strong>
-                sử dụng.
+                <i class="fa fa-exclamation-triangle notice-icon"></i>
 
-                Bạn cần chuyển các sản phẩm đó sang danh mục khác
-                trước khi xóa danh mục này.
+                <div class="notice-content">
+                    <strong>Danh mục đang được sử dụng!</strong>
+
+                    Danh mục này hiện có
+                    <strong style="display: inline;">@productCount sản phẩm</strong>
+                    đang sử dụng.
+
+                    Bạn cần chuyển các sản phẩm đó sang danh mục khác
+                    trước khi có thể xóa danh mục này.
+                </div>
             </div>
         }
         else
         {
             <div class="category-warning">
-                <strong>Lưu ý:</strong>
-                Bạn có chắc chắn muốn xóa danh mục này không?
-                Danh mục hiện không có sản phẩm sử dụng.
+                <i class="fa fa-exclamation-triangle notice-icon"></i>
+
+                <div class="notice-content">
+                    <strong>Bạn có chắc chắn muốn xóa danh mục này?</strong>
+
+                    Danh mục hiện không có sản phẩm sử dụng.
+                    Nếu xác nhận, danh mục sẽ bị xóa khỏi hệ thống.
+                </div>
             </div>
         }
 
+        <!-- Mã danh mục -->
         <div class="category-info">
-            <span class="category-label">Mã danh mục</span>
-            <span class="category-value">@Model.CategoryID</span>
+
+            <div class="category-info-label">
+                <i class="fa fa-tag"></i>
+                Mã danh mục
+            </div>
+
+            <div class="category-info-value">
+                <span class="category-id-value">
+                    #@Model.CategoryID
+                </span>
+            </div>
+
         </div>
 
+        <!-- Tên danh mục -->
         <div class="category-info">
-            <span class="category-label">Tên danh mục sách</span>
-            <span class="category-value">@Model.CategoryName</span>
+
+            <div class="category-info-label">
+                <i class="fa fa-folder-open"></i>
+                Tên danh mục sách
+            </div>
+
+            <div class="category-info-value">
+                @Model.CategoryName
+            </div>
+
         </div>
 
+        <!-- Số sản phẩm -->
         <div class="category-info">
-            <span class="category-label">Số sản phẩm đang sử dụng</span>
-            <span class="category-value">@productCount</span>
+
+            <div class="category-info-label">
+                <i class="fa fa-book"></i>
+                Số sản phẩm đang sử dụng
+            </div>
+
+            <div class="category-info-value">
+                <span class="product-count-value">
+                    @productCount sản phẩm
+                </span>
+            </div>
+
         </div>
 
+        <!-- Trạng thái danh mục -->
+        <div class="category-info">
+
+            <div class="category-info-label">
+                <i class="fa fa-info-circle"></i>
+                Trạng thái
+            </div>
+
+            <div class="category-info-value">
+
+                @if (productCount == 0)
+                {
+                    <span class="category-status status-available">
+                        <i class="fa fa-check-circle"></i>
+                        Có thể xóa
+                    </span>
+                }
+                else
+                {
+                    <span class="category-status status-in-use">
+                        <i class="fa fa-lock"></i>
+                        Đang được sử dụng
+                    </span>
+                }
+
+            </div>
+
+        </div>
+
+        <!-- Nút chức năng -->
         @using (Html.BeginForm(
             "Delete",
             "Categories",
@@ -193,33 +478,43 @@
 
             <div class="category-actions">
 
-                @if (productCount == 0)
+                @if (canDelete)
                 {
                     <button type="submit"
-                            class="btn-delete-category"
+                            class="category-action-btn btn-delete-category"
                             onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục sách này không?');">
+
+                        <i class="fa fa-trash"></i>
                         Xác nhận xóa
+
                     </button>
                 }
                 else
                 {
                     <button type="button"
-                            class="btn-delete-category"
+                            class="category-action-btn btn-delete-category"
                             disabled>
-                        Danh mục đang được sử dụng
+
+                        <i class="fa fa-ban"></i>
+                        Không thể xóa danh mục
+
                     </button>
                 }
 
                 @Html.ActionLink(
-                    "Hủy",
-                    "Index",
-                    "Categories",
-                    new { area = "Admin" },
-                    new { @class = "btn-back-category" }
-                )
+                         "Hủy",
+                         "Index",
+                         "Categories",
+                         new { area = "Admin" },
+                         new
+                         {
+                             @class = "category-action-btn btn-back-category"
+                         }
+                     )
 
             </div>
         }
 
     </div>
+
 </div>

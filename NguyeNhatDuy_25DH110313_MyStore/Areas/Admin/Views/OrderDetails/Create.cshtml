@@ -9,70 +9,114 @@
 <style>
     .detail-create-page {
         min-height: 100vh;
-        padding: 35px 20px;
-        background: #f5f7fb;
+        padding: 32px 24px;
+        background: #f4f7fc;
+    }
+
+    .detail-create-container {
+        max-width: 850px;
+        margin: 0 auto;
     }
 
     .detail-create-header {
-        text-align: center;
         margin-bottom: 25px;
     }
 
         .detail-create-header h2 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             color: #243247;
-            font-size: 28px;
+            font-size: 27px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin: 0 0 8px;
         }
+
+            .detail-create-header h2 i {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 45px;
+                height: 45px;
+                border-radius: 12px;
+                background: #eff6ff;
+                color: #2563eb;
+                font-size: 20px;
+            }
 
         .detail-create-header p {
-            color: #7b8798;
+            color: #8490a2;
             font-size: 14px;
+            margin: 0;
         }
-
-    .detail-create-container {
-        max-width: 750px;
-        margin: 0 auto;
-    }
 
     .detail-create-card {
         background: #fff;
-        padding: 30px 35px;
+        padding: 30px;
+        border: 1px solid #edf0f5;
         border-radius: 14px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 4px 15px rgba(31, 45, 61, 0.04);
     }
 
         .detail-create-card h3 {
-            font-size: 20px;
-            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             color: #26364a;
-            margin: 0 0 25px;
-            padding-bottom: 15px;
+            font-size: 19px;
+            font-weight: 700;
+            margin: 0 0 23px;
+            padding-bottom: 17px;
             border-bottom: 1px solid #edf0f5;
         }
 
+            .detail-create-card h3 i {
+                color: #2563eb;
+            }
+
+    .detail-create-note {
+        display: flex;
+        gap: 12px;
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        color: #1d4ed8;
+        padding: 14px 16px;
+        border-radius: 10px;
+        font-size: 13px;
+        line-height: 1.7;
+        margin-bottom: 25px;
+    }
+
+        .detail-create-note i {
+            font-size: 17px;
+            margin-top: 2px;
+        }
+
     .detail-form-group {
-        margin-bottom: 20px;
+        margin-bottom: 21px;
     }
 
         .detail-form-group label {
             display: block;
+            font-size: 13px;
             font-weight: 600;
             color: #344054;
-            margin-bottom: 8px;
+            margin-bottom: 9px;
         }
 
     .detail-input {
+        display: block;
         width: 100%;
-        height: 44px;
+        height: 45px;
         padding: 10px 13px;
         border: 1px solid #dce2ea;
-        border-radius: 7px;
+        border-radius: 9px;
         font-size: 14px;
         color: #344054;
         background: #fff;
         box-sizing: border-box;
         outline: none;
+        transition: all 0.2s ease;
     }
 
         .detail-input:focus {
@@ -82,224 +126,228 @@
 
     .detail-validation {
         display: block;
-        color: #dc3545;
-        font-size: 13px;
-        margin-top: 5px;
-    }
-
-    .detail-create-note {
-        background: #eff6ff;
-        border: 1px solid #bfdbfe;
-        color: #1d4ed8;
-        padding: 13px 15px;
-        border-radius: 7px;
-        font-size: 13px;
-        line-height: 1.6;
-        margin-bottom: 22px;
+        color: #dc2626;
+        font-size: 12px;
+        margin-top: 6px;
     }
 
     .detail-price-note {
         display: block;
-        color: #7b8798;
+        color: #8490a2;
         font-size: 12px;
-        margin-top: 7px;
+        margin-top: 8px;
+        line-height: 1.5;
     }
 
     .detail-create-actions {
         display: flex;
-        justify-content: center;
-        gap: 12px;
-        margin-top: 30px;
-        padding-top: 20px;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 28px;
+        padding-top: 22px;
         border-top: 1px solid #edf0f5;
     }
 
-    .btn-detail-create {
-        background: #2563eb;
-        color: white;
+    .btn-detail-create,
+    .btn-detail-back {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 43px;
+        padding: 0 18px;
         border: none;
-        padding: 11px 25px;
-        border-radius: 7px;
-        font-size: 14px;
+        border-radius: 11px;
+        font-size: 13px;
         font-weight: 600;
+        text-decoration: none;
         cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-detail-create {
+        background: #eff6ff;
+        color: #2563eb;
     }
 
         .btn-detail-create:hover {
-            background: #1d4ed8;
+            background: #dbeafe;
+            color: #1d4ed8;
+            transform: translateY(-1px);
         }
 
     .btn-detail-back {
-        background: #eef2f7;
-        color: #475467;
-        padding: 11px 25px;
-        border-radius: 7px;
-        font-size: 14px;
-        font-weight: 600;
-        text-decoration: none;
+        background: #f1f5f9;
+        color: #536174;
     }
 
         .btn-detail-back:hover {
-            background: #e0e7ef;
-            color: #344054;
+            background: #e2e8f0;
+            color: #334155;
             text-decoration: none;
+            transform: translateY(-1px);
         }
 
     @@media (max-width: 576px) {
+        .detail-create-page {
+            padding: 22px 14px;
+        }
+
         .detail-create-card {
             padding: 22px 18px;
         }
 
-        .detail-create-actions {
-            flex-direction: column;
+        .detail-create-header h2 {
+            font-size: 22px;
         }
 
-            .detail-create-actions a,
-            .detail-create-actions button {
-                width: 100%;
-                text-align: center;
-                box-sizing: border-box;
-            }
+        .detail-create-actions {
+            flex-direction: column-reverse;
+        }
+
+        .btn-detail-create,
+        .btn-detail-back {
+            width: 100%;
+            box-sizing: border-box;
+        }
     }
 </style>
 
 <div class="detail-create-page">
-
-    <div class="detail-create-header">
-        <h2>Thêm sản phẩm vào đơn hàng</h2>
-        <p>Chọn sản phẩm và nhập số lượng cần thêm vào đơn hàng</p>
-    </div>
-
     <div class="detail-create-container">
+
+        <div class="detail-create-header">
+            <h2>
+                <i class="fas fa-cart-plus"></i>
+                Thêm sản phẩm vào đơn hàng
+            </h2>
+            <p>Chọn đơn hàng, sản phẩm và nhập số lượng cần thêm</p>
+        </div>
 
         <div class="detail-create-card">
 
-            <h3>Thông tin chi tiết đơn hàng</h3>
+            <h3>
+                <i class="fas fa-file-invoice"></i>
+                Thông tin chi tiết đơn hàng
+            </h3>
 
             <div class="detail-create-note">
-                <strong>Lưu ý:</strong>
-                Đơn giá sẽ tự động lấy từ giá bán trong mục Quản lý sách.
-                Bạn vẫn có thể tùy chỉnh đơn giá trước khi thêm vào đơn hàng.
-                Thành tiền được tính bằng số lượng nhân với đơn giá.
+                <i class="fas fa-circle-info"></i>
+                <div>
+                    <strong>Lưu ý:</strong>
+                    Đơn giá sẽ tự động lấy từ giá bán trong mục Quản lý sản phẩm.
+                    Bạn vẫn có thể tùy chỉnh đơn giá trước khi thêm vào đơn hàng.
+                    Thành tiền được tính bằng số lượng nhân với đơn giá.
+                </div>
             </div>
 
-            @using (Html.BeginForm("Create", "OrderDetails", FormMethod.Post, new { area = "Admin" }))
+            @using (Html.BeginForm("Create", "OrderDetails", new { area = "Admin" }, FormMethod.Post))
             {
                 @Html.AntiForgeryToken()
 
                 @Html.ValidationSummary(true, "", new { @class = "detail-validation" })
 
                 <div class="detail-form-group">
-
                     @Html.LabelFor(model => model.OrderID, "Mã đơn hàng")
 
                     @Html.DropDownList(
-                        "OrderID",
-                        null,
-                        "-- Chọn đơn hàng --",
-                        new { @class = "detail-input" }
-                    )
+                             "OrderID",
+                             null,
+                             "-- Chọn đơn hàng --",
+                             new { @class = "detail-input" }
+                         )
 
                     @Html.ValidationMessageFor(
-                        model => model.OrderID,
-                        "",
-                        new { @class = "detail-validation" }
-                    )
-
+                             model => model.OrderID,
+                             "",
+                             new { @class = "detail-validation" }
+                         )
                 </div>
 
                 <div class="detail-form-group">
-
                     @Html.LabelFor(model => model.ProductID, "Sản phẩm")
 
                     @Html.DropDownList(
-                        "ProductID",
-                        null,
-                        "-- Chọn sản phẩm --",
-                        new { @class = "detail-input", id = "ProductID" }
-                    )
+                             "ProductID",
+                             null,
+                             "-- Chọn sản phẩm --",
+                             new { @class = "detail-input", id = "ProductID" }
+                         )
 
                     @Html.ValidationMessageFor(
-                        model => model.ProductID,
-                        "",
-                        new { @class = "detail-validation" }
-                    )
-
+                             model => model.ProductID,
+                             "",
+                             new { @class = "detail-validation" }
+                         )
                 </div>
 
                 <div class="detail-form-group">
-
                     @Html.LabelFor(model => model.Quantity, "Số lượng")
 
                     @Html.TextBoxFor(
-                        model => model.Quantity,
-                        new
-                        {
-                            @class = "detail-input",
-                            type = "number",
-                            min = "1",
-                            placeholder = "Nhập số lượng sản phẩm"
-                        }
-                    )
+                             model => model.Quantity,
+                             new
+                             {
+                                 @class = "detail-input",
+                                 type = "number",
+                                 min = "1",
+                                 placeholder = "Nhập số lượng sản phẩm"
+                             }
+                         )
 
                     @Html.ValidationMessageFor(
-                        model => model.Quantity,
-                        "",
-                        new { @class = "detail-validation" }
-                    )
-
+                             model => model.Quantity,
+                             "",
+                             new { @class = "detail-validation" }
+                         )
                 </div>
 
                 <div class="detail-form-group">
-
                     @Html.LabelFor(model => model.UnitPrice, "Đơn giá (VNĐ)")
 
                     @Html.TextBoxFor(
-                        model => model.UnitPrice,
-                        new
-                        {
-                            @class = "detail-input",
-                            type = "number",
-                            id = "UnitPrice",
-                            step = "0.01",
-                            min = "0",
-                            placeholder = "Chọn sản phẩm hoặc nhập đơn giá"
-                        }
-                    )
+                             model => model.UnitPrice,
+                             new
+                             {
+                                 @class = "detail-input",
+                                 type = "number",
+                                 id = "UnitPrice",
+                                 step = "0.01",
+                                 min = "0",
+                                 placeholder = "Chọn sản phẩm hoặc nhập đơn giá"
+                             }
+                         )
 
                     @Html.ValidationMessageFor(
-                        model => model.UnitPrice,
-                        "",
-                        new { @class = "detail-validation" }
-                    )
+                             model => model.UnitPrice,
+                             "",
+                             new { @class = "detail-validation" }
+                         )
 
                     <small class="detail-price-note">
-                        Giá được tự động lấy từ Quản lý sách.
+                        Giá được tự động lấy từ Quản lý sản phẩm.
                         Bạn có thể thay đổi đơn giá nếu cần.
                     </small>
-
                 </div>
 
                 <div class="detail-create-actions">
 
+                    <a href="@Url.Action("Index", "OrderDetails", new { area = "Admin" })"
+                       class="btn-detail-back">
+                        <i class="fas fa-arrow-left"></i>
+                        Quay lại
+                    </a>
+
                     <button type="submit" class="btn-detail-create">
+                        <i class="fas fa-plus"></i>
                         Thêm vào đơn hàng
                     </button>
 
-                    @Html.ActionLink(
-                        "Quay lại",
-                        "Index",
-                        null,
-                        new { @class = "btn-detail-back" }
-                    )
-
                 </div>
             }
-
         </div>
-
     </div>
-
 </div>
 
 @section scripts {
@@ -354,4 +402,3 @@
         })();
     </script>
 }
-

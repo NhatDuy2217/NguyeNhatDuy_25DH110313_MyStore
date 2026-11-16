@@ -1,5 +1,7 @@
-﻿using System;
+﻿
+using System;
 using System.Linq;
+using System.Collections.Generic;
 using System.Web.Mvc;
 using PagedList;
 using NguyeNhatDuy_25DH110313_MyStore.Models;
@@ -11,6 +13,35 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
     {
         private MyStoreEntities db = new MyStoreEntities();
 
+        // Tính số lượng sản phẩm đã bán từ các đơn hàng đã thanh toán
+        private Dictionary<int, int> GetSoldQuantities(IEnumerable<int> productIds)
+        {
+            var ids = productIds.Distinct().ToList();
+
+            if (!ids.Any())
+            {
+                return new Dictionary<int, int>();
+            }
+
+            var soldQuantities = db.OrderDetails
+                .Where(od =>
+                    ids.Contains(od.ProductID) &&
+                    od.Order != null &&
+                    od.Order.PaymentStatus == "Đã thanh toán")
+                .GroupBy(od => od.ProductID)
+                .Select(g => new
+                {
+                    ProductID = g.Key,
+                    SoldQuantity = g.Sum(od => od.Quantity)
+                })
+                .ToDictionary(
+                    x => x.ProductID,
+                    x => x.SoldQuantity
+                );
+
+            return soldQuantities;
+        }
+
         // 1. Trang chủ BookOra
         public ActionResult Index(string searchString, int? page)
         {
@@ -21,7 +52,11 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
             var featuredQuery = db.Products
                 .Where(p => p.IsActive)
                 .OrderByDescending(p =>
-                    p.OrderDetails.Sum(od => (int?)od.Quantity) ?? 0);
+                    p.OrderDetails
+                        .Where(od =>
+                            od.Order != null &&
+                            od.Order.PaymentStatus == "Đã thanh toán")
+                        .Sum(od => (int?)od.Quantity) ?? 0);
 
             // Tìm kiếm sách bán chạy
             if (!String.IsNullOrWhiteSpace(searchString))
@@ -31,7 +66,11 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
                     (p.ProductDecription != null &&
                      p.ProductDecription.Contains(searchString)))
                     .OrderByDescending(p =>
-                        p.OrderDetails.Sum(od => (int?)od.Quantity) ?? 0);
+                        p.OrderDetails
+                            .Where(od =>
+                                od.Order != null &&
+                                od.Order.PaymentStatus == "Đã thanh toán")
+                            .Sum(od => (int?)od.Quantity) ?? 0);
             }
 
             var featuredProducts = featuredQuery
@@ -62,6 +101,15 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
             var categories = db.Categories
                 .OrderBy(c => c.CategoryName)
                 .ToList();
+
+            // Tính số lượng đã bán cho các sản phẩm đang hiển thị
+            var productIds = featuredProducts
+                .Select(p => p.ProductID)
+                .Concat(newProducts.Select(p => p.ProductID))
+                .Distinct()
+                .ToList();
+
+            ViewBag.SoldQuantities = GetSoldQuantities(productIds);
 
             // Đưa dữ liệu vào ViewModel
             var model = new HomeProductVM
@@ -111,9 +159,16 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
             ViewBag.CategoryID = categoryID;
             ViewBag.SearchString = searchString;
 
-            return View(products
+            var productList = products
                 .OrderBy(p => p.ProductName)
-                .ToPagedList(pageNumber, pageSize));
+                .ToPagedList(pageNumber, pageSize);
+
+            // Tính số lượng đã bán cho các sản phẩm trên trang hiện tại
+            ViewBag.SoldQuantities = GetSoldQuantities(
+                productList.Select(p => p.ProductID)
+            );
+
+            return View(productList);
         }
 
         // 3. Chi tiết sản phẩm
@@ -135,6 +190,15 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
             {
                 return HttpNotFound();
             }
+
+            // Lấy số lượng đã bán của sản phẩm
+            var soldQuantities = GetSoldQuantities(
+                new[] { product.ProductID }
+            );
+
+            ViewBag.SoldQuantity = soldQuantities.ContainsKey(product.ProductID)
+                ? soldQuantities[product.ProductID]
+                : 0;
 
             return View(product);
         }

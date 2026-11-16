@@ -4,154 +4,401 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewBag.Title - MyStore Admin</title>
+
+    <title>@ViewBag.Title - BookOra Admin</title>
 
     @Styles.Render("~/Content/css")
+
+    @{
+        var currentController = Convert.ToString(
+            ViewContext.RouteData.Values["controller"]
+        );
+    }
 
     <style>
         * {
             box-sizing: border-box;
         }
 
-        body {
+        html, body {
             margin: 0;
-            background-color: #f4f6f9;
-            font-family: Arial, sans-serif;
-            color: #334155;
+            min-height: 100%;
         }
 
-        .admin-header {
-            min-height: 65px;
-            background: #212529;
+        body {
+            background: #f4f6fb;
+            color: #26344d;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        /* ==============================
+           MAIN LAYOUT
+        ============================== */
+
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ==============================
+           SIDEBAR
+        ============================== */
+
+        .admin-sidebar {
+            width: 260px;
+            min-width: 260px;
+            min-height: 100vh;
+            background: #111d35;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            transition: transform .3s ease;
+            z-index: 1000;
+        }
+
+        .admin-sidebar-brand {
+            height: 85px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 23px;
+            border-bottom: 1px solid rgba(255,255,255,.09);
+            text-decoration: none !important;
+        }
+
+        .admin-logo {
+            width: 43px;
+            height: 43px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 13px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
             color: white;
+            font-size: 23px;
+            font-weight: 900;
+            box-shadow: 0 5px 15px rgba(37,99,235,.3);
+        }
+
+        .admin-brand-text {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .admin-brand-name {
+            color: white;
+            font-size: 21px;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        .admin-brand-sub {
+            color: #91a2bf;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        /* SIDEBAR MENU */
+
+        .admin-sidebar-content {
+            flex: 1;
+            padding: 23px 13px;
+        }
+
+        .admin-menu-label {
+            padding: 0 12px;
+            margin: 5px 0 13px;
+            color: #71829f;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+        }
+
+        .admin-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+            .admin-nav a {
+                min-height: 46px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 0 13px;
+                color: #aebbd0;
+                border-radius: 9px;
+                text-decoration: none !important;
+                font-size: 13px;
+                font-weight: 600;
+                transition: all .2s ease;
+            }
+
+                .admin-nav a:hover {
+                    color: #fff;
+                    background: rgba(255,255,255,.08);
+                }
+
+                .admin-nav a.active {
+                    color: #fff;
+                    background: linear-gradient(100deg, #2563eb, #347fe0);
+                    box-shadow: 0 5px 15px rgba(37,99,235,.22);
+                }
+
+        .admin-nav-icon {
+            width: 23px;
+            text-align: center;
+            font-size: 17px;
+        }
+
+        /* SIDEBAR BOTTOM */
+
+        .admin-sidebar-bottom {
+            padding: 17px 13px;
+            border-top: 1px solid rgba(255,255,255,.09);
+        }
+
+        .admin-back-home {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 45px;
+            padding: 0 13px;
+            color: #aebbd0;
+            border-radius: 9px;
+            text-decoration: none !important;
+            font-size: 13px;
+            font-weight: 600;
+            transition: .2s;
+        }
+
+            .admin-back-home:hover {
+                color: #fff;
+                background: rgba(255,255,255,.08);
+            }
+
+        .admin-sidebar-note {
+            margin-top: 15px;
+            padding: 14px 12px;
+            background: rgba(255,255,255,.05);
+            border-radius: 10px;
+            color: #91a2bf;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+            .admin-sidebar-note strong {
+                color: #fff;
+            }
+
+        /* ==============================
+           MAIN CONTENT
+        ============================== */
+
+        .admin-main {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* TOPBAR */
+
+        .admin-topbar {
+            min-height: 76px;
+            padding: 0 30px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 28px;
             gap: 15px;
+            background: #fff;
+            border-bottom: 1px solid #e9edf4;
+            box-shadow: 0 2px 8px rgba(20,40,80,.025);
         }
 
-        .admin-brand {
-            font-size: 22px;
-            font-weight: bold;
-            color: white;
-            text-decoration: none;
-        }
-
-        .admin-header-right {
+        .admin-topbar-left {
             display: flex;
             align-items: center;
             gap: 15px;
-            font-size: 14px;
-            color: #dee2e6;
         }
 
-        .admin-navbar {
+        .admin-topbar-title {
+            margin: 0;
+            color: #172744;
+            font-size: 19px;
+            font-weight: 800;
+        }
+
+        .admin-topbar-subtitle {
+            margin-top: 5px;
+            color: #94a0b2;
+            font-size: 11px;
+        }
+
+        .admin-topbar-right {
             display: flex;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 3px;
-            background: #343a40;
-            padding: 0 20px;
+            gap: 12px;
         }
 
-            .admin-navbar a {
-                display: block;
-                padding: 16px 15px;
-                color: #e2e5e8;
-                text-decoration: none;
-                font-size: 14px;
-                font-weight: 600;
-                transition: 0.2s;
-                border-bottom: 3px solid transparent;
-            }
+        .admin-role {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 9px 13px;
+            background: #f4f7fc;
+            border: 1px solid #e9eef6;
+            border-radius: 9px;
+            color: #425572;
+            font-size: 12px;
+            font-weight: 700;
+        }
 
-                .admin-navbar a:hover {
-                    background: #495057;
-                    color: white;
-                }
-
-                .admin-navbar a.active {
-                    background: #495057;
-                    color: white;
-                    border-bottom-color: #198754;
-                }
-
-        .admin-menu-toggle {
-            display: none;
-            background: #343a40;
-            color: white;
-            border: 1px solid #64748b;
-            border-radius: 6px;
-            padding: 8px 12px;
-            cursor: pointer;
+        .admin-role-icon {
+            width: 29px;
+            height: 29px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #dceaff;
+            color: #2563eb;
             font-size: 15px;
         }
 
+        /* MENU TOGGLE */
+
+        .admin-menu-toggle {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 1px solid #e5eaf2;
+            background: #fff;
+            color: #26344d;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        /* PAGE CONTENT */
+
         .admin-content {
-            min-height: calc(100vh - 155px);
-            padding: 28px;
+            flex: 1;
+            width: 100%;
+            padding: 30px;
             overflow-x: auto;
         }
 
+        /* FOOTER */
+
         .admin-footer {
-            padding: 18px;
-            text-align: center;
-            color: #64748b;
-            font-size: 13px;
-            border-top: 1px solid #e5e7eb;
+            padding: 17px 25px;
             background: #fff;
+            border-top: 1px solid #e9edf4;
+            color: #8b98aa;
+            text-align: center;
+            font-size: 12px;
         }
 
-        @@media (max-width: 900px) {
-            .admin-navbar a {
-                padding: 14px 10px;
-                font-size: 13px;
+        /* MOBILE OVERLAY */
+
+        .admin-overlay {
+            display: none;
+        }
+
+        /* ==============================
+           RESPONSIVE
+        ============================== */
+
+        @@media (max-width: 1000px) {
+            .admin-sidebar {
+                width: 235px;
+                min-width: 235px;
+            }
+
+            .admin-content {
+                padding: 23px 18px;
+            }
+
+            .admin-topbar {
+                padding: 0 20px;
             }
         }
 
-        @@media (max-width: 700px) {
-            .admin-header {
-                padding: 14px 16px;
-                flex-wrap: wrap;
+        @@media (max-width: 768px) {
+            .admin-sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                width: 270px;
+                min-width: 270px;
+                height: 100vh;
+                overflow-y: auto;
+                transform: translateX(-100%);
             }
 
-            .admin-brand {
-                font-size: 19px;
+                .admin-sidebar.show {
+                    transform: translateX(0);
+                }
+
+            .admin-overlay.show {
+                display: block;
+                position: fixed;
+                inset: 0;
+                z-index: 999;
+                background: rgba(10,20,40,.5);
             }
 
             .admin-menu-toggle {
-                display: block;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
 
-            .admin-navbar {
-                display: none;
-                flex-direction: column;
-                align-items: stretch;
-                padding: 5px 10px;
+            .admin-topbar {
+                min-height: 68px;
+                padding: 0 14px;
             }
 
-                .admin-navbar.show {
-                    display: flex;
-                }
+            .admin-topbar-title {
+                font-size: 16px;
+            }
 
-                .admin-navbar a {
-                    padding: 13px 12px;
-                    border-bottom: none;
-                    border-radius: 5px;
-                }
+            .admin-topbar-subtitle {
+                font-size: 10px;
+            }
 
-                    .admin-navbar a.active {
-                        border-left: 4px solid #198754;
-                        border-bottom: none;
-                    }
+            .admin-role {
+                padding: 7px;
+                font-size: 0;
+            }
+
+            .admin-role-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 15px;
+            }
 
             .admin-content {
-                padding: 16px 12px;
+                padding: 18px 12px;
             }
 
-            .admin-header-right {
-                font-size: 12px;
+            .admin-footer {
+                padding: 15px 10px;
+                font-size: 11px;
+            }
+        }
+
+        @@media (max-width: 400px) {
+            .admin-topbar-subtitle {
+                display: none;
+            }
+
+            .admin-topbar-title {
+                font-size: 14px;
             }
         }
     </style>
@@ -159,100 +406,193 @@
 
 <body>
 
-    <!-- HEADER -->
-    <header class="admin-header">
+    <div class="admin-layout">
 
-        <a class="admin-brand"
-           href="@Url.Action("Index", "Home", new { area = "Admin" })">
-            MyStore | Admin
-        </a>
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar" id="adminSidebar">
 
-        <div class="admin-header-right">
+            <!-- LOGO -->
+            <a class="admin-sidebar-brand"
+               href="@Url.Action("Index", "Home", new { area = "Admin" })">
 
-            <span>Quản trị hệ thống</span>
+                <div class="admin-logo">B</div>
 
-            <button type="button"
-                    class="admin-menu-toggle"
-                    onclick="toggleAdminMenu()">
-                ☰ Menu
-            </button>
+                <div class="admin-brand-text">
+                    <span class="admin-brand-name">BOOKORA</span>
+                    <span class="admin-brand-sub">ADMIN PANEL</span>
+                </div>
+
+            </a>
+
+            <!-- MENU -->
+            <div class="admin-sidebar-content">
+
+                <div class="admin-menu-label">
+                    QUẢN LÝ HỆ THỐNG
+                </div>
+
+                <nav class="admin-nav">
+
+                    <!-- TỔNG QUAN -->
+                    <a href="@Url.Action("Index", "Home", new { area = "Admin" })"
+                       class="@(currentController == "Home" ? "active" : "")">
+
+                        <span class="admin-nav-icon">▦</span>
+                        <span>Tổng quan</span>
+                    </a>
+
+                    <!-- DANH MỤC -->
+                    <a href="@Url.Action("Index", "Categories", new { area = "Admin" })"
+                       class="@(currentController == "Categories" ? "active" : "")">
+
+                        <span class="admin-nav-icon">▤</span>
+                        <span>Quản lý danh mục</span>
+                    </a>
+
+                    <!-- SẢN PHẨM -->
+                    <a href="@Url.Action("Index", "Product", new { area = "Admin" })"
+                       class="@(currentController == "Product" ? "active" : "")">
+
+                        <span class="admin-nav-icon">▣</span>
+                        <span>Quản lý sản phẩm</span>
+                    </a>
+
+                    <!-- TÀI KHOẢN -->
+                    <a href="@Url.Action("Index", "Users", new { area = "Admin" })"
+                       class="@(currentController == "Users" ? "active" : "")">
+
+                        <span class="admin-nav-icon">♙</span>
+                        <span>Quản lý tài khoản</span>
+                    </a>
+
+                    <!-- KHÁCH HÀNG -->
+                    <a href="@Url.Action("Index", "Customers", new { area = "Admin" })"
+                       class="@(currentController == "Customers" ? "active" : "")">
+
+                        <span class="admin-nav-icon">♧</span>
+                        <span>Quản lý khách hàng</span>
+                    </a>
+
+                    <!-- ĐƠN HÀNG -->
+                    <a href="@Url.Action("Index", "Orders", new { area = "Admin" })"
+                       class="@(currentController == "Orders" ? "active" : "")">
+
+                        <span class="admin-nav-icon">🛒</span>
+                        <span>Quản lý đơn hàng</span>
+                    </a>
+
+                    <!-- CHI TIẾT ĐƠN HÀNG -->
+                    <a href="@Url.Action("Index", "OrderDetails", new { area = "Admin" })"
+                       class="@(currentController == "OrderDetails" ? "active" : "")">
+
+                        <span class="admin-nav-icon">▧</span>
+                        <span>Chi tiết đơn hàng</span>
+                    </a>
+
+                </nav>
+
+            </div>
+
+            <!-- SIDEBAR BOTTOM -->
+            <div class="admin-sidebar-bottom">
+
+                <a href="@Url.Action("Index", "Home", new { area = "" })"
+                   class="admin-back-home">
+
+                    <span class="admin-nav-icon">🌐</span>
+                    <span>Về trang khách hàng</span>
+                </a>
+
+                <div class="admin-sidebar-note">
+                    <strong>BOOKORA ADMIN</strong>
+                    <br />
+                    Hệ thống quản lý nhà sách trực tuyến.
+                </div>
+
+            </div>
+
+        </aside>
+
+        <!-- MOBILE OVERLAY -->
+        <div class="admin-overlay"
+             id="adminOverlay"
+             onclick="closeAdminMenu()">
+        </div>
+
+        <!-- MAIN -->
+        <div class="admin-main">
+
+            <!-- TOPBAR -->
+            <header class="admin-topbar">
+
+                <div class="admin-topbar-left">
+
+                    <button type="button"
+                            class="admin-menu-toggle"
+                            onclick="toggleAdminMenu()"
+                            aria-label="Mở menu quản trị">
+                        ☰
+                    </button>
+
+                    <div>
+                        <h1 class="admin-topbar-title">
+                            @ViewBag.Title
+                        </h1>
+
+                        <div class="admin-topbar-subtitle">
+                            BOOKORA / TRANG QUẢN TRỊ
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="admin-topbar-right">
+
+                    <div class="admin-role">
+                        <span class="admin-role-icon">♙</span>
+                        Quản trị viên
+                    </div>
+
+                </div>
+
+            </header>
+
+            <!-- PAGE CONTENT -->
+            <main class="admin-content">
+                @RenderBody()
+            </main>
+
+            <!-- FOOTER -->
+            <footer class="admin-footer">
+                &copy; @DateTime.Now.Year - BookOra Admin
+                | Hệ thống quản lý nhà sách
+            </footer>
 
         </div>
 
-    </header>
-
-    <!-- MENU ĐIỀU HƯỚNG THEO THỨ TỰ LIÊN KẾT DỮ LIỆU -->
-    <nav class="admin-navbar" id="adminNavbar">
-
-        <!-- 1. TỔNG QUAN -->
-        <a href="@Url.Action("Index", "Home", new { area = "Admin" })"
-           class="@(ViewContext.RouteData.Values["controller"].ToString() == "Home" ? "active" : "")">
-            🏠 Tổng quan
-        </a>
-
-        <!-- 2. QUẢN LÝ DANH MỤC -->
-        <a href="@Url.Action("Index", "Categories", new { area = "Admin" })"
-           class="@(ViewContext.RouteData.Values["controller"].ToString() == "Categories" ? "active" : "")">
-            📁 Quản lý danh mục
-        </a>
-
-        <!-- 3. QUẢN LÝ SẢN PHẨM -->
-        <a href="@Url.Action("Index", "Product", new { area = "Admin" })"
-           class="@(ViewContext.RouteData.Values["controller"].ToString() == "Product" ? "active" : "")">
-            📚 Quản lý sản phẩm
-        </a>
-
-        <!-- 4. QUẢN LÝ TÀI KHOẢN -->
-        <a href="@Url.Action("Index", "Users", new { area = "Admin" })"
-           class="@(ViewContext.RouteData.Values["controller"].ToString() == "Users" ? "active" : "")">
-            🔐 Quản lý tài khoản
-        </a>
-
-        <!-- 5. QUẢN LÝ KHÁCH HÀNG -->
-        <a href="@Url.Action("Index", "Customers", new { area = "Admin" })"
-           class="@(ViewContext.RouteData.Values["controller"].ToString() == "Customers" ? "active" : "")">
-            👥 Quản lý khách hàng
-        </a>
-
-        <!-- 6. QUẢN LÝ ĐƠN HÀNG -->
-        <a href="@Url.Action("Index", "Orders", new { area = "Admin" })"
-           class="@(ViewContext.RouteData.Values["controller"].ToString() == "Orders" ? "active" : "")">
-            🛒 Quản lý đơn hàng
-        </a>
-
-        <!-- 7. CHI TIẾT ĐƠN HÀNG -->
-        <a href="@Url.Action("Index", "OrderDetails", new { area = "Admin" })"
-           class="@(ViewContext.RouteData.Values["controller"].ToString() == "OrderDetails" ? "active" : "")">
-            📋 Chi tiết đơn hàng
-        </a>
-
-        <!-- 8. TRANG CHÍNH -->
-        <a href="@Url.Action("Index", "Home", new { area = "" })">
-            🌐 Về trang chính
-        </a>
-
-    </nav>
-
-    <!-- NỘI DUNG -->
-    <main class="admin-content">
-        @RenderBody()
-    </main>
-
-    <!-- FOOTER -->
-    <footer class="admin-footer">
-        &copy; @DateTime.Now.Year - MyStore Admin |
-        Hệ thống quản lý nhà sách
-    </footer>
+    </div>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
 
     <script>
                 function toggleAdminMenu() {
-                    var menu = document.getElementById("adminNavbar");
+                    var sidebar = document.getElementById("adminSidebar");
+                    var overlay = document.getElementById("adminOverlay");
 
-                    if (menu !== null) {
-                        menu.classList.toggle("show");
+                    if (sidebar && overlay) {
+                        sidebar.classList.toggle("show");
+                        overlay.classList.toggle("show");
+                    }
+                }
+
+                function closeAdminMenu() {
+                    var sidebar = document.getElementById("adminSidebar");
+                    var overlay = document.getElementById("adminOverlay");
+
+                    if (sidebar && overlay) {
+                        sidebar.classList.remove("show");
+                        overlay.classList.remove("show");
                     }
                 }
     </script>

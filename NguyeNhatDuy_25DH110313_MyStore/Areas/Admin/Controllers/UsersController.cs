@@ -210,10 +210,11 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
             return View(user);
         }
 
+
         // GET: Admin/Users/Edit/duy123
         public ActionResult Edit(string id)
         {
-            if (string.IsNullOrEmpty(id))
+            if (string.IsNullOrWhiteSpace(id))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
@@ -232,30 +233,139 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(
+            string oldUsername,
             [Bind(Include = "Username,Password,UserRole")] User user)
         {
-            if (ModelState.IsValid)
+            if (string.IsNullOrWhiteSpace(oldUsername))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            if (user == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            user.Username = user.Username == null
+                ? ""
+                : user.Username.Trim();
+
+            user.UserRole = user.UserRole == null
+                ? ""
+                : user.UserRole.Trim();
+
+            if (string.IsNullOrWhiteSpace(user.Username))
+            {
+                ModelState.AddModelError(
+                    "Username",
+                    "Vui lòng nhập tên đăng nhập."
+                );
+            }
+
+            if (string.IsNullOrWhiteSpace(user.Password))
+            {
+                ModelState.AddModelError(
+                    "Password",
+                    "Vui lòng nhập mật khẩu."
+                );
+            }
+
+            if (string.IsNullOrWhiteSpace(user.UserRole))
+            {
+                ModelState.AddModelError(
+                    "UserRole",
+                    "Vui lòng chọn vai trò tài khoản."
+                );
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(user);
+            }
+
+            using (var transaction = db.Database.BeginTransaction())
             {
                 try
                 {
-                    var existingUser = db.Users.Find(user.Username);
+                    // Tìm tài khoản bằng tên đăng nhập cũ
+                    User existingUser = db.Users.Find(oldUsername);
 
                     if (existingUser == null)
                     {
+                        transaction.Rollback();
+
                         return HttpNotFound();
                     }
 
-                    existingUser.Password = user.Password;
-                    existingUser.UserRole = user.UserRole.Trim();
+                    // Kiểm tra tên đăng nhập mới có bị trùng không
+                    if (!string.Equals(
+                        oldUsername,
+                        user.Username,
+                        StringComparison.OrdinalIgnoreCase))
+                    {
+                        bool usernameExists = db.Users.Any(
+                            u => u.Username == user.Username
+                        );
 
-                    db.SaveChanges();
+                        if (usernameExists)
+                        {
+                            transaction.Rollback();
 
-                    TempData["SuccessMessage"] = "Cập nhật tài khoản thành công!";
+                            ModelState.AddModelError(
+                                "Username",
+                                "Tên đăng nhập này đã tồn tại!"
+                            );
+
+                            return View(user);
+                        }
+
+                        // Tạo tài khoản mới với tên đăng nhập mới
+                        User newUser = new User
+                        {
+                            Username = user.Username,
+                            Password = user.Password,
+                            UserRole = user.UserRole
+                        };
+
+                        db.Users.Add(newUser);
+                        db.SaveChanges();
+
+                        // Chuyển liên kết khách hàng sang tên đăng nhập mới
+                        var customers = db.Customers
+                            .Where(c => c.Username == oldUsername)
+                            .ToList();
+
+                        foreach (var customer in customers)
+                        {
+                            customer.Username = user.Username;
+                        }
+
+                        db.SaveChanges();
+
+                        // Xóa tài khoản cũ
+                        db.Users.Remove(existingUser);
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        // Nếu không đổi tên đăng nhập thì cập nhật bình thường
+                        existingUser.Password = user.Password;
+                        existingUser.UserRole = user.UserRole;
+
+                        db.SaveChanges();
+                    }
+
+                    transaction.Commit();
+
+                    TempData["SuccessMessage"] =
+                        "Cập nhật tài khoản thành công!";
 
                     return RedirectToAction("Index");
                 }
                 catch (System.Data.Entity.Validation.DbEntityValidationException ex)
                 {
+                    transaction.Rollback();
+
                     string errorDetails = "";
 
                     foreach (var entityError in ex.EntityValidationErrors)
@@ -263,7 +373,9 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
                         foreach (var validationError in entityError.ValidationErrors)
                         {
                             errorDetails += validationError.PropertyName
-                                + ": " + validationError.ErrorMessage + " | ";
+                                + ": "
+                                + validationError.ErrorMessage
+                                + " | ";
                         }
                     }
 
@@ -274,16 +386,19 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
                 }
                 catch (Exception ex)
                 {
+                    transaction.Rollback();
+
                     ModelState.AddModelError(
                         "",
-                        "Lỗi khi cập nhật tài khoản: " +
-                        ex.GetBaseException().Message
+                        "Lỗi khi cập nhật tài khoản: "
+                        + ex.GetBaseException().Message
                     );
                 }
             }
 
             return View(user);
         }
+
 
         // GET: Admin/Users/Delete/duy123
         public ActionResult Delete(string id)

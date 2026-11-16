@@ -6,67 +6,109 @@
     Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
 
     decimal total = Model.Quantity * Model.UnitPrice;
+
+    string paymentStatus = Model.Order != null
+        ? Model.Order.PaymentStatus
+        : "Không có dữ liệu";
+
+    string paymentClass = paymentStatus == "Đã thanh toán"
+        ? "payment-paid"
+        : paymentStatus == "Chưa thanh toán"
+            ? "payment-unpaid"
+            : "payment-unknown";
 }
 
 <style>
     .detail-details-page {
         min-height: 100vh;
-        padding: 35px 20px;
-        background: #f5f7fb;
+        padding: 32px 24px;
+        background: #f4f7fc;
+    }
+
+    .detail-details-container {
+        max-width: 850px;
+        margin: 0 auto;
     }
 
     .detail-details-header {
-        text-align: center;
         margin-bottom: 25px;
     }
 
         .detail-details-header h2 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             color: #243247;
-            font-size: 28px;
+            font-size: 27px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin: 0 0 8px;
         }
+
+            .detail-details-header h2 i {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 45px;
+                height: 45px;
+                border-radius: 12px;
+                background: #eff6ff;
+                color: #2563eb;
+                font-size: 20px;
+            }
 
         .detail-details-header p {
-            color: #7b8798;
+            color: #8490a2;
             font-size: 14px;
+            margin: 0;
         }
-
-    .detail-details-container {
-        max-width: 750px;
-        margin: 0 auto;
-    }
 
     .detail-details-card {
         background: #fff;
-        padding: 30px 35px;
+        padding: 30px;
+        border: 1px solid #edf0f5;
         border-radius: 14px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 4px 15px rgba(31, 45, 61, 0.04);
     }
 
         .detail-details-card h3 {
-            font-size: 20px;
-            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             color: #26364a;
-            margin: 0 0 25px;
-            padding-bottom: 15px;
+            font-size: 19px;
+            font-weight: 700;
+            margin: 0 0 15px;
+            padding-bottom: 18px;
             border-bottom: 1px solid #edf0f5;
         }
+
+            .detail-details-card h3 i {
+                color: #2563eb;
+            }
 
     .detail-info-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        gap: 15px;
-        padding: 16px 0;
+        gap: 20px;
+        padding: 17px 5px;
         border-bottom: 1px solid #edf0f5;
     }
 
     .detail-info-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
         color: #667085;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 600;
     }
+
+        .detail-info-label i {
+            width: 17px;
+            color: #94a3b8;
+            text-align: center;
+        }
 
     .detail-info-value {
         color: #26364a;
@@ -76,137 +118,277 @@
         overflow-wrap: anywhere;
     }
 
-    .detail-total-row {
-        background: #eff6ff;
-        border-radius: 8px;
-        padding: 17px 15px;
-        margin-top: 20px;
+    .detail-highlight {
+        color: #2563eb;
+        font-weight: 700;
     }
 
-        .detail-total-row .detail-info-label,
+    .detail-order-id {
+        display: inline-block;
+        padding: 6px 11px;
+        border-radius: 8px;
+        background: #eff6ff;
+        color: #2563eb;
+        font-weight: 700;
+    }
+
+    .detail-quantity {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 38px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        background: #f5f3ff;
+        color: #7c3aed;
+        font-weight: 700;
+    }
+
+    .payment-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .payment-paid {
+        background: #f0fdf4;
+        color: #16a34a;
+    }
+
+    .payment-unpaid {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+    .payment-unknown {
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+    .detail-total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        padding: 19px;
+        margin-top: 22px;
+        border: 1px solid #dbeafe;
+        border-radius: 11px;
+        background: #eff6ff;
+    }
+
+        .detail-total-row .detail-info-label {
+            color: #1d4ed8;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+            .detail-total-row .detail-info-label i {
+                color: #2563eb;
+            }
+
         .detail-total-row .detail-info-value {
             color: #1d4ed8;
-            font-size: 16px;
-            font-weight: 700;
+            font-size: 21px;
+            font-weight: 800;
         }
 
     .detail-details-actions {
         display: flex;
-        justify-content: center;
-        gap: 12px;
-        margin-top: 30px;
-        padding-top: 20px;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+        margin-top: 28px;
+        padding-top: 22px;
         border-top: 1px solid #edf0f5;
     }
 
-    .btn-detail-edit {
-        background: #2563eb;
-        color: white;
-        padding: 11px 25px;
-        border-radius: 7px;
-        font-size: 14px;
+    .btn-detail-edit,
+    .btn-detail-back {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 43px;
+        padding: 0 18px;
+        border-radius: 11px;
+        font-size: 13px;
         font-weight: 600;
         text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .btn-detail-edit {
+        background: #fffbeb;
+        color: #d97706;
     }
 
         .btn-detail-edit:hover {
-            background: #1d4ed8;
-            color: white;
+            background: #fef3c7;
+            color: #b45309;
             text-decoration: none;
+            transform: translateY(-1px);
         }
 
     .btn-detail-back {
-        background: #eef2f7;
-        color: #475467;
-        padding: 11px 25px;
-        border-radius: 7px;
-        font-size: 14px;
-        font-weight: 600;
-        text-decoration: none;
+        background: #f1f5f9;
+        color: #536174;
     }
 
         .btn-detail-back:hover {
-            background: #e0e7ef;
-            color: #344054;
+            background: #e2e8f0;
+            color: #334155;
             text-decoration: none;
+            transform: translateY(-1px);
         }
 
     @@media (max-width: 576px) {
+        .detail-details-page {
+            padding: 22px 14px;
+        }
+
         .detail-details-card {
             padding: 22px 18px;
+        }
+
+        .detail-details-header h2 {
+            font-size: 22px;
         }
 
         .detail-info-row {
             align-items: flex-start;
             flex-direction: column;
-            gap: 7px;
+            gap: 9px;
         }
 
         .detail-info-value {
             text-align: left;
         }
 
-        .detail-details-actions {
+        .detail-total-row {
+            align-items: flex-start;
             flex-direction: column;
         }
 
-            .detail-details-actions a {
-                text-align: center;
-            }
+        .detail-details-actions {
+            flex-direction: column-reverse;
+        }
+
+        .btn-detail-edit,
+        .btn-detail-back {
+            width: 100%;
+            box-sizing: border-box;
+        }
     }
 </style>
 
 <div class="detail-details-page">
-
-    <div class="detail-details-header">
-        <h2>Chi tiết đơn hàng</h2>
-        <p>Xem thông tin sản phẩm được thêm vào đơn hàng</p>
-    </div>
-
     <div class="detail-details-container">
+
+        <div class="detail-details-header">
+            <h2>
+                <i class="fas fa-file-invoice"></i>
+                Chi tiết đơn hàng
+            </h2>
+            <p>Xem thông tin sản phẩm được thêm vào đơn hàng</p>
+        </div>
 
         <div class="detail-details-card">
 
-            <h3>Thông tin chi tiết</h3>
+            <h3>
+                <i class="fas fa-circle-info"></i>
+                Thông tin chi tiết
+            </h3>
 
             <div class="detail-info-row">
-                <span class="detail-info-label">Mã chi tiết</span>
-                <span class="detail-info-value">@Model.ID</span>
-            </div>
-
-            <div class="detail-info-row">
-                <span class="detail-info-label">Mã đơn hàng</span>
-                <span class="detail-info-value">@Model.OrderID</span>
-            </div>
-
-            <div class="detail-info-row">
-                <span class="detail-info-label">Tên sản phẩm</span>
-                <span class="detail-info-value">
-                    @(Model.Product != null ? Model.Product.ProductName : "Không có dữ liệu")
+                <span class="detail-info-label">
+                    <i class="fas fa-hashtag"></i>
+                    Mã chi tiết
+                </span>
+                <span class="detail-info-value detail-highlight">
+                    #@Model.ID
                 </span>
             </div>
 
             <div class="detail-info-row">
-                <span class="detail-info-label">Số lượng</span>
-                <span class="detail-info-value">@Model.Quantity</span>
+                <span class="detail-info-label">
+                    <i class="fas fa-receipt"></i>
+                    Mã đơn hàng
+                </span>
+                <span class="detail-info-value">
+                    <span class="detail-order-id">
+                        #@Model.OrderID
+                    </span>
+                </span>
             </div>
 
             <div class="detail-info-row">
-                <span class="detail-info-label">Đơn giá</span>
+                <span class="detail-info-label">
+                    <i class="fas fa-book"></i>
+                    Tên sản phẩm
+                </span>
+                <span class="detail-info-value">
+                    @(Model.Product != null
+                        ? Model.Product.ProductName
+                        : "Không có dữ liệu")
+                </span>
+            </div>
+
+            <div class="detail-info-row">
+                <span class="detail-info-label">
+                    <i class="fas fa-boxes-stacked"></i>
+                    Số lượng
+                </span>
+                <span class="detail-info-value">
+                    <span class="detail-quantity">
+                        @Model.Quantity
+                    </span>
+                </span>
+            </div>
+
+            <div class="detail-info-row">
+                <span class="detail-info-label">
+                    <i class="fas fa-tag"></i>
+                    Đơn giá
+                </span>
                 <span class="detail-info-value">
                     @Model.UnitPrice.ToString("N0") VNĐ
                 </span>
             </div>
 
             <div class="detail-info-row">
-                <span class="detail-info-label">Trạng thái thanh toán</span>
+                <span class="detail-info-label">
+                    <i class="fas fa-credit-card"></i>
+                    Trạng thái thanh toán
+                </span>
                 <span class="detail-info-value">
-                    @(Model.Order != null ? Model.Order.PaymentStatus : "Không có dữ liệu")
+                    <span class="payment-status @paymentClass">
+                        @if (paymentStatus == "Đã thanh toán")
+                        {
+                            <i class="fas fa-check-circle"></i>
+                        }
+                        else if (paymentStatus == "Chưa thanh toán")
+                        {
+                            <i class="fas fa-clock"></i>
+                        }
+                        else
+                        {
+                            <i class="fas fa-minus-circle"></i>
+                        }
+                        @paymentStatus
+                    </span>
                 </span>
             </div>
 
-            <div class="detail-info-row detail-total-row">
-                <span class="detail-info-label">Thành tiền</span>
+            <div class="detail-total-row">
+                <span class="detail-info-label">
+                    <i class="fas fa-money-bill-wave"></i>
+                    Thành tiền
+                </span>
                 <span class="detail-info-value">
                     @total.ToString("N0") VNĐ
                 </span>
@@ -214,24 +396,20 @@
 
             <div class="detail-details-actions">
 
-                @Html.ActionLink(
-                    "Chỉnh sửa",
-                    "Edit",
-                    new { id = Model.ID },
-                    new { @class = "btn-detail-edit" }
-                )
+                <a href="@Url.Action("Index", "OrderDetails", new { area = "Admin" })"
+                   class="btn-detail-back">
+                    <i class="fas fa-arrow-left"></i>
+                    Quay lại
+                </a>
 
-                @Html.ActionLink(
-                    "Quay lại",
-                    "Index",
-                    null,
-                    new { @class = "btn-detail-back" }
-                )
+                <a href="@Url.Action("Edit", "OrderDetails", new { area = "Admin", id = Model.ID })"
+                   class="btn-detail-edit">
+                    <i class="fas fa-pen"></i>
+                    Chỉnh sửa
+                </a>
 
             </div>
 
         </div>
-
     </div>
-
 </div>

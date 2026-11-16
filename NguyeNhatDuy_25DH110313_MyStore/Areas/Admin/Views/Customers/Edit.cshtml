@@ -4,202 +4,365 @@
 @{
     ViewBag.Title = "Chỉnh sửa khách hàng";
     Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
+
+    string customerName = string.IsNullOrWhiteSpace(Model.CustomerName)
+        ? "Khách hàng"
+        : Model.CustomerName.Trim();
+
+    string avatarLetter = customerName.Substring(0, 1).ToUpper();
+
+    var usernameList = ViewBag.Username as SelectList;
 }
 
 <style>
     .customer-edit-page {
         min-height: 100vh;
-        padding: 35px 20px;
-        background: #f5f7fb;
+        padding: 30px;
+        background: #f3f6fc;
     }
-
-    .customer-edit-header {
-        text-align: center;
-        margin-bottom: 28px;
-    }
-
-        .customer-edit-header h2 {
-            color: #243247;
-            font-size: 27px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .customer-edit-header p {
-            color: #8492a6;
-            font-size: 14px;
-            margin: 0;
-        }
 
     .customer-edit-container {
+        max-width: 850px;
+        margin: 0 auto;
+    }
+
+    .customer-edit-breadcrumb {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 9px;
+        margin-bottom: 22px;
+        color: #94a3b8;
+        font-size: 12px;
+    }
+
+        .customer-edit-breadcrumb a {
+            color: #64748b;
+            text-decoration: none;
+        }
+
+            .customer-edit-breadcrumb a:hover {
+                color: #2563eb;
+            }
+
+    .customer-edit-heading {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .customer-edit-heading-icon {
+        width: 54px;
+        height: 54px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 15px;
+        background: linear-gradient(135deg, #1e40af, #3b82f6);
+        color: #fff;
+        font-size: 22px;
+        box-shadow: 0 6px 15px rgba(37, 99, 235, 0.2);
+    }
+
+    .customer-edit-heading h2 {
+        margin: 0 0 6px;
+        color: #172554;
+        font-size: 24px;
+        font-weight: 800;
+    }
+
+    .customer-edit-heading p {
+        margin: 0;
+        color: #8490a5;
+        font-size: 13px;
+    }
+
+    .customer-edit-card {
+        overflow: hidden;
+        border: 1px solid #e8eef8;
+        border-radius: 15px;
+        background: #fff;
+        box-shadow: 0 5px 22px rgba(30, 64, 175, 0.05);
+    }
+
+    .customer-edit-profile {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 24px 28px;
+        border-bottom: 1px solid #edf1f7;
+        background: #fbfcff;
+    }
+
+    .customer-edit-avatar {
+        width: 62px;
+        height: 62px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border: 4px solid #eaf1ff;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+        color: #1d4ed8;
+        font-size: 24px;
+        font-weight: 800;
+    }
+
+    .customer-edit-profile h3 {
+        margin: 0 0 7px;
+        color: #1e293b;
+        font-size: 18px;
+        font-weight: 800;
+    }
+
+    .customer-edit-profile p {
+        margin: 0;
+        color: #94a3b8;
+        font-size: 12px;
+    }
+
+    .customer-edit-id {
+        display: inline-block;
+        margin-top: 8px;
+        padding: 5px 10px;
+        border-radius: 20px;
+        background: #eff6ff;
+        color: #2563eb;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .customer-edit-body {
+        padding: 27px 28px;
+    }
+
+    .customer-edit-section-title {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin: 0 0 20px;
+        color: #26344d;
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+        .customer-edit-section-title i {
+            color: #3b82f6;
+            font-size: 16px;
+        }
+
+    .customer-edit-form {
         max-width: 650px;
         margin: 0 auto;
     }
 
-    .customer-edit-card {
-        max-width: 580px;
-        margin: 0 auto;
-        padding: 30px 38px;
-        background: #fff;
-        border: 1px solid #edf0f5;
-        border-radius: 16px;
-        box-shadow: 0 6px 24px rgba(30, 50, 80, 0.07);
+    .customer-edit-group {
+        margin-bottom: 19px;
     }
 
-    .edit-avatar {
-        width: 78px;
-        height: 78px;
-        margin: 0 auto 14px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #e8efff, #d7e3ff);
-        color: #3867d6;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 30px;
-        font-weight: 700;
-        border: 4px solid #f4f7ff;
-    }
-
-    .edit-customer-name {
-        text-align: center;
-        color: #243247;
-        font-size: 21px;
-        font-weight: 700;
-        margin-bottom: 25px;
-    }
-
-    .edit-subtitle {
-        text-align: center;
-        color: #98a3b3;
-        font-size: 13px;
-        margin-top: -18px;
-        margin-bottom: 25px;
-    }
-
-    .edit-form-group {
-        margin-bottom: 17px;
-        padding: 14px 17px;
-        background: #f7f9fc;
-        border: 1px solid #edf0f5;
-        border-radius: 10px;
-    }
-
-        .edit-form-group > label {
+        .customer-edit-group label {
             display: block;
-            color: #8492a6;
-            font-size: 12px;
-            font-weight: 600;
             margin-bottom: 8px;
+            color: #475569;
+            font-size: 12px;
+            font-weight: 700;
         }
 
-    .edit-input {
+            .customer-edit-group label i {
+                width: 19px;
+                color: #3b82f6;
+            }
+
+    .customer-edit-input {
         display: block;
         width: 100%;
-        height: 40px;
-        padding: 8px 12px;
-        color: #243247;
+        height: 43px;
+        padding: 9px 13px;
+        border: 1px solid #dce4f0;
+        border-radius: 8px;
         background: #fff;
-        border: 1px solid #dfe5ee;
-        border-radius: 7px;
-        font-size: 14px;
+        color: #334155;
+        font-size: 13px;
+        outline: none;
+        box-shadow: none;
+        box-sizing: border-box;
+        transition: all 0.2s ease;
+    }
+
+        .customer-edit-input:focus {
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .customer-edit-input::placeholder {
+            color: #aab4c3;
+        }
+
+    .customer-edit-hint {
+        margin-top: 6px;
+        color: #94a3b8;
+        font-size: 11px;
+        line-height: 1.6;
+    }
+
+    .customer-edit-validation {
+        margin-bottom: 18px;
+        padding: 12px 15px;
+        border: 1px solid #fecaca;
+        border-radius: 8px;
+        background: #fef2f2;
+        color: #dc2626;
+        font-size: 12px;
+    }
+
+        .customer-edit-validation ul {
+            margin: 5px 0 0;
+            padding-left: 20px;
+        }
+
+        .customer-edit-validation.validation-summary-valid {
+            display: none !important;
+        }
+
+    .customer-edit-group .field-validation-error {
+        display: block;
+        margin-top: 6px;
+        color: #dc2626;
+        font-size: 11px;
+    }
+
+    .customer-edit-group .input-validation-error {
+        border-color: #f87171;
+        background: #fffafa;
+    }
+
+    .customer-edit-account-box {
+        padding: 17px;
+        border: 1px solid #dbeafe;
+        border-radius: 10px;
+        background: #f8fbff;
+    }
+
+    .customer-edit-account-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 13px;
+        color: #1e40af;
+        font-size: 13px;
+        font-weight: 800;
+    }
+
+        .customer-edit-account-title i {
+            font-size: 16px;
+        }
+
+    .customer-edit-account-select {
+        display: block;
+        width: 100%;
+        height: 43px;
+        padding: 9px 13px;
+        border: 1px solid #dce4f0;
+        border-radius: 8px;
+        background: #fff;
+        color: #334155;
+        font-size: 13px;
         outline: none;
         box-sizing: border-box;
         transition: all 0.2s ease;
     }
 
-        .edit-input:focus {
-            border-color: #3867d6;
-            box-shadow: 0 0 0 3px rgba(56, 103, 214, 0.10);
+        .customer-edit-account-select:focus {
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
-    .field-validation-error {
-        display: block;
-        color: #dc3545;
-        font-size: 12px;
-        margin-top: 6px;
+    .customer-edit-account-note {
+        margin-top: 9px;
+        color: #8492a6;
+        font-size: 11px;
+        line-height: 1.6;
     }
 
-    .validation-summary-errors {
-        color: #dc3545;
-        background: #fff1f1;
-        border: 1px solid #ffdada;
-        border-radius: 8px;
-        padding: 12px 15px;
-        margin-bottom: 18px;
-        font-size: 13px;
-    }
-
-        .validation-summary-errors ul {
-            margin: 0;
-            padding-left: 20px;
-        }
-
-    .edit-actions {
+    .customer-edit-actions {
         display: flex;
-        justify-content: center;
-        gap: 13px;
+        justify-content: flex-end;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
         margin-top: 27px;
+        padding-top: 22px;
+        border-top: 1px solid #edf1f7;
     }
 
-    .btn-save,
-    .btn-back {
+    .customer-edit-btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-width: 145px;
-        padding: 11px 20px;
+        gap: 8px;
+        min-width: 135px;
+        min-height: 40px;
+        padding: 0 17px;
         border: none;
         border-radius: 8px;
-        font-size: 14px;
-        font-weight: 600;
-        text-decoration: none;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none !important;
         cursor: pointer;
         transition: all 0.2s ease;
     }
 
-    .btn-save {
-        background: #3867d6;
+    .btn-save-customer {
+        background: #2563eb;
         color: #fff;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15);
     }
 
-        .btn-save:hover {
-            background: #2853bb;
+        .btn-save-customer:hover {
+            background: #1d4ed8;
             color: #fff;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 14px rgba(37, 99, 235, 0.22);
         }
 
-    .btn-back {
-        background: #f0f2f6;
-        color: #536174;
+    .btn-back-customer {
+        background: #f1f5f9;
+        color: #64748b;
     }
 
-        .btn-back:hover {
-            background: #e1e6ef;
-            color: #243247;
-            text-decoration: none;
-            transform: translateY(-2px);
+        .btn-back-customer:hover {
+            background: #e2e8f0;
+            color: #334155;
+            transform: translateY(-3px);
         }
+
+    @@media (max-width: 768px) {
+        .customer-edit-page {
+            padding: 20px 12px;
+        }
+
+        .customer-edit-heading h2 {
+            font-size: 21px;
+        }
+
+        .customer-edit-profile {
+            padding: 20px;
+        }
+
+        .customer-edit-body {
+            padding: 20px;
+        }
+    }
 
     @@media (max-width: 576px) {
-        .customer-edit-page {
-            padding: 25px 12px;
+        .customer-edit-actions {
+            flex-direction: column-reverse;
         }
 
-        .customer-edit-card {
-            padding: 25px 20px;
-        }
-
-        .customer-edit-header h2 {
-            font-size: 23px;
-        }
-
-        .edit-actions {
-            flex-direction: column;
-        }
-
-        .btn-save,
-        .btn-back {
+        .customer-edit-btn {
             width: 100%;
         }
     }
@@ -207,150 +370,256 @@
 
 <div class="customer-edit-page">
 
-    <div class="customer-edit-header">
-        <h2>Chỉnh sửa khách hàng</h2>
-        <p>Cập nhật thông tin khách hàng trong hệ thống.</p>
-    </div>
-
     <div class="customer-edit-container">
 
-        <div class="customer-edit-card">
+        <!-- ĐƯỜNG DẪN -->
+        <div class="customer-edit-breadcrumb">
 
-            @using (Html.BeginForm(
-                "Edit",
-                "Customers",
-                new
-                {
-                    area = "Admin",
-                    id = Model.CustomerID
-                },
-                FormMethod.Post))
-            {
-                @Html.AntiForgeryToken()
+            <a href="@Url.Action("Index", "Home", new { area = "Admin" })">
+                <i class="fa fa-home"></i>
+                Tổng quan
+            </a>
 
-                @Html.HiddenFor(model => model.CustomerID)
+            <i class="fa fa-angle-right"></i>
 
-                <!-- Avatar -->
-                <div class="edit-avatar">
-                    @(string.IsNullOrEmpty(Model.CustomerName)
-                        ? "C"
-                        : Model.CustomerName.Substring(0, 1).ToUpper())
-                </div>
+            <a href="@Url.Action("Index", "Customers", new { area = "Admin" })">
+                Khách hàng
+            </a>
 
-                <!-- Tên khách hàng -->
-                <div class="edit-customer-name">
-                    @Model.CustomerName
-                </div>
+            <i class="fa fa-angle-right"></i>
 
-                <div class="edit-subtitle">
-                    Thông tin khách hàng
-                </div>
-
-                <!-- Thông báo lỗi -->
-                @Html.ValidationSummary(
-                         false,
-                         "",
-                         new { @class = "text-danger" }
-                     )
-
-                <!-- Tên khách hàng -->
-                <div class="edit-form-group">
-                    <label>Tên khách hàng</label>
-
-                    @Html.TextBoxFor(
-                             model => model.CustomerName,
-                             new
-                             {
-                                 @class = "edit-input",
-                                 placeholder = "Nhập tên khách hàng"
-                             }
-                         )
-
-                    @Html.ValidationMessageFor(
-                             model => model.CustomerName,
-                             "",
-                             new { @class = "field-validation-error" }
-                         )
-                </div>
-
-                <!-- Số điện thoại -->
-                <div class="edit-form-group">
-                    <label>Số điện thoại</label>
-
-                    @Html.TextBoxFor(
-                             model => model.CustomerPhone,
-                             new
-                             {
-                                 @class = "edit-input",
-                                 placeholder = "Nhập số điện thoại"
-                             }
-                         )
-
-                    @Html.ValidationMessageFor(
-                             model => model.CustomerPhone,
-                             "",
-                             new { @class = "field-validation-error" }
-                         )
-                </div>
-
-                <!-- Email -->
-                <div class="edit-form-group">
-                    <label>Email</label>
-
-                    @Html.TextBoxFor(
-                             model => model.CustomerEmail,
-                             new
-                             {
-                                 @class = "edit-input",
-                                 placeholder = "Nhập địa chỉ email"
-                             }
-                         )
-
-                    @Html.ValidationMessageFor(
-                             model => model.CustomerEmail,
-                             "",
-                             new { @class = "field-validation-error" }
-                         )
-                </div>
-
-                <!-- Địa chỉ -->
-                <div class="edit-form-group">
-                    <label>Địa chỉ</label>
-
-                    @Html.TextBoxFor(
-                             model => model.CustomerAddress,
-                             new
-                             {
-                                 @class = "edit-input",
-                                 placeholder = "Nhập địa chỉ khách hàng"
-                             }
-                         )
-
-                    @Html.ValidationMessageFor(
-                             model => model.CustomerAddress,
-                             "",
-                             new { @class = "field-validation-error" }
-                         )
-                </div>
-
-                <!-- Nút chức năng -->
-                <div class="edit-actions">
-
-                    <button type="submit" class="btn-save">
-                        💾 Lưu thay đổi
-                    </button>
-
-                    @Html.ActionLink(
-                             "Quay lại",
-                             "Index",
-                             "Customers",
-                             new { area = "Admin" },
-                             new { @class = "btn-back" }
-                         )
-
-                </div>
-            }
+            <span>Chỉnh sửa khách hàng</span>
 
         </div>
+
+        <!-- TIÊU ĐỀ -->
+        <div class="customer-edit-heading">
+
+            <div class="customer-edit-heading-icon">
+                <i class="fa fa-user-edit"></i>
+            </div>
+
+            <div>
+                <h2>Chỉnh sửa khách hàng</h2>
+                <p>Cập nhật thông tin khách hàng trong hệ thống BookOra</p>
+            </div>
+
+        </div>
+
+        <!-- FORM CHỈNH SỬA -->
+        <div class="customer-edit-card">
+
+            <!-- THÔNG TIN HỒ SƠ -->
+            <div class="customer-edit-profile">
+
+                <div class="customer-edit-avatar">
+                    @avatarLetter
+                </div>
+
+                <div>
+                    <h3>@customerName</h3>
+                    <p>Thông tin hồ sơ khách hàng</p>
+
+                    <span class="customer-edit-id">
+                        <i class="fa fa-id-card"></i>
+                        Mã khách hàng: #@Model.CustomerID
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="customer-edit-body">
+
+                <h4 class="customer-edit-section-title">
+                    <i class="fa fa-address-card"></i>
+                    Cập nhật thông tin cá nhân
+                </h4>
+
+                <div class="customer-edit-form">
+
+                    @using (Html.BeginForm(
+                        "Edit",
+                        "Customers",
+                        new
+                        {
+                            area = "Admin",
+                            id = Model.CustomerID
+                        },
+                        FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        @Html.HiddenFor(model => model.CustomerID)
+
+                        <!-- THÔNG BÁO LỖI -->
+                        @Html.ValidationSummary(
+                                 false,
+                                 "",
+                                 new { @class = "customer-edit-validation" }
+                             )
+
+                        <!-- HỌ VÀ TÊN -->
+                        <div class="customer-edit-group">
+
+                            @Html.LabelFor(
+                                     model => model.CustomerName,
+                                     "Họ và tên"
+                                 )
+
+                            @Html.TextBoxFor(
+                                     model => model.CustomerName,
+                                     new
+                                     {
+                                         @class = "customer-edit-input",
+                                         placeholder = "Nhập họ và tên khách hàng"
+                                     }
+                                 )
+
+                            @Html.ValidationMessageFor(
+                                     model => model.CustomerName,
+                                     "",
+                                     new { @class = "field-validation-error" }
+                                 )
+
+                        </div>
+
+                        <!-- SỐ ĐIỆN THOẠI -->
+                        <div class="customer-edit-group">
+
+                            @Html.LabelFor(
+                                     model => model.CustomerPhone,
+                                     "Số điện thoại"
+                                 )
+
+                            @Html.TextBoxFor(
+                                     model => model.CustomerPhone,
+                                     new
+                                     {
+                                         @class = "customer-edit-input",
+                                         placeholder = "Nhập số điện thoại"
+                                     }
+                                 )
+
+                            @Html.ValidationMessageFor(
+                                     model => model.CustomerPhone,
+                                     "",
+                                     new { @class = "field-validation-error" }
+                                 )
+
+                        </div>
+
+                        <!-- EMAIL -->
+                        <div class="customer-edit-group">
+
+                            @Html.LabelFor(
+                                     model => model.CustomerEmail,
+                                     "Email"
+                                 )
+
+                            @Html.TextBoxFor(
+                                     model => model.CustomerEmail,
+                                     new
+                                     {
+                                         @class = "customer-edit-input",
+                                         placeholder = "Nhập địa chỉ email"
+                                     }
+                                 )
+
+                            @Html.ValidationMessageFor(
+                                     model => model.CustomerEmail,
+                                     "",
+                                     new { @class = "field-validation-error" }
+                                 )
+
+                        </div>
+
+                        <!-- ĐỊA CHỈ -->
+                        <div class="customer-edit-group">
+
+                            @Html.LabelFor(
+                                     model => model.CustomerAddress,
+                                     "Địa chỉ"
+                                 )
+
+                            @Html.TextBoxFor(
+                                     model => model.CustomerAddress,
+                                     new
+                                     {
+                                         @class = "customer-edit-input",
+                                         placeholder = "Nhập địa chỉ khách hàng"
+                                     }
+                                 )
+
+                            @Html.ValidationMessageFor(
+                                     model => model.CustomerAddress,
+                                     "",
+                                     new { @class = "field-validation-error" }
+                                 )
+
+                        </div>
+
+                        <!-- TÀI KHOẢN LIÊN KẾT -->
+                        <div class="customer-edit-group">
+
+                            <div class="customer-edit-account-box">
+
+                                <div class="customer-edit-account-title">
+                                    <i class="fa fa-link"></i>
+                                    Tài khoản liên kết
+                                </div>
+
+                                @Html.DropDownListFor(
+                                    model => model.Username,
+                                    usernameList,
+                                    "-- Không liên kết tài khoản --",
+                                    new { @class = "customer-edit-account-select" }
+                                )
+
+                                @Html.ValidationMessageFor(
+                                    model => model.Username,
+                                    "",
+                                    new { @class = "text-danger" }
+                                )
+
+                                <div class="customer-edit-account-note">
+                                    <i class="fa fa-info-circle"></i>
+                                    Chọn tài khoản muốn liên kết với khách hàng.
+                                    Chọn mục đầu tiên nếu muốn bỏ liên kết tài khoản.
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="customer-edit-hint">
+                            <i class="fa fa-info-circle"></i>
+                            Kiểm tra thông tin trước khi lưu thay đổi.
+                        </div>
+
+                        <!-- NÚT CHỨC NĂNG -->
+                        <div class="customer-edit-actions">
+
+                            <a href="@Url.Action("Index", "Customers", new { area = "Admin" })"
+                               class="customer-edit-btn btn-back-customer">
+                                <i class="fa fa-arrow-left"></i>
+                                Quay lại
+                            </a>
+
+                            <button type="submit"
+                                    class="customer-edit-btn btn-save-customer">
+                                <i class="fa fa-floppy-o"></i>
+                                Lưu thay đổi
+                            </button>
+
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
+
 </div>

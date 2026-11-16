@@ -80,7 +80,9 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
             int pageNumber = page ?? 1;
 
             if (pageNumber < 1)
+            {
                 pageNumber = 1;
+            }
 
             int totalItems = customers.Count();
 
@@ -92,7 +94,9 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
             );
 
             if (pageNumber > totalPages)
+            {
                 pageNumber = totalPages;
+            }
 
             // Gửi thông tin sang View
             ViewBag.CurrentPage = pageNumber;
@@ -107,7 +111,6 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
 
             return View(result);
         }
-
 
         // GET: Admin/Customers/Details/5
         public ActionResult Details(int? id)
@@ -129,19 +132,13 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
             return View(customer);
         }
 
-
         // GET: Admin/Customers/Create
         public ActionResult Create()
         {
-            ViewBag.Username = new SelectList(
-                db.Users,
-                "Username",
-                "Username"
-            );
+            LoadUserList(null);
 
             return View();
         }
-
 
         // POST: Admin/Customers/Create
         [HttpPost]
@@ -150,6 +147,10 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
             [Bind(Include = "CustomerID,CustomerName,CustomerPhone,CustomerEmail,CustomerAddress,Username")]
             Customer customer)
         {
+            NormalizeUsername(customer);
+
+            ValidateUsername(customer.Username);
+
             if (ModelState.IsValid)
             {
                 try
@@ -172,16 +173,10 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
                 }
             }
 
-            ViewBag.Username = new SelectList(
-                db.Users,
-                "Username",
-                "Username",
-                customer.Username
-            );
+            LoadUserList(customer.Username);
 
             return View(customer);
         }
-
 
         // GET: Admin/Customers/Edit/5
         public ActionResult Edit(int? id)
@@ -191,66 +186,110 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Customer customer = db.Customers.Find(id);
+            Customer customer = db.Customers
+                .Include(c => c.User)
+                .FirstOrDefault(c => c.CustomerID == id.Value);
 
             if (customer == null)
             {
                 return HttpNotFound();
             }
 
+            // Lấy Username hiện tại của khách hàng
+            string currentUsername = customer.Username;
+
+            if (string.IsNullOrWhiteSpace(currentUsername) && customer.User != null)
+            {
+                currentUsername = customer.User.Username;
+            }
+
+            // Gán lại vào Model để giữ nguyên thông tin
+            customer.Username = currentUsername;
+
+            // Tạo danh sách tài khoản và đánh dấu tài khoản hiện tại
+            var users = db.Users
+                .OrderBy(u => u.Username)
+                .ToList();
+
+            var userList = users.Select(u => new SelectListItem
+            {
+                Text = u.Username,
+                Value = u.Username,
+                Selected = u.Username == currentUsername
+            }).ToList();
+
+            // Nếu tài khoản hiện tại không còn trong danh sách Users,
+            // vẫn hiển thị tên tài khoản đang liên kết
+            if (!string.IsNullOrWhiteSpace(currentUsername) &&
+                !users.Any(u => u.Username == currentUsername))
+            {
+                userList.Insert(0, new SelectListItem
+                {
+                    Text = currentUsername,
+                    Value = currentUsername,
+                    Selected = true
+                });
+            }
+
+            ViewBag.Username = userList;
+
             return View(customer);
         }
-
 
         // POST: Admin/Customers/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(
-            [Bind(Include = "CustomerID,CustomerName,CustomerPhone,CustomerEmail,CustomerAddress")]
+            [Bind(Include = "CustomerID,CustomerName,CustomerPhone,CustomerEmail,CustomerAddress,Username")]
             Customer customer)
         {
-            if (customer == null)
-            {
-                return HttpNotFound();
-            }
+            NormalizeUsername(customer);
 
-            // Lấy khách hàng hiện tại trong database
-            Customer existingCustomer = db.Customers.Find(
-                customer.CustomerID
-            );
-
-            if (existingCustomer == null)
-            {
-                return HttpNotFound();
-            }
-
-            // Form không chỉnh sửa Username
-            ModelState.Remove("Username");
+            ValidateUsername(customer.Username);
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // Chỉ cập nhật các thông tin được phép sửa
-                    existingCustomer.CustomerName =
-                        customer.CustomerName;
+                    // Lấy khách hàng hiện tại trong database
+                    Customer existingCustomer = db.Customers
+                        .FirstOrDefault(c =>
+                            c.CustomerID == customer.CustomerID);
 
-                    existingCustomer.CustomerPhone =
-                        customer.CustomerPhone;
+                    if (existingCustomer == null)
+                    {
+                        return HttpNotFound();
+                    }
 
-                    existingCustomer.CustomerEmail =
-                        customer.CustomerEmail;
+                    // Cập nhật thông tin khách hàng
+                    existingCustomer.CustomerName = customer.CustomerName;
+                    existingCustomer.CustomerPhone = customer.CustomerPhone;
+                    existingCustomer.CustomerEmail = customer.CustomerEmail;
+                    existingCustomer.CustomerAddress = customer.CustomerAddress;
 
-                    existingCustomer.CustomerAddress =
-                        customer.CustomerAddress;
+                    // Cập nhật tài khoản liên kết
+                    // Nếu Username = null thì bỏ liên kết tài khoản
+                    existingCustomer.Username = customer.Username;
 
-                    // Giữ nguyên Username và tài khoản liên kết
                     db.SaveChanges();
 
-                    TempData["EditSuccess"] =
-                        "Cập nhật thông tin khách hàng thành công!";
+                    TempData["SuccessMessage"] =
+                        "Cập nhật thông tin khách hàng thành công.";
 
                     return RedirectToAction("Index");
+                }
+                catch (System.Data.Entity.Validation.DbEntityValidationException ex)
+                {
+                    foreach (var validationErrors in ex.EntityValidationErrors)
+                    {
+                        foreach (var validationError in validationErrors.ValidationErrors)
+                        {
+                            ModelState.AddModelError(
+                                validationError.PropertyName,
+                                validationError.ErrorMessage
+                            );
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -262,9 +301,11 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
                 }
             }
 
+            // Tải lại danh sách tài khoản khi có lỗi
+            LoadUserList(customer.Username);
+
             return View(customer);
         }
-
 
         // GET: Admin/Customers/Delete/5
         public ActionResult Delete(int? id)
@@ -292,7 +333,6 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
 
             return View(customer);
         }
-
 
         // POST: Admin/Customers/Delete/5
         [HttpPost, ActionName("Delete")]
@@ -357,6 +397,59 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
             }
         }
 
+        // Chuẩn hóa Username
+        private void NormalizeUsername(Customer customer)
+        {
+            if (customer == null)
+            {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(customer.Username))
+            {
+                customer.Username = null;
+            }
+            else
+            {
+                customer.Username = customer.Username.Trim();
+            }
+        }
+
+        // Kiểm tra tài khoản liên kết có tồn tại
+        private void ValidateUsername(string username)
+        {
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                return;
+            }
+
+            bool userExists = db.Users.Any(
+                u => u.Username == username
+            );
+
+            if (!userExists)
+            {
+                ModelState.AddModelError(
+                    "Username",
+                    "Tài khoản được chọn không tồn tại."
+                );
+            }
+        }
+
+        // Tải danh sách tài khoản và chọn tài khoản hiện tại
+        private void LoadUserList(string selectedUsername)
+        {
+            var users = db.Users
+                .OrderBy(u => u.Username)
+                .ToList();
+
+            ViewBag.Username = new SelectList(
+                users,
+                "Username",
+                "Username",
+                selectedUsername
+            );
+        }
 
         // Giải phóng kết nối database
         protected override void Dispose(bool disposing)

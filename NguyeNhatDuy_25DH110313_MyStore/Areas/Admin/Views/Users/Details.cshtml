@@ -4,131 +4,313 @@
 @{
     ViewBag.Title = "Chi tiết tài khoản";
     Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
+
+    string username = string.IsNullOrWhiteSpace(Model.Username)
+        ? "U"
+        : Model.Username.Trim();
+
+    string avatarLetter = username.Substring(0, 1).ToUpper();
+
+    string userRole = string.IsNullOrWhiteSpace(Model.UserRole)
+        ? "Chưa xác định"
+        : Model.UserRole;
+
+    bool isAdmin = string.Equals(
+        userRole,
+        "Admin",
+        StringComparison.OrdinalIgnoreCase
+    );
 }
 
 <style>
     .user-details-page {
         min-height: 100vh;
-        padding: 35px 20px;
-        background: #f5f7fb;
+        padding: 35px 20px 55px;
+        background: #f4f6fb;
     }
 
-    /* Tiêu đề trang */
     .user-details-header {
-        text-align: center;
-        margin-bottom: 28px;
+        max-width: 1050px;
+        margin: 0 auto 28px;
     }
 
-        .user-details-header h2 {
-            color: #243247;
-            font-size: 27px;
-            font-weight: 700;
-            margin-bottom: 8px;
+    .user-details-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        flex-wrap: wrap;
+        margin-bottom: 17px;
+        color: #8995a8;
+        font-size: 13px;
+    }
+
+        .user-details-breadcrumb a {
+            color: #526b91;
+            text-decoration: none;
         }
 
-        .user-details-header p {
-            color: #8492a6;
-            font-size: 14px;
-            margin: 0;
-        }
+            .user-details-breadcrumb a:hover {
+                color: #315fc2;
+            }
 
-    /* Khung thông tin chính */
+    .user-details-heading {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .user-details-heading-icon {
+        width: 54px;
+        height: 54px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        color: #fff;
+        font-size: 23px;
+        background: linear-gradient(135deg, #263f70, #4778d5);
+        box-shadow: 0 6px 16px rgba(49, 95, 194, 0.2);
+    }
+
+    .user-details-heading h2 {
+        margin: 0 0 5px;
+        color: #243653;
+        font-size: 25px;
+        font-weight: 750;
+    }
+
+    .user-details-heading p {
+        margin: 0;
+        color: #8995a8;
+        font-size: 14px;
+    }
+
     .user-details-container {
-        max-width: 620px;
+        max-width: 1050px;
         margin: 0 auto;
     }
 
     .user-details-card {
-        width: 100%;
-        max-width: 550px;
+        max-width: 650px;
         margin: 0 auto;
+        overflow: hidden;
         background: #fff;
-        border: 1px solid #edf0f5;
-        border-radius: 16px;
-        padding: 30px 38px;
-        box-shadow: 0 6px 24px rgba(30, 50, 80, 0.07);
+        border: 1px solid #e9edf5;
+        border-radius: 18px;
+        box-shadow: 0 8px 28px rgba(35, 54, 83, 0.07);
     }
 
-    /* Avatar */
+    .user-card-top {
+        padding: 30px 35px 25px;
+        text-align: center;
+        border-bottom: 1px solid #edf0f5;
+        background: linear-gradient(135deg, #f8faff, #eef3ff);
+    }
+
     .user-avatar {
-        width: 78px;
-        height: 78px;
-        margin: 0 auto 14px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #e8efff, #d7e3ff);
-        color: #3867d6;
+        width: 88px;
+        height: 88px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 30px;
-        font-weight: 700;
-        border: 4px solid #f4f7ff;
+        margin: 0 auto 15px;
+        border: 5px solid #fff;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #29477e, #5685e0);
+        color: #fff;
+        font-size: 34px;
+        font-weight: 750;
+        box-shadow: 0 5px 18px rgba(49, 95, 194, 0.2);
     }
 
-    /* Tên tài khoản */
     .user-name {
-        text-align: center;
-        color: #243247;
-        font-size: 21px;
-        font-weight: 700;
-        margin-bottom: 25px;
+        margin: 0 0 8px;
+        color: #243653;
+        font-size: 22px;
+        font-weight: 750;
+        word-break: break-word;
     }
 
     .user-subtitle {
-        text-align: center;
-        color: #98a3b3;
+        margin: 0;
+        color: #8995a8;
         font-size: 13px;
-        margin-top: -18px;
-        margin-bottom: 23px;
     }
 
-    /* Các khung thông tin riêng */
+    .user-details-content {
+        padding: 28px 35px 32px;
+    }
+
+    .user-section-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 19px;
+        color: #304568;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+        .user-section-title i {
+            color: #4778d5;
+            font-size: 17px;
+        }
+
     .detail-item {
-        background: #f7f9fc;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 17px 18px;
+        margin-bottom: 13px;
         border: 1px solid #edf0f5;
-        border-radius: 10px;
-        padding: 12px 17px;
-        margin-bottom: 12px;
-        text-align: left;
+        border-radius: 12px;
+        background: #f8faff;
         transition: all 0.2s ease;
     }
 
         .detail-item:hover {
-            background: #f0f4fb;
-            border-color: #dce5f5;
+            background: #f1f5ff;
+            border-color: #dce6fb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(35, 54, 83, 0.04);
         }
 
     .detail-label {
-        color: #8492a6;
-        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        color: #77869c;
+        font-size: 13px;
         font-weight: 600;
-        margin-bottom: 6px;
     }
 
+        .detail-label i {
+            width: 19px;
+            color: #6483bb;
+            text-align: center;
+            font-size: 15px;
+        }
+
     .detail-value {
-        color: #243247;
+        color: #293d5c;
         font-size: 14px;
-        font-weight: 600;
+        font-weight: 700;
+        text-align: right;
         word-break: break-word;
     }
 
-    /* Nhãn vai trò */
     .role-badge {
-        display: inline-block;
-        padding: 5px 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 13px;
         border-radius: 20px;
-        background: #e5edff;
-        color: #3867d6;
+        background: #e8efff;
+        color: #315fc2;
         font-size: 12px;
-        font-weight: 600;
+        font-weight: 700;
     }
 
-    /* Khu vực nút */
+        .role-badge.admin {
+            background: #fff2df;
+            color: #b87519;
+        }
+
+    /* Khu vực xem mật khẩu */
+    .password-reveal {
+        padding: 17px 18px;
+        margin-bottom: 13px;
+        border: 1px solid #edf0f5;
+        border-radius: 12px;
+        background: #f8faff;
+        transition: all 0.2s ease;
+    }
+
+        .password-reveal:hover {
+            background: #f1f5ff;
+            border-color: #dce6fb;
+        }
+
+        .password-reveal details {
+            width: 100%;
+        }
+
+        .password-reveal summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            color: #77869c;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            list-style: none;
+        }
+
+    .password-label {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+    }
+
+        .password-label i {
+            width: 19px;
+            color: #6483bb;
+            text-align: center;
+            font-size: 15px;
+        }
+
+    .password-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: #315fc2;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+        .password-action .hide-text {
+            display: none;
+        }
+
+    .password-reveal details[open] .show-text {
+        display: none;
+    }
+
+    .password-reveal details[open] .hide-text {
+        display: inline;
+    }
+
+    .password-value {
+        display: block;
+        margin-top: 15px;
+        padding: 12px 14px;
+        color: #293d5c;
+        background: #fff;
+        border: 1px solid #e1e7f0;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+        user-select: text;
+    }
+
+    .password-empty {
+        color: #8995a8;
+        font-weight: 500;
+        font-style: italic;
+    }
+
     .details-actions {
         display: flex;
         justify-content: center;
-        gap: 13px;
-        margin-top: 25px;
+        gap: 12px;
+        padding-top: 12px;
+        margin-top: 24px;
+        border-top: 1px solid #edf0f5;
     }
 
     .btn-edit,
@@ -136,51 +318,72 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-width: 135px;
-        padding: 11px 20px;
-        border-radius: 8px;
+        gap: 9px;
+        min-width: 155px;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 9px;
         font-size: 14px;
-        font-weight: 600;
+        font-weight: 700;
         text-decoration: none;
         transition: all 0.2s ease;
     }
 
     .btn-edit {
-        background: #3867d6;
+        background: linear-gradient(135deg, #315fc2, #4778d5);
         color: #fff;
+        box-shadow: 0 4px 12px rgba(49, 95, 194, 0.16);
     }
 
         .btn-edit:hover {
-            background: #2853bb;
             color: #fff;
             text-decoration: none;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 16px rgba(49, 95, 194, 0.23);
         }
 
     .btn-back {
-        background: #f0f2f6;
-        color: #536174;
+        background: #edf1f7;
+        color: #52627a;
     }
 
         .btn-back:hover {
-            background: #e1e6ef;
-            color: #243247;
+            background: #e1e8f3;
+            color: #293d5c;
             text-decoration: none;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
         }
 
-    /* Responsive */
     @@media (max-width: 576px) {
         .user-details-page {
-            padding: 25px 12px;
+            padding: 25px 12px 40px;
         }
 
-        .user-details-card {
-            padding: 25px 20px;
+        .user-details-heading h2 {
+            font-size: 21px;
         }
 
-        .user-details-header h2 {
-            font-size: 23px;
+        .user-card-top {
+            padding: 25px 18px 22px;
+        }
+
+        .user-details-content {
+            padding: 23px 18px 25px;
+        }
+
+        .detail-item {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .detail-value {
+            text-align: left;
+            padding-left: 30px;
+        }
+
+        .password-reveal summary {
+            align-items: flex-start;
         }
 
         .details-actions {
@@ -196,77 +399,167 @@
 
 <div class="user-details-page">
 
-    <!-- Tiêu đề -->
     <div class="user-details-header">
-        <h2>Chi tiết tài khoản</h2>
-        <p>Xem thông tin chi tiết của tài khoản trong hệ thống.</p>
+
+        <div class="user-details-breadcrumb">
+
+            <a href="@Url.Action("Index", "Home", new { area = "Admin" })">
+                <i class="fa fa-home"></i> Tổng quan
+            </a>
+
+            <i class="fa fa-angle-right"></i>
+
+            <a href="@Url.Action("Index", "Users", new { area = "Admin" })">
+                Quản lý tài khoản
+            </a>
+
+            <i class="fa fa-angle-right"></i>
+
+            <span>Chi tiết tài khoản</span>
+
+        </div>
+
+        <div class="user-details-heading">
+
+            <div class="user-details-heading-icon">
+                <i class="fa fa-user-circle"></i>
+            </div>
+
+            <div>
+                <h2>Chi tiết tài khoản</h2>
+                <p>Xem thông tin tài khoản trong hệ thống BookOra.</p>
+            </div>
+
+        </div>
+
     </div>
 
     <div class="user-details-container">
 
         <div class="user-details-card">
 
-            <!-- Avatar tài khoản -->
-            <div class="user-avatar">
-                @(string.IsNullOrEmpty(Model.Username)
-                    ? "U"
-                    : Model.Username.Substring(0, 1).ToUpper())
-            </div>
+            <div class="user-card-top">
 
-            <!-- Tên tài khoản -->
-            <div class="user-name">
-                @Model.Username
-            </div>
-
-            <div class="user-subtitle">
-                Thông tin tài khoản người dùng
-            </div>
-
-            <!-- Tên đăng nhập -->
-            <div class="detail-item">
-                <div class="detail-label">Tên đăng nhập</div>
-                <div class="detail-value">
-                    @Model.Username
+                <div class="user-avatar">
+                    @avatarLetter
                 </div>
+
+                <h3 class="user-name">
+                    @username
+                </h3>
+
+                <p class="user-subtitle">
+                    Thông tin tài khoản người dùng
+                </p>
+
             </div>
 
-            <!-- Vai trò -->
-            <div class="detail-item">
-                <div class="detail-label">Vai trò tài khoản</div>
-                <div class="detail-value">
-                    <span class="role-badge">
-                        @Model.UserRole
-                    </span>
+            <div class="user-details-content">
+
+                <div class="user-section-title">
+                    <i class="fa fa-id-card"></i>
+                    Thông tin cơ bản
                 </div>
-            </div>
 
-            <!-- Mật khẩu -->
-            <div class="detail-item">
-                <div class="detail-label">Mật khẩu</div>
-                <div class="detail-value">
-                    @Model.Password
+                <!-- Tên đăng nhập -->
+                <div class="detail-item">
+
+                    <div class="detail-label">
+                        <i class="fa fa-user"></i>
+                        Tên đăng nhập
+                    </div>
+
+                    <div class="detail-value">
+                        @Model.Username
+                    </div>
+
                 </div>
-            </div>
 
-            <!-- Nút chức năng -->
-            <div class="details-actions">
+                <!-- Vai trò -->
+                <div class="detail-item">
 
-                @Html.ActionLink(
-                    "Chỉnh sửa",
-                    "Edit",
-                    new { id = Model.Username },
-                    new { @class = "btn-edit" }
-                )
+                    <div class="detail-label">
+                        <i class="fa fa-shield"></i>
+                        Vai trò tài khoản
+                    </div>
 
-                @Html.ActionLink(
-                    "Quay lại",
-                    "Index",
-                    null,
-                    new { @class = "btn-back" }
-                )
+                    <div class="detail-value">
+
+                        <span class="role-badge @(isAdmin ? "admin" : "")">
+                            <i class="fa fa-user-circle"></i>
+                            @userRole
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <!-- Mật khẩu -->
+                <div class="password-reveal">
+
+                    <details>
+
+                        <summary>
+
+                            <span class="password-label">
+                                <i class="fa fa-lock"></i>
+                                Mật khẩu tài khoản
+                            </span>
+
+                            <span class="password-action">
+                                <span class="show-text">
+                                    <i class="fa fa-eye"></i>
+                                    Hiện mật khẩu
+                                </span>
+
+                                <span class="hide-text">
+                                    <i class="fa fa-eye-slash"></i>
+                                    Ẩn mật khẩu
+                                </span>
+                            </span>
+
+                        </summary>
+
+                        <div class="password-value">
+
+                            @if (string.IsNullOrWhiteSpace(Model.Password))
+                            {
+                                <span class="password-empty">
+                                    Chưa có mật khẩu
+                                </span>
+                            }
+                            else
+                            {
+                                @Model.Password
+                            }
+
+                        </div>
+
+                    </details>
+
+                </div>
+
+                <!-- Các nút thao tác -->
+                <div class="details-actions">
+
+                    <a href="@Url.Action("Edit", "Users", new { area = "Admin", id = Model.Username })"
+                       class="btn-edit">
+                        <i class="fa fa-pencil"></i>
+                        Chỉnh sửa
+                    </a>
+
+                    <a href="@Url.Action("Index", "Users", new { area = "Admin" })"
+                       class="btn-back">
+                        <i class="fa fa-arrow-left"></i>
+                        Quay lại
+                    </a>
+
+                </div>
 
             </div>
 
         </div>
+
     </div>
+
 </div>

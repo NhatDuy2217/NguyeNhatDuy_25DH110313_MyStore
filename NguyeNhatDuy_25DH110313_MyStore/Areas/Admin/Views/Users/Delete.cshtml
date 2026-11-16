@@ -8,139 +8,270 @@
     int customerCount = ViewBag.CustomerCount == null
         ? 0
         : (int)ViewBag.CustomerCount;
+
+    string username = string.IsNullOrWhiteSpace(Model.Username)
+        ? "Chưa xác định"
+        : Model.Username.Trim();
+
+    string userRole = string.IsNullOrWhiteSpace(Model.UserRole)
+        ? "Chưa xác định"
+        : Model.UserRole;
+
+    string avatarLetter = username == "Chưa xác định"
+        ? "U"
+        : username.Substring(0, 1).ToUpper();
+
+    bool hasDeleteError = !string.IsNullOrWhiteSpace(
+        ViewBag.DeleteError as string
+    );
+
+    bool canDelete = customerCount == 0 && !hasDeleteError;
+
+    bool isAdmin = string.Equals(
+        userRole,
+        "Admin",
+        StringComparison.OrdinalIgnoreCase
+    );
 }
 
 <style>
     .user-delete-page {
         min-height: 100vh;
-        padding: 35px 20px;
-        background: #f5f7fb;
+        padding: 35px 20px 55px;
+        background: #f4f6fb;
     }
 
     .user-delete-header {
-        text-align: center;
-        margin-bottom: 28px;
+        max-width: 1050px;
+        margin: 0 auto 28px;
     }
 
-        .user-delete-header h2 {
-            color: #243247;
-            font-size: 27px;
-            font-weight: 700;
-            margin-bottom: 8px;
+    .user-delete-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        flex-wrap: wrap;
+        margin-bottom: 17px;
+        color: #8995a8;
+        font-size: 13px;
+    }
+
+        .user-delete-breadcrumb a {
+            color: #526b91;
+            text-decoration: none;
         }
 
-        .user-delete-header p {
-            color: #8492a6;
-            font-size: 14px;
-            margin: 0;
-        }
+            .user-delete-breadcrumb a:hover {
+                color: #315fc2;
+            }
+
+    .user-delete-heading {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .user-delete-heading-icon {
+        width: 54px;
+        height: 54px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        color: #fff;
+        font-size: 23px;
+        background: linear-gradient(135deg, #b83245, #ef6474);
+        box-shadow: 0 6px 16px rgba(220, 53, 69, 0.18);
+    }
+
+    .user-delete-heading h2 {
+        margin: 0 0 5px;
+        color: #243653;
+        font-size: 25px;
+        font-weight: 750;
+    }
+
+    .user-delete-heading p {
+        margin: 0;
+        color: #8995a8;
+        font-size: 14px;
+    }
 
     .user-delete-container {
-        max-width: 620px;
+        max-width: 1050px;
         margin: 0 auto;
     }
 
     .user-delete-card {
-        max-width: 550px;
+        max-width: 650px;
         margin: 0 auto;
-        padding: 30px 38px;
+        overflow: hidden;
         background: #fff;
-        border: 1px solid #edf0f5;
-        border-radius: 16px;
-        box-shadow: 0 6px 24px rgba(30, 50, 80, 0.07);
+        border: 1px solid #e9edf5;
+        border-radius: 18px;
+        box-shadow: 0 8px 28px rgba(35, 54, 83, 0.07);
     }
 
-    .delete-icon {
-        width: 78px;
-        height: 78px;
-        margin: 0 auto 16px;
-        border-radius: 50%;
-        background: #fff0f0;
-        color: #dc3545;
+    .delete-card-top {
+        padding: 30px 35px 25px;
+        text-align: center;
+        border-bottom: 1px solid #edf0f5;
+        background: linear-gradient(135deg, #fffafa, #fff1f2);
+    }
+
+    .delete-avatar {
+        width: 88px;
+        height: 88px;
         display: flex;
         align-items: center;
         justify-content: center;
+        margin: 0 auto 15px;
+        border: 5px solid #fff;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #b83245, #ef6474);
+        color: #fff;
         font-size: 34px;
+        font-weight: 750;
+        box-shadow: 0 5px 18px rgba(220, 53, 69, 0.17);
     }
 
     .delete-username {
-        text-align: center;
-        color: #243247;
-        font-size: 21px;
-        font-weight: 700;
-        margin-bottom: 10px;
+        margin: 0 0 8px;
+        color: #243653;
+        font-size: 22px;
+        font-weight: 750;
+        overflow-wrap: anywhere;
     }
 
     .delete-subtitle {
-        text-align: center;
-        color: #8492a6;
+        margin: 0;
+        color: #8995a8;
         font-size: 13px;
-        margin-bottom: 25px;
+    }
+
+    .delete-content {
+        padding: 28px 35px 32px;
+    }
+
+    .delete-section-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 19px;
+        color: #304568;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+        .delete-section-title i {
+            color: #4778d5;
+            font-size: 17px;
+        }
+
+    .delete-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 16px 18px;
+        margin-bottom: 13px;
+        border: 1px solid #edf0f5;
+        border-radius: 12px;
+        background: #f8faff;
+        transition: all 0.2s ease;
+    }
+
+        .delete-info:hover {
+            background: #f1f5ff;
+            border-color: #dce6fb;
+            transform: translateY(-2px);
+        }
+
+    .delete-info-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #77869c;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+        .delete-info-label i {
+            width: 19px;
+            color: #6483bb;
+            text-align: center;
+        }
+
+    .delete-info-value {
+        color: #293d5c;
+        font-size: 14px;
+        font-weight: 700;
+        text-align: right;
+        overflow-wrap: anywhere;
+    }
+
+    .role-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 13px;
+        border-radius: 20px;
+        background: #e8efff;
+        color: #315fc2;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+        .role-badge.admin {
+            background: #fff2df;
+            color: #b87519;
+        }
+
+    .delete-warning,
+    .delete-error,
+    .delete-success {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 15px 17px;
+        margin-bottom: 20px;
+        border-radius: 11px;
+        font-size: 13px;
+        line-height: 1.7;
     }
 
     .delete-warning {
-        padding: 13px 16px;
-        margin-bottom: 22px;
+        color: #946200;
         background: #fff8e8;
         border: 1px solid #ffe5ad;
-        border-radius: 9px;
-        color: #946200;
-        font-size: 13px;
-        line-height: 1.6;
-        text-align: center;
     }
 
     .delete-error {
-        padding: 13px 16px;
-        margin-bottom: 22px;
-        background: #fff0f0;
-        border: 1px solid #ffc9c9;
-        border-radius: 9px;
-        color: #c82333;
-        font-size: 13px;
-        line-height: 1.6;
-        text-align: center;
+        color: #bd3542;
+        background: #fff1f2;
+        border: 1px solid #ffd9dd;
     }
 
-    .delete-info {
-        padding: 14px 17px;
-        margin-bottom: 13px;
-        background: #f7f9fc;
-        border: 1px solid #edf0f5;
-        border-radius: 10px;
+    .delete-success {
+        color: #047857;
+        background: #ecfdf5;
+        border: 1px solid #a7f3d0;
     }
 
-        .delete-info label {
-            display: block;
-            color: #8492a6;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 7px;
-        }
-
-        .delete-info p {
-            color: #243247;
-            font-size: 14px;
-            font-weight: 600;
-            margin: 0;
-            word-break: break-word;
-        }
-
-    .delete-role {
-        display: inline-block;
-        padding: 5px 12px;
-        background: #e8efff;
-        color: #3867d6;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 600;
+    .delete-notice-icon {
+        flex-shrink: 0;
+        font-size: 18px;
+        margin-top: 1px;
     }
 
     .delete-actions {
         display: flex;
         justify-content: center;
-        gap: 13px;
-        margin-top: 27px;
+        gap: 12px;
+        padding-top: 23px;
+        margin-top: 25px;
+        border-top: 1px solid #edf0f5;
     }
 
     .btn-delete,
@@ -148,56 +279,75 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-width: 145px;
-        padding: 11px 20px;
+        gap: 9px;
+        min-width: 160px;
+        padding: 12px 20px;
         border: none;
-        border-radius: 8px;
+        border-radius: 9px;
         font-size: 14px;
-        font-weight: 600;
+        font-weight: 700;
         text-decoration: none;
         cursor: pointer;
         transition: all 0.2s ease;
     }
 
     .btn-delete {
-        background: #dc3545;
         color: #fff;
+        background: linear-gradient(135deg, #c92f43, #e34c5e);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.15);
     }
 
         .btn-delete:hover:not(:disabled) {
-            background: #bd2130;
             color: #fff;
-            transform: translateY(-2px);
+            background: linear-gradient(135deg, #ae2537, #d83c50);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 16px rgba(220, 53, 69, 0.22);
         }
 
         .btn-delete:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            box-shadow: none;
         }
 
     .btn-back {
-        background: #f0f2f6;
-        color: #536174;
+        color: #52627a;
+        background: #edf1f7;
     }
 
         .btn-back:hover {
-            background: #e1e6ef;
-            color: #243247;
+            color: #293d5c;
+            background: #e1e8f3;
             text-decoration: none;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
         }
 
     @@media (max-width: 576px) {
         .user-delete-page {
-            padding: 25px 12px;
+            padding: 25px 12px 40px;
         }
 
-        .user-delete-card {
-            padding: 25px 20px;
+        .user-delete-heading h2 {
+            font-size: 21px;
         }
 
-        .user-delete-header h2 {
-            font-size: 23px;
+        .delete-card-top {
+            padding: 25px 18px 22px;
+        }
+
+        .delete-content {
+            padding: 23px 18px 25px;
+        }
+
+        .delete-info {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .delete-info-value {
+            text-align: left;
+            padding-left: 29px;
         }
 
         .delete-actions {
@@ -214,112 +364,190 @@
 <div class="user-delete-page">
 
     <div class="user-delete-header">
-        <h2>Xóa tài khoản</h2>
-        <p>Kiểm tra thông tin trước khi xóa tài khoản khỏi hệ thống.</p>
+
+        <div class="user-delete-breadcrumb">
+
+            <a href="@Url.Action("Index", "Home", new { area = "Admin" })">
+                <i class="fa fa-home"></i> Tổng quan
+            </a>
+
+            <i class="fa fa-angle-right"></i>
+
+            <a href="@Url.Action("Index", "Users", new { area = "Admin" })">
+                Quản lý tài khoản
+            </a>
+
+            <i class="fa fa-angle-right"></i>
+
+            <span>Xóa tài khoản</span>
+
+        </div>
+
+        <div class="user-delete-heading">
+
+            <div class="user-delete-heading-icon">
+                <i class="fa fa-trash"></i>
+            </div>
+
+            <div>
+                <h2>Xóa tài khoản</h2>
+                <p>Kiểm tra thông tin trước khi xóa tài khoản khỏi BookOra.</p>
+            </div>
+
+        </div>
+
     </div>
 
     <div class="user-delete-container">
 
         <div class="user-delete-card">
 
-            <!-- Biểu tượng cảnh báo -->
-            <div class="delete-icon">
-                🗑
-            </div>
+            <div class="delete-card-top">
 
-            <!-- Tên tài khoản -->
-            <div class="delete-username">
-                @Model.Username
-            </div>
-
-            <div class="delete-subtitle">
-                Thông tin tài khoản cần xóa
-            </div>
-
-            <!-- Cảnh báo hoặc thông báo lỗi -->
-            @if (!string.IsNullOrEmpty(ViewBag.DeleteError as string))
-            {
-                <div class="delete-error">
-                    <strong>Không thể xóa tài khoản!</strong>
-                    <br />
-                    @ViewBag.DeleteError
+                <div class="delete-avatar">
+                    @avatarLetter
                 </div>
-            }
-            else if (customerCount > 0)
-            {
-                <div class="delete-warning">
-                    <strong>⚠ Cảnh báo!</strong>
-                    <br />
-                    Tài khoản này đang được liên kết với
-                    <strong>@customerCount</strong> thông tin khách hàng.
-                    Bạn không thể xóa tài khoản này.
-                </div>
-            }
-            else
-            {
-                <div class="delete-warning">
-                    <strong>⚠ Cảnh báo!</strong>
-                    <br />
-                    Bạn có chắc chắn muốn xóa tài khoản này không?
-                    Thao tác này không thể hoàn tác.
-                </div>
-            }
 
-            <!-- Thông tin Username -->
-            <div class="delete-info">
-                <label>Tên đăng nhập</label>
-                <p>@Model.Username</p>
-            </div>
+                <h3 class="delete-username">
+                    @username
+                </h3>
 
-            <!-- Thông tin UserRole -->
-            <div class="delete-info">
-                <label>Vai trò tài khoản</label>
-                <p>
-                    <span class="delete-role">
-                        @Model.UserRole
-                    </span>
+                <p class="delete-subtitle">
+                    Thông tin tài khoản cần xóa
                 </p>
+
             </div>
 
-            <!-- Nút chức năng -->
-            @using (Html.BeginForm(
-                "Delete",
-                "Users",
-                new { area = "Admin", id = Model.Username },
-                FormMethod.Post))
-            {
-                @Html.AntiForgeryToken()
+            <div class="delete-content">
 
-                <div class="delete-actions">
+                <div class="delete-section-title">
+                    <i class="fa fa-id-card"></i>
+                    Thông tin tài khoản
+                </div>
 
-                    @if (customerCount > 0)
-                    {
-                        <button type="button"
-                                class="btn-delete"
-                                disabled>
-                            Không thể xóa
-                        </button>
-                    }
-                    else
-                    {
-                        <button type="submit"
-                                class="btn-delete"
-                                onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản @Model.Username không?');">
-                            Xác nhận xóa
-                        </button>
-                    }
+                @if (hasDeleteError)
+                {
+                    <div class="delete-error">
+                        <i class="fa fa-exclamation-circle delete-notice-icon"></i>
+                        <div>
+                            <strong>Không thể xóa tài khoản!</strong>
+                            <br />
+                            @ViewBag.DeleteError
+                        </div>
+                    </div>
+                }
+                else if (customerCount > 0)
+                {
+                    <div class="delete-warning">
+                        <i class="fa fa-exclamation-triangle delete-notice-icon"></i>
+                        <div>
+                            <strong>Tài khoản đang được sử dụng!</strong>
+                            <br />
+                            Tài khoản này đang được liên kết với
+                            <strong>@customerCount</strong> thông tin khách hàng.
+                            Bạn không thể xóa tài khoản này.
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="delete-warning">
+                        <i class="fa fa-exclamation-triangle delete-notice-icon"></i>
+                        <div>
+                            <strong>Bạn có chắc chắn muốn xóa?</strong>
+                            <br />
+                            Tài khoản sẽ bị xóa khỏi hệ thống.
+                            Thao tác này không thể hoàn tác.
+                        </div>
+                    </div>
+                }
 
-                    @Html.ActionLink(
-                             "Quay lại",
-                             "Index",
-                             "Users",
-                             new { area = "Admin" },
-                             new { @class = "btn-back" }
-                         )
+                <div class="delete-info">
+
+                    <div class="delete-info-label">
+                        <i class="fa fa-user"></i>
+                        Tên đăng nhập
+                    </div>
+
+                    <div class="delete-info-value">
+                        @Model.Username
+                    </div>
 
                 </div>
-            }
+
+                <div class="delete-info">
+
+                    <div class="delete-info-label">
+                        <i class="fa fa-shield"></i>
+                        Vai trò tài khoản
+                    </div>
+
+                    <div class="delete-info-value">
+
+                        <span class="role-badge @(isAdmin ? "admin" : "")">
+                            <i class="fa fa-user-circle"></i>
+                            @userRole
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="delete-info">
+
+                    <div class="delete-info-label">
+                        <i class="fa fa-users"></i>
+                        Số khách hàng liên kết
+                    </div>
+
+                    <div class="delete-info-value">
+                        @customerCount
+                    </div>
+
+                </div>
+
+                @using (Html.BeginForm(
+                    "Delete",
+                    "Users",
+                    new { area = "Admin", id = Model.Username },
+                    FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="delete-actions">
+
+                        @if (canDelete)
+                        {
+                            <button type="submit"
+                                    class="btn-delete"
+                                    onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này không?');">
+                                <i class="fa fa-trash"></i>
+                                Xác nhận xóa
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="button"
+                                    class="btn-delete"
+                                    disabled>
+                                <i class="fa fa-ban"></i>
+                                Không thể xóa
+                            </button>
+                        }
+
+                        <a href="@Url.Action("Index", "Users", new { area = "Admin" })"
+                           class="btn-back">
+                            <i class="fa fa-arrow-left"></i>
+                            Quay lại
+                        </a>
+
+                    </div>
+                }
+
+            </div>
 
         </div>
+
     </div>
+
 </div>

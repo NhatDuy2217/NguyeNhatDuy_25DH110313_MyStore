@@ -4,6 +4,9 @@
 @{
     ViewBag.Title = "Danh sách sản phẩm";
     Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+
+    var soldQuantities = ViewBag.SoldQuantities
+        as System.Collections.Generic.Dictionary<int, int>;
 }
 
 <style>
@@ -204,7 +207,28 @@
         color: #e49b18;
         font-size: 19px;
         font-weight: 800;
-        margin-bottom: 15px;
+        margin-bottom: 9px;
+    }
+
+    /* SOLD QUANTITY */
+    .product-sold {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        width: fit-content;
+        max-width: 100%;
+        margin-bottom: 13px;
+        padding: 6px 10px;
+        background: #edf6ff;
+        border: 1px solid #d8eaff;
+        border-radius: 20px;
+        color: #2563a6;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .product-sold-icon {
+        font-size: 13px;
     }
 
     .product-card-actions {
@@ -360,6 +384,11 @@
             font-size: 16px;
         }
 
+        .product-sold {
+            font-size: 11px;
+            padding: 5px 8px;
+        }
+
         .product-add-cart-btn,
         .product-detail-btn {
             font-size: 12px;
@@ -442,6 +471,11 @@
 
                 @foreach (var item in Model)
                 {
+                    int sold = soldQuantities != null &&
+                               soldQuantities.ContainsKey(item.ProductID)
+                        ? soldQuantities[item.ProductID]
+                        : 0;
+
                     <div class="col-lg-3 col-md-4 col-6 mb-4">
 
                         <div class="product-card">
@@ -473,6 +507,12 @@
                             <!-- PRICE -->
                             <div class="product-price">
                                 @item.ProductPrice.ToString("N0") đ
+                            </div>
+
+                            <!-- SOLD QUANTITY -->
+                            <div class="product-sold">
+                                <span class="product-sold-icon">📈</span>
+                                <span>Đã bán: @sold</span>
                             </div>
 
                             <!-- ACTIONS -->

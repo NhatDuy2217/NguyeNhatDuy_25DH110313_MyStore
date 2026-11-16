@@ -8,8 +8,8 @@
 
 <style>
     .delete-product-page {
-        padding: 28px;
         min-height: 100vh;
+        padding: 30px;
         background: #f4f7fb;
         color: #243247;
         font-family: Arial, sans-serif;
@@ -19,19 +19,6 @@
         margin-bottom: 25px;
     }
 
-        .page-heading h2 {
-            margin: 0 0 8px;
-            font-size: 28px;
-            font-weight: 700;
-            color: #1e293b;
-        }
-
-        .page-heading p {
-            margin: 0;
-            color: #718096;
-            font-size: 14px;
-        }
-
     .breadcrumb-text {
         margin-bottom: 12px;
         color: #64748b;
@@ -40,96 +27,146 @@
 
         .breadcrumb-text span {
             color: #dc2626;
+            font-weight: 600;
         }
 
+    .page-heading h2 {
+        margin: 0 0 8px;
+        color: #172554;
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .page-heading p {
+        margin: 0;
+        color: #718096;
+        font-size: 14px;
+    }
+
     .delete-product-card {
-        max-width: 1000px;
+        max-width: 1050px;
         padding: 30px;
         background: #fff;
         border: 1px solid #e5eaf2;
-        border-radius: 14px;
-        box-shadow: 0 5px 20px rgba(15, 23, 42, 0.05);
+        border-radius: 16px;
+        box-shadow: 0 8px 25px rgba(15, 23, 42, 0.05);
     }
 
     .delete-card-heading {
+        display: flex;
+        align-items: center;
+        gap: 15px;
         margin-bottom: 25px;
-        padding-bottom: 18px;
+        padding-bottom: 20px;
         border-bottom: 1px solid #edf0f5;
     }
 
-        .delete-card-heading h3 {
-            margin: 0 0 8px;
-            font-size: 20px;
-            font-weight: 700;
-            color: #1e293b;
-        }
+    .delete-heading-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 48px;
+        width: 48px;
+        height: 48px;
+        color: #dc2626;
+        background: #fef2f2;
+        border-radius: 13px;
+        font-size: 21px;
+    }
 
-        .delete-card-heading p {
-            margin: 0;
-            color: #718096;
-            font-size: 13px;
-            line-height: 1.6;
-        }
+    .delete-card-heading h3 {
+        margin: 0 0 7px;
+        color: #1e293b;
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .delete-card-heading p {
+        margin: 0;
+        color: #718096;
+        font-size: 13px;
+        line-height: 1.6;
+    }
 
     .delete-warning {
-        margin-bottom: 25px;
-        padding: 15px 18px;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 28px;
+        padding: 16px 18px;
         color: #991b1b;
         background: #fef2f2;
         border: 1px solid #fecaca;
-        border-radius: 9px;
+        border-radius: 10px;
         font-size: 14px;
-        line-height: 1.6;
+        line-height: 1.7;
     }
+
+        .delete-warning i {
+            margin-top: 3px;
+            font-size: 18px;
+        }
 
     .product-details-content {
         display: flex;
         align-items: flex-start;
-        gap: 32px;
+        gap: 35px;
     }
 
     .product-cover-section {
-        flex: 0 0 290px;
+        flex: 0 0 280px;
         text-align: center;
     }
 
-    .product-cover {
-        display: block;
-        box-sizing: border-box;
-        width: 260px;
-        height: 350px;
-        object-fit: contain;
+    .product-cover-wrapper {
+        position: relative;
+        width: 250px;
+        height: 340px;
         margin: 0 auto;
-        padding: 8px;
+        overflow: hidden;
         background: #f8fafc;
         border: 1px solid #e5eaf2;
-        border-radius: 10px;
+        border-radius: 12px;
     }
 
     .no-product-cover {
+        position: absolute;
+        inset: 0;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        box-sizing: border-box;
-        width: 260px;
-        height: 350px;
-        margin: 0 auto;
-        padding: 15px;
+        gap: 12px;
         color: #94a3b8;
         background: #f8fafc;
-        border: 1px dashed #cbd5e1;
-        border-radius: 10px;
         font-size: 14px;
+    }
+
+        .no-product-cover i {
+            font-size: 42px;
+        }
+
+    .product-cover {
+        position: relative;
+        z-index: 1;
+        display: block;
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        padding: 8px;
+        object-fit: contain;
+        background: #f8fafc;
     }
 
     .product-id {
         display: inline-block;
         margin-top: 15px;
-        padding: 7px 12px;
+        padding: 8px 13px;
         color: #475569;
         background: #f1f5f9;
-        border-radius: 7px;
+        border-radius: 8px;
         font-size: 13px;
+        font-weight: 600;
     }
 
     .product-info-section {
@@ -139,21 +176,21 @@
 
     .product-name {
         margin: 0 0 22px;
-        color: #1e293b;
-        font-size: 24px;
+        color: #172554;
+        font-size: 25px;
         font-weight: 700;
-        line-height: 1.4;
+        line-height: 1.5;
         overflow-wrap: anywhere;
     }
 
     .detail-row {
-        padding: 15px 0;
+        padding: 16px 0;
         border-bottom: 1px solid #edf0f5;
     }
 
     .detail-label {
         display: block;
-        margin-bottom: 7px;
+        margin-bottom: 8px;
         color: #64748b;
         font-size: 13px;
         font-weight: 600;
@@ -162,14 +199,14 @@
     .detail-value {
         color: #334155;
         font-size: 14px;
-        line-height: 1.7;
+        line-height: 1.8;
         overflow-wrap: anywhere;
         white-space: pre-line;
     }
 
     .product-price {
         color: #2563eb;
-        font-size: 22px;
+        font-size: 23px;
         font-weight: 700;
     }
 
@@ -178,7 +215,7 @@
         flex-wrap: wrap;
         gap: 12px;
         margin-top: 30px;
-        padding-top: 22px;
+        padding-top: 23px;
         border-top: 1px solid #edf0f5;
     }
 
@@ -187,14 +224,15 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-height: 43px;
-        padding: 0 20px;
-        border-radius: 8px;
+        gap: 9px;
+        min-height: 45px;
+        padding: 0 21px;
+        border-radius: 9px;
         font-size: 14px;
         font-weight: 600;
         text-decoration: none;
-        box-sizing: border-box;
         cursor: pointer;
+        transition: all 0.2s ease;
     }
 
     .btn-delete {
@@ -207,6 +245,8 @@
             color: #fff;
             background: #b91c1c;
             border-color: #b91c1c;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 14px rgba(220, 38, 38, 0.2);
         }
 
     .btn-cancel {
@@ -217,8 +257,10 @@
 
         .btn-cancel:hover {
             color: #1e293b;
-            background: #f8fafc;
+            background: #f1f5f9;
             text-decoration: none;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 12px rgba(15, 23, 42, 0.08);
         }
 
     @@media (max-width: 768px) {
@@ -243,6 +285,21 @@
         .product-info-section {
             width: 100%;
         }
+
+        .product-name {
+            font-size: 21px;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn-delete,
+        .btn-cancel {
+            width: 100%;
+        }
     }
 </style>
 
@@ -253,46 +310,55 @@
             Admin / Sản phẩm / <span>Xóa sản phẩm</span>
         </div>
 
-        <h2>Xóa sản phẩm</h2>
-        <p>Kiểm tra thông tin trước khi xóa sản phẩm khỏi hệ thống MyStore.</p>
+        <h2>
+            <i class="fa fa-trash"></i>
+            Xóa sản phẩm
+        </h2>
+
+        <p>Kiểm tra thông tin sản phẩm trước khi thực hiện thao tác xóa.</p>
     </div>
 
     <div class="delete-product-card">
 
         <div class="delete-card-heading">
-            <h3>Xác nhận xóa sản phẩm</h3>
-            <p>Vui lòng kiểm tra kỹ thông tin sản phẩm trước khi xác nhận.</p>
+            <div class="delete-heading-icon">
+                <i class="fa fa-exclamation-triangle"></i>
+            </div>
+
+            <div>
+                <h3>Xác nhận xóa sản phẩm</h3>
+                <p>Vui lòng kiểm tra kỹ thông tin sản phẩm trước khi xác nhận.</p>
+            </div>
         </div>
 
         <div class="delete-warning">
-            <strong>Lưu ý:</strong>
-            Bạn đang chuẩn bị xóa sản phẩm này. Hãy chắc chắn rằng bạn muốn
-            thực hiện thao tác này trước khi tiếp tục.
+            <i class="fa fa-exclamation-circle"></i>
+            <div>
+                <strong>Lưu ý:</strong>
+                Bạn đang chuẩn bị xóa sản phẩm này khỏi hệ thống.
+                Hãy chắc chắn rằng bạn muốn thực hiện thao tác này trước khi tiếp tục.
+            </div>
         </div>
 
         <div class="product-details-content">
 
             <div class="product-cover-section">
 
-                @if (!string.IsNullOrWhiteSpace(Model.ProductImage))
-                {
-                    <img class="product-cover"
-                         src="@Url.Content(Model.ProductImage)"
-                         alt="@Model.ProductName"
-                         id="deleteBookCoverImage" />
+                <div class="product-cover-wrapper">
 
-                    <div class="no-product-cover"
-                         id="deleteBookCoverFallback"
-                         style="display:none;">
-                        Không tải được ảnh bìa
-                    </div>
-                }
-                else
-                {
                     <div class="no-product-cover">
-                        Chưa có ảnh bìa
+                        <i class="fa fa-book"></i>
+                        <span>Không có ảnh bìa</span>
                     </div>
-                }
+
+                    @if (!string.IsNullOrWhiteSpace(Model.ProductImage))
+                    {
+                        <img class="product-cover"
+                             src="@Url.Content(Model.ProductImage)"
+                             alt="@Model.ProductName" />
+                    }
+
+                </div>
 
                 <div class="product-id">
                     Mã sản phẩm: #@Model.ProductID
@@ -310,6 +376,7 @@
 
                 <div class="detail-row">
                     <span class="detail-label">Danh mục sản phẩm</span>
+
                     <div class="detail-value">
                         @(Model.Category != null
                             ? Model.Category.CategoryName
@@ -319,6 +386,7 @@
 
                 <div class="detail-row">
                     <span class="detail-label">Giá sản phẩm</span>
+
                     <div class="product-price">
                         @Model.ProductPrice.ToString("N0") VNĐ
                     </div>
@@ -326,6 +394,7 @@
 
                 <div class="detail-row">
                     <span class="detail-label">Mô tả sản phẩm</span>
+
                     <div class="detail-value">
                         @(string.IsNullOrWhiteSpace(Model.ProductDecription)
                             ? "Chưa có mô tả sản phẩm."
@@ -334,6 +403,7 @@
                 </div>
 
             </div>
+
         </div>
 
         @using (Html.BeginForm(
@@ -350,39 +420,20 @@
                 <button type="submit"
                         class="btn-delete"
                         onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?');">
+                    <i class="fa fa-trash"></i>
                     Xác nhận xóa
                 </button>
 
                 @Html.ActionLink(
-                    "Hủy",
-                    "Index",
-                    "Product",
-                    new { area = "Admin" },
-                    new { @class = "btn-cancel" }
-                )
+                         "Hủy",
+                         "Index",
+                         "Product",
+                         new { area = "Admin" },
+                         new { @class = "btn-cancel" }
+                     )
 
             </div>
         }
 
     </div>
 </div>
-
-<script>
-        (function () {
-            var imgElement = document.getElementById("deleteBookCoverImage");
-            var fallbackElement = document.getElementById("deleteBookCoverFallback");
-
-            if (imgElement === null || fallbackElement === null) {
-                return;
-            }
-
-            var img = imgElement;
-            var fallback = fallbackElement;
-
-            img.addEventListener("error", function () {
-                img.style.display = "none";
-                fallback.style.display = "flex";
-            });
-        })();
-</script>
-

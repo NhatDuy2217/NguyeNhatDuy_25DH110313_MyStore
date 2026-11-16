@@ -4,104 +4,170 @@
 @{
     ViewBag.Title = "Chỉnh sửa tài khoản";
     Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
+
+    string username = string.IsNullOrWhiteSpace(Model.Username)
+        ? "U"
+        : Model.Username.Trim();
+
+    string avatarLetter = username.Substring(0, 1).ToUpper();
 }
 
 <style>
     .user-edit-page {
         min-height: 100vh;
-        padding: 35px 20px;
-        background: #f5f7fb;
+        padding: 35px 20px 55px;
+        background: #f4f6fb;
     }
 
     .user-edit-header {
-        text-align: center;
-        margin-bottom: 28px;
+        max-width: 1050px;
+        margin: 0 auto 28px;
     }
 
-        .user-edit-header h2 {
-            color: #243247;
-            font-size: 27px;
-            font-weight: 700;
-            margin-bottom: 8px;
+    .user-edit-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        flex-wrap: wrap;
+        margin-bottom: 17px;
+        color: #8995a8;
+        font-size: 13px;
+    }
+
+        .user-edit-breadcrumb a {
+            color: #526b91;
+            text-decoration: none;
         }
 
-        .user-edit-header p {
-            color: #8492a6;
-            font-size: 14px;
-            margin: 0;
-        }
+            .user-edit-breadcrumb a:hover {
+                color: #315fc2;
+            }
+
+    .user-edit-heading {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .user-edit-heading-icon {
+        width: 54px;
+        height: 54px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        color: #fff;
+        font-size: 23px;
+        background: linear-gradient(135deg, #263f70, #4778d5);
+        box-shadow: 0 6px 16px rgba(49, 95, 194, 0.2);
+    }
+
+    .user-edit-heading h2 {
+        margin: 0 0 5px;
+        color: #243653;
+        font-size: 25px;
+        font-weight: 750;
+    }
+
+    .user-edit-heading p {
+        margin: 0;
+        color: #8995a8;
+        font-size: 14px;
+    }
 
     .user-edit-container {
-        max-width: 620px;
+        max-width: 1050px;
         margin: 0 auto;
     }
 
     .user-edit-card {
-        max-width: 550px;
+        max-width: 650px;
         margin: 0 auto;
-        padding: 30px 38px;
+        overflow: hidden;
         background: #fff;
-        border: 1px solid #edf0f5;
-        border-radius: 16px;
-        box-shadow: 0 6px 24px rgba(30, 50, 80, 0.07);
+        border: 1px solid #e9edf5;
+        border-radius: 18px;
+        box-shadow: 0 8px 28px rgba(35, 54, 83, 0.07);
+    }
+
+    .edit-card-top {
+        padding: 30px 35px 25px;
+        text-align: center;
+        border-bottom: 1px solid #edf0f5;
+        background: linear-gradient(135deg, #f8faff, #eef3ff);
     }
 
     .edit-avatar {
-        width: 78px;
-        height: 78px;
-        margin: 0 auto 14px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #e8efff, #d7e3ff);
-        color: #3867d6;
+        width: 88px;
+        height: 88px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 30px;
-        font-weight: 700;
-        border: 4px solid #f4f7ff;
+        margin: 0 auto 15px;
+        border: 5px solid #fff;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #29477e, #5685e0);
+        color: #fff;
+        font-size: 34px;
+        font-weight: 750;
+        box-shadow: 0 5px 18px rgba(49, 95, 194, 0.2);
     }
 
     .edit-username {
-        text-align: center;
-        color: #243247;
-        font-size: 21px;
-        font-weight: 700;
-        margin-bottom: 25px;
+        margin: 0 0 8px;
+        color: #243653;
+        font-size: 22px;
+        font-weight: 750;
+        word-break: break-word;
     }
 
     .edit-subtitle {
-        text-align: center;
-        color: #98a3b3;
+        margin: 0;
+        color: #8995a8;
         font-size: 13px;
-        margin-top: -18px;
-        margin-bottom: 25px;
     }
 
+    .edit-form-content {
+        padding: 28px 35px 32px;
+    }
+
+    .edit-section-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+        color: #304568;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+        .edit-section-title i {
+            color: #4778d5;
+            font-size: 17px;
+        }
+
     .edit-form-group {
-        margin-bottom: 17px;
-        padding: 14px 17px;
-        background: #f7f9fc;
-        border: 1px solid #edf0f5;
-        border-radius: 10px;
+        margin-bottom: 18px;
     }
 
         .edit-form-group > label {
             display: block;
-            color: #8492a6;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 9px;
+            color: #52627a;
+            font-size: 13px;
+            font-weight: 700;
         }
 
     .edit-input {
         display: block;
         width: 100%;
-        height: 40px;
-        padding: 8px 12px;
-        color: #243247;
-        background: #fff;
-        border: 1px solid #dfe5ee;
-        border-radius: 7px;
+        height: 46px;
+        padding: 10px 14px;
+        color: #293d5c;
+        background: #f8faff;
+        border: 1px solid #e1e7f0;
+        border-radius: 9px;
         font-size: 14px;
         outline: none;
         box-sizing: border-box;
@@ -109,62 +175,95 @@
     }
 
         .edit-input:focus {
-            border-color: #3867d6;
-            box-shadow: 0 0 0 3px rgba(56, 103, 214, 0.10);
+            background: #fff;
+            border-color: #4778d5;
+            box-shadow: 0 0 0 3px rgba(56, 103, 214, 0.1);
         }
 
-        .edit-input[readonly] {
-            background: #edf0f5;
-            color: #8492a6;
-            cursor: not-allowed;
-        }
-
-    /* Khung mật khẩu */
-    .password-wrapper {
+    /* Khung chứa ô mật khẩu và nút con mắt */
+    .edit-password-wrapper {
         position: relative;
+        display: block;
+        width: 100%;
     }
 
-        .password-wrapper .edit-input {
-            padding-right: 48px;
+    .edit-password-input {
+        display: block;
+        width: 100%;
+        height: 46px;
+        padding: 10px 48px 10px 14px;
+        color: #293d5c;
+        background: #f8faff;
+        border: 1px solid #e1e7f0;
+        border-radius: 9px;
+        font-size: 14px;
+        outline: none;
+        box-sizing: border-box;
+        transition: all 0.2s ease;
+    }
+
+        .edit-password-input:focus {
+            background: #fff;
+            border-color: #4778d5;
+            box-shadow: 0 0 0 3px rgba(56, 103, 214, 0.1);
         }
 
     /* Nút con mắt */
-    .password-eye {
+    .edit-password-eye {
         position: absolute;
-        right: 10px;
         top: 50%;
-        transform: translateY(-50%);
-        width: 30px;
-        height: 30px;
+        right: 7px;
+        z-index: 10;
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        margin: 0;
         display: flex;
         align-items: center;
         justify-content: center;
+        transform: translateY(-50%);
         border: none;
-        background: transparent;
+        border-radius: 7px;
+        background: #edf2fc;
+        color: #315fc2;
+        font-size: 21px;
+        line-height: 1;
         cursor: pointer;
-        font-size: 18px;
-        color: #8492a6;
-        padding: 0;
+        visibility: visible;
+        opacity: 1;
     }
 
-        .password-eye:hover {
-            color: #3867d6;
+        .edit-password-eye:hover {
+            background: #dce7ff;
+            color: #244fa9;
         }
+
+        .edit-password-eye:focus {
+            outline: none;
+        }
+
+    .edit-hint {
+        display: block;
+        margin-top: 7px;
+        color: #8995a8;
+        font-size: 12px;
+        line-height: 1.5;
+    }
 
     .field-validation-error {
         display: block;
+        margin-top: 7px;
         color: #dc3545;
         font-size: 12px;
-        margin-top: 6px;
     }
 
     .validation-summary-errors {
-        color: #dc3545;
-        background: #fff1f1;
-        border: 1px solid #ffdada;
-        border-radius: 8px;
-        padding: 12px 15px;
-        margin-bottom: 18px;
+        margin-bottom: 20px;
+        padding: 13px 16px;
+        color: #bd3542;
+        background: #fff1f2;
+        border: 1px solid #ffd9dd;
+        border-radius: 9px;
         font-size: 13px;
     }
 
@@ -176,8 +275,10 @@
     .edit-actions {
         display: flex;
         justify-content: center;
-        gap: 13px;
-        margin-top: 27px;
+        gap: 12px;
+        padding-top: 23px;
+        margin-top: 25px;
+        border-top: 1px solid #edf0f5;
     }
 
     .btn-save,
@@ -185,51 +286,57 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-width: 140px;
-        padding: 11px 20px;
+        gap: 9px;
+        min-width: 160px;
+        padding: 12px 20px;
         border: none;
-        border-radius: 8px;
+        border-radius: 9px;
         font-size: 14px;
-        font-weight: 600;
+        font-weight: 700;
         text-decoration: none;
         cursor: pointer;
         transition: all 0.2s ease;
     }
 
     .btn-save {
-        background: #3867d6;
+        background: linear-gradient(135deg, #315fc2, #4778d5);
         color: #fff;
+        box-shadow: 0 4px 12px rgba(49, 95, 194, 0.16);
     }
 
         .btn-save:hover {
-            background: #2853bb;
             color: #fff;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 16px rgba(49, 95, 194, 0.23);
         }
 
     .btn-back {
-        background: #f0f2f6;
-        color: #536174;
+        background: #edf1f7;
+        color: #52627a;
     }
 
         .btn-back:hover {
-            background: #e1e6ef;
-            color: #243247;
+            background: #e1e8f3;
+            color: #293d5c;
             text-decoration: none;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
         }
 
     @@media (max-width: 576px) {
         .user-edit-page {
-            padding: 25px 12px;
+            padding: 25px 12px 40px;
         }
 
-        .user-edit-card {
-            padding: 25px 20px;
+        .user-edit-heading h2 {
+            font-size: 21px;
         }
 
-        .user-edit-header h2 {
-            font-size: 23px;
+        .edit-card-top {
+            padding: 25px 18px 22px;
+        }
+
+        .edit-form-content {
+            padding: 23px 18px 25px;
         }
 
         .edit-actions {
@@ -246,145 +353,213 @@
 <div class="user-edit-page">
 
     <div class="user-edit-header">
-        <h2>Chỉnh sửa tài khoản</h2>
-        <p>Cập nhật thông tin tài khoản trong hệ thống.</p>
+
+        <div class="user-edit-breadcrumb">
+
+            <a href="@Url.Action("Index", "Home", new { area = "Admin" })">
+                <i class="fa fa-home"></i> Tổng quan
+            </a>
+
+            <i class="fa fa-angle-right"></i>
+
+            <a href="@Url.Action("Index", "Users", new { area = "Admin" })">
+                Quản lý tài khoản
+            </a>
+
+            <i class="fa fa-angle-right"></i>
+
+            <span>Chỉnh sửa tài khoản</span>
+
+        </div>
+
+        <div class="user-edit-heading">
+
+            <div class="user-edit-heading-icon">
+                <i class="fa fa-user"></i>
+            </div>
+
+            <div>
+                <h2>Chỉnh sửa tài khoản</h2>
+                <p>Cập nhật thông tin tài khoản trong hệ thống BookOra.</p>
+            </div>
+
+        </div>
+
     </div>
 
     <div class="user-edit-container">
 
         <div class="user-edit-card">
 
+            <div class="edit-card-top">
+
+                <div class="edit-avatar">
+                    @avatarLetter
+                </div>
+
+                <h3 class="edit-username">
+                    @username
+                </h3>
+
+                <p class="edit-subtitle">
+                    Thông tin tài khoản người dùng
+                </p>
+
+            </div>
+
             @using (Html.BeginForm("Edit", "Users", FormMethod.Post))
             {
                 @Html.AntiForgeryToken()
 
-                @Html.HiddenFor(model => model.Username)
+                @* Lưu tên đăng nhập ban đầu để Controller tìm đúng tài khoản *@
+                <input type="hidden"
+                       name="oldUsername"
+                       value="@Model.Username" />
 
-                <!-- Avatar -->
-                <div class="edit-avatar">
-                    @(string.IsNullOrEmpty(Model.Username)
-                        ? "U"
-                        : Model.Username.Substring(0, 1).ToUpper())
-                </div>
+                <div class="edit-form-content">
 
-                <div class="edit-username">
-                    @Model.Username
-                </div>
+                    <div class="edit-section-title">
+                        <i class="fa fa-id-card"></i>
+                        Thông tin tài khoản
+                    </div>
 
-                <div class="edit-subtitle">
-                    Thông tin tài khoản người dùng
-                </div>
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="edit-form-group">
 
-                <!-- Username -->
-                <div class="edit-form-group">
-                    <label>Tên đăng nhập</label>
+                        <label for="Username">Tên đăng nhập</label>
 
-                    @Html.TextBoxFor(model => model.Username, new
-                    {
-                        @class = "edit-input",
-                        @readonly = "readonly"
-                    })
-                </div>
-
-                <!-- Password -->
-                <div class="edit-form-group">
-                    <label>Mật khẩu</label>
-
-                    <div class="password-wrapper">
-
-                        @Html.TextBoxFor(model => model.Password, new
+                        @Html.TextBoxFor(model => model.Username, new
                         {
                             @class = "edit-input",
-                            type = "password",
-                            id = "Password",
-                            autocomplete = "off"
+                            placeholder = "Nhập tên đăng nhập",
+                            autocomplete = "username"
                         })
 
-                        <button type="button"
-                                id="btnShowPassword"
-                                class="password-eye"
-                                title="Hiện mật khẩu"
-                                onclick="togglePassword()">
-                            👁
-                        </button>
+                        @Html.ValidationMessageFor(
+                                 model => model.Username,
+                                 "",
+                                 new { @class = "field-validation-error" }
+                             )
+
+                        <small class="edit-hint">
+                            Bạn có thể thay đổi tên đăng nhập của tài khoản.
+                        </small>
 
                     </div>
 
-                    @Html.ValidationMessageFor(
-                        model => model.Password,
-                        "",
-                        new { @class = "field-validation-error" }
-                    )
-                </div>
+                    <div class="edit-form-group">
 
-                <!-- UserRole -->
-                <div class="edit-form-group">
-                    <label>Vai trò tài khoản</label>
+                        <label for="Password">Mật khẩu</label>
 
-                    @Html.DropDownListFor(
-                        model => model.UserRole,
-                        new SelectList(
-                            new[]
+                        <div class="edit-password-wrapper">
+
+                            @Html.TextBoxFor(model => model.Password, new
                             {
-                                new { Value = "Admin", Text = "Admin" },
-                                new { Value = "Customer", Text = "Customer" }
-                            },
-                            "Value",
-                            "Text",
-                            Model.UserRole
-                        ),
-                        "-- Chọn vai trò tài khoản --",
-                        new { @class = "edit-input" }
-                    )
+                                @class = "edit-password-input",
+                                type = "password",
+                                id = "Password",
+                                autocomplete = "off"
+                            })
 
-                    @Html.ValidationMessageFor(
-                        model => model.UserRole,
-                        "",
-                        new { @class = "field-validation-error" }
-                    )
-                </div>
+                            <button type="button"
+                                    id="btnShowPassword"
+                                    class="edit-password-eye"
+                                    onclick="togglePasswordVisibility()"
+                                    title="Hiện mật khẩu"
+                                    aria-label="Hiện mật khẩu">
+                                &#128065;
+                            </button>
 
-                <!-- Nút chức năng -->
-                <div class="edit-actions">
+                        </div>
 
-                    <button type="submit" class="btn-save">
-                        Lưu thay đổi
-                    </button>
+                        @Html.ValidationMessageFor(
+                                 model => model.Password,
+                                 "",
+                                 new { @class = "field-validation-error" }
+                             )
 
-                    @Html.ActionLink(
-                        "Quay lại",
-                        "Index",
-                        null,
-                        new { @class = "btn-back" }
-                    )
+                        <small class="edit-hint">
+                            Bấm biểu tượng con mắt để xem mật khẩu hiện tại.
+                            Bạn có thể xóa mật khẩu cũ và nhập mật khẩu mới.
+                        </small>
+
+                    </div>
+
+                    <div class="edit-form-group">
+
+                        <label for="UserRole">Vai trò tài khoản</label>
+
+                        @Html.DropDownListFor(
+                                 model => model.UserRole,
+                                 new SelectList(
+                                     new[]
+                                     {
+                                    new { Value = "Admin", Text = "Admin" },
+                                    new { Value = "Customer", Text = "Customer" }
+                             },
+                                     "Value",
+                                     "Text",
+                                     Model.UserRole
+                                 ),
+                                 "-- Chọn vai trò tài khoản --",
+                                 new { @class = "edit-input" }
+                             )
+
+                        @Html.ValidationMessageFor(
+                                 model => model.UserRole,
+                                 "",
+                                 new { @class = "field-validation-error" }
+                             )
+
+                    </div>
+
+                    <div class="edit-actions">
+
+                        <button type="submit" class="btn-save">
+                            <i class="fa fa-save"></i>
+                            Lưu thay đổi
+                        </button>
+
+                        @Html.ActionLink(
+                                 "Quay lại",
+                                 "Index",
+                                 null,
+                                 new { @class = "btn-back" }
+                             )
+
+                    </div>
 
                 </div>
             }
 
         </div>
+
     </div>
+
 </div>
 
 <script>
-        function togglePassword() {
+        function togglePasswordVisibility() {
             var passwordInput = document.getElementById("Password");
             var eyeButton = document.getElementById("btnShowPassword");
 
-            if (!(passwordInput instanceof HTMLInputElement) ||
-                !(eyeButton instanceof HTMLButtonElement)) {
+            if (passwordInput == null || eyeButton == null) {
                 return;
             }
 
-            if (passwordInput.type === "password") {
-                passwordInput.type = "text";
-                eyeButton.textContent = "🙈";
-                eyeButton.title = "Ẩn mật khẩu";
+            var currentType = passwordInput.getAttribute("type");
+
+            if (currentType === "password") {
+                passwordInput.setAttribute("type", "text");
+                eyeButton.innerHTML = "&#128064;";
+                eyeButton.setAttribute("title", "Ẩn mật khẩu");
+                eyeButton.setAttribute("aria-label", "Ẩn mật khẩu");
             } else {
-                passwordInput.type = "password";
-                eyeButton.textContent = "👁";
-                eyeButton.title = "Hiện mật khẩu";
+                passwordInput.setAttribute("type", "password");
+                eyeButton.innerHTML = "&#128065;";
+                eyeButton.setAttribute("title", "Hiện mật khẩu");
+                eyeButton.setAttribute("aria-label", "Hiện mật khẩu");
             }
         }
 </script>

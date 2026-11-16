@@ -12,132 +12,402 @@
 
     string currentFilter = ViewBag.CurrentFilter as string ?? "";
     string currentSort = ViewBag.CurrentSort as string ?? "";
+
+    int displayedItems = Model == null ? 0 : Model.Count();
 }
 
 <style>
     .customer-page {
-        padding: 28px;
         min-height: 100vh;
-        background: #f5f7fb;
+        padding: 30px;
+        background: #f3f6fc;
+        color: #26344d;
     }
 
     .customer-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 25px;
         flex-wrap: wrap;
+        gap: 18px;
+        margin-bottom: 26px;
+    }
+
+    .customer-heading {
+        display: flex;
+        align-items: center;
         gap: 15px;
     }
 
-        .customer-header h2 {
-            font-weight: 700;
-            color: #263248;
-            margin: 0 0 6px;
-        }
-
-        .customer-header p {
-            color: #7b8495;
-            margin: 0;
-        }
-
-    .btn-add {
-        background: #2563eb;
-        color: white !important;
-        padding: 11px 18px;
-        border-radius: 8px;
-        text-decoration: none !important;
-        font-weight: 600;
+    .customer-heading-icon {
+        width: 54px;
+        height: 54px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        color: white;
+        font-size: 23px;
+        background: linear-gradient(135deg, #1e40af, #3b82f6);
+        box-shadow: 0 7px 18px rgba(37, 99, 235, 0.2);
     }
 
-        .btn-add:hover {
-            background: #1d4ed8;
+    .customer-heading h2 {
+        margin: 0 0 6px;
+        color: #172554;
+        font-size: 25px;
+        font-weight: 800;
+    }
+
+    .customer-heading p {
+        margin: 0;
+        color: #8490a5;
+        font-size: 13px;
+    }
+
+    .btn-customer-add {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        padding: 12px 19px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+        color: #fff !important;
+        text-decoration: none !important;
+        font-size: 13px;
+        font-weight: 700;
+        box-shadow: 0 5px 13px rgba(37, 99, 235, 0.18);
+        transition: all 0.2s ease;
+    }
+
+        .btn-customer-add:hover {
+            color: #fff !important;
+            transform: translateY(-3px);
+            box-shadow: 0 9px 19px rgba(37, 99, 235, 0.27);
         }
+
+    .customer-summary {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 19px 22px;
+        margin-bottom: 22px;
+        border: 1px solid #e8eef8;
+        border-radius: 14px;
+        background: #fff;
+        box-shadow: 0 4px 16px rgba(30, 64, 175, 0.04);
+    }
+
+    .customer-summary-icon {
+        width: 48px;
+        height: 48px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        color: #2563eb;
+        background: #eaf1ff;
+        font-size: 20px;
+    }
+
+    .customer-summary-label {
+        color: #8490a5;
+        font-size: 12px;
+        margin-bottom: 4px;
+    }
+
+    .customer-summary-number {
+        color: #1e3a8a;
+        font-size: 23px;
+        font-weight: 800;
+    }
 
     .customer-card {
-        background: white;
-        border-radius: 12px;
-        padding: 22px;
-        box-shadow: 0 3px 15px rgba(0,0,0,0.04);
+        padding: 23px;
+        border: 1px solid #e8eef8;
+        border-radius: 15px;
+        background: #fff;
+        box-shadow: 0 5px 20px rgba(30, 64, 175, 0.045);
     }
 
-    .customer-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 15px;
+    .customer-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 18px;
     }
 
-        .customer-table th {
-            background: #f1f5f9;
-            color: #475569;
-            font-weight: 600;
-            padding: 14px 12px;
-            text-align: left;
-            white-space: nowrap;
-        }
-
-            .customer-table th a {
-                color: #475569;
-                text-decoration: none;
-            }
-
-                .customer-table th a:hover {
-                    color: #2563eb;
-                }
-
-        .customer-table td {
-            padding: 14px 12px;
-            border-bottom: 1px solid #edf0f4;
-            color: #475569;
-            vertical-align: middle;
-        }
-
-        .customer-table tr:hover {
-            background: #f8fafc;
-        }
-
-    .customer-actions {
-        white-space: nowrap;
+    .customer-card-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0;
+        color: #1e293b;
+        font-size: 17px;
+        font-weight: 800;
     }
 
-        .customer-actions a {
-            text-decoration: none;
-            font-weight: 600;
-            margin-right: 8px;
+        .customer-card-title i {
+            color: #2563eb;
+            font-size: 18px;
         }
 
-    .action-edit {
+    .customer-count-label {
+        padding: 6px 11px;
+        border-radius: 20px;
+        background: #eff6ff;
         color: #2563eb;
-    }
-
-    .action-details {
-        color: #0891b2;
-    }
-
-    .action-delete {
-        color: #dc2626;
-    }
-
-    .empty-message {
-        text-align: center;
-        padding: 30px;
-        color: #94a3b8;
-    }
-
-    .table-responsive {
-        overflow-x: auto;
+        font-size: 11px;
+        font-weight: 700;
     }
 
     .customer-search {
         display: flex;
-        gap: 10px;
-        margin: 20px 0;
+        align-items: center;
         flex-wrap: wrap;
+        gap: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid #edf1f7;
+        border-radius: 11px;
+        background: #f8faff;
     }
 
-        .customer-search input {
-            max-width: 350px;
-            height: 38px;
+    .customer-search-input {
+        position: relative;
+        flex: 1;
+        min-width: 220px;
+        max-width: 400px;
+    }
+
+        .customer-search-input i {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        .customer-search-input input {
+            width: 100%;
+            height: 40px;
+            padding: 8px 12px 8px 37px;
+            border: 1px solid #dce4f0;
+            border-radius: 8px;
+            outline: none;
+            box-shadow: none;
+            font-size: 13px;
+        }
+
+            .customer-search-input input:focus {
+                border-color: #60a5fa;
+                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            }
+
+    .btn-search-customer,
+    .btn-reset-customer,
+    .btn-page-size {
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 0 15px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none !important;
+        transition: all 0.2s ease;
+    }
+
+    .btn-search-customer {
+        border: none;
+        background: #2563eb;
+        color: #fff;
+    }
+
+        .btn-search-customer:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+    .btn-reset-customer {
+        border: 1px solid #dce4f0;
+        background: #fff;
+        color: #64748b;
+    }
+
+        .btn-reset-customer:hover {
+            border-color: #93c5fd;
+            color: #2563eb;
+        }
+
+    .customer-table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        border: 1px solid #edf1f7;
+        border-radius: 11px;
+    }
+
+    .customer-table {
+        width: 100%;
+        min-width: 950px;
+        margin: 0;
+        border-collapse: collapse;
+    }
+
+        .customer-table thead th {
+            padding: 15px 13px;
+            border-bottom: 1px solid #e8eef7;
+            background: #f5f8fe;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 800;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+            .customer-table thead th a {
+                color: #475569;
+                text-decoration: none;
+            }
+
+                .customer-table thead th a:hover {
+                    color: #2563eb;
+                }
+
+        .customer-table tbody td {
+            padding: 15px 13px;
+            border-bottom: 1px solid #edf1f7;
+            color: #526078;
+            font-size: 12px;
+            vertical-align: middle;
+        }
+
+        .customer-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .customer-table tbody tr {
+            transition: background 0.2s ease;
+        }
+
+            .customer-table tbody tr:hover {
+                background: #f7faff;
+            }
+
+    .customer-id {
+        color: #64748b;
+        font-weight: 700;
+    }
+
+    .customer-name-cell {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 150px;
+    }
+
+    .customer-avatar {
+        width: 35px;
+        height: 35px;
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #eaf1ff;
+        color: #2563eb;
+        font-size: 13px;
+        font-weight: 800;
+    }
+
+    .customer-name {
+        color: #26344d;
+        font-weight: 700;
+    }
+
+    .customer-contact {
+        color: #526078;
+    }
+
+    .customer-account {
+        display: inline-block;
+        padding: 6px 9px;
+        border-radius: 6px;
+        background: #eff6ff;
+        color: #2563eb;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .customer-unlinked {
+        display: inline-block;
+        padding: 6px 9px;
+        border-radius: 6px;
+        background: #f1f5f9;
+        color: #94a3b8;
+        font-size: 11px;
+    }
+
+    .customer-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+    }
+
+    .customer-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        min-width: 34px;
+        height: 32px;
+        padding: 0 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none !important;
+        transition: all 0.2s ease;
+    }
+
+        .customer-action:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 12px rgba(15, 23, 42, 0.10);
+        }
+
+    .action-edit {
+        background: #fffbeb;
+        color: #d97706 !important;
+    }
+
+    .action-details {
+        background: #eff6ff;
+        color: #2563eb !important;
+    }
+
+    .action-delete {
+        background: #fef2f2;
+        color: #dc2626 !important;
+    }
+
+    .customer-empty {
+        padding: 45px 15px !important;
+        color: #94a3b8 !important;
+        text-align: center;
+    }
+
+        .customer-empty i {
+            display: block;
+            margin-bottom: 12px;
+            color: #cbd5e1;
+            font-size: 30px;
         }
 
     .customer-footer {
@@ -149,108 +419,229 @@
         margin-top: 20px;
     }
 
+    .customer-showing {
+        color: #8490a5;
+        font-size: 12px;
+    }
+
+        .customer-showing strong {
+            color: #334155;
+        }
+
+    .customer-page-size {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+        .customer-page-size label {
+            margin: 0;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .customer-page-size select {
+            width: 75px;
+            height: 36px;
+            border: 1px solid #dce4f0;
+            border-radius: 7px;
+            color: #334155;
+            font-size: 12px;
+            outline: none;
+        }
+
+    .btn-page-size {
+        height: 36px;
+        border: none;
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+        .btn-page-size:hover {
+            background: #dbeafe;
+        }
+
     .customer-pagination {
         display: flex;
         justify-content: center;
-        gap: 6px;
-        margin-top: 20px;
+        align-items: center;
         flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 22px;
     }
 
         .customer-pagination a {
             min-width: 36px;
-            text-align: center;
+            height: 36px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #fff;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none !important;
+            transition: all 0.2s ease;
         }
+
+            .customer-pagination a:hover {
+                border-color: #93c5fd;
+                background: #eff6ff;
+                color: #2563eb;
+            }
+
+            .customer-pagination a.active {
+                border-color: #2563eb;
+                background: #2563eb;
+                color: #fff;
+                box-shadow: 0 4px 9px rgba(37, 99, 235, 0.18);
+            }
+
+    @@media (max-width: 768px) {
+        .customer-page {
+            padding: 18px 12px;
+        }
+
+        .customer-card {
+            padding: 15px;
+        }
+
+        .customer-header {
+            align-items: flex-start;
+        }
+
+        .customer-heading h2 {
+            font-size: 21px;
+        }
+
+        .customer-footer {
+            align-items: flex-start;
+        }
+    }
 </style>
 
 <div class="customer-page">
 
+    <!-- TIÊU ĐỀ -->
     <div class="customer-header">
-        <div>
-            <h2>Quản lý khách hàng</h2>
-            <p>Quản lý thông tin khách hàng trong hệ thống MyStore</p>
+        <div class="customer-heading">
+            <div class="customer-heading-icon">
+                <i class="fa fa-users"></i>
+            </div>
+
+            <div>
+                <h2>Quản lý khách hàng</h2>
+                <p>Quản lý và theo dõi thông tin khách hàng của BookOra</p>
+            </div>
         </div>
 
         <div>
-            @Html.ActionLink(
-                "+ Thêm khách hàng",
-                "Create",
-                "Customers",
-                new { area = "Admin" },
-                new { @class = "btn-add" }
-            )
+            <a href="@Url.Action("Create", "Customers", new { area = "Admin" })"
+               class="btn-customer-add">
+                <i class="fa fa-user-plus"></i>
+                Thêm khách hàng
+            </a>
         </div>
     </div>
 
+    <!-- THỐNG KÊ -->
+    <div class="customer-summary">
+        <div class="customer-summary-icon">
+            <i class="fa fa-users"></i>
+        </div>
+
+        <div>
+            <div class="customer-summary-label">Tổng số khách hàng</div>
+            <div class="customer-summary-number">@totalItems</div>
+        </div>
+    </div>
+
+    <!-- DANH SÁCH -->
     <div class="customer-card">
 
-        <h4 style="font-weight: 700; color: #263248;">
-            Danh sách khách hàng
-        </h4>
+        <div class="customer-card-header">
+            <h4 class="customer-card-title">
+                <i class="fa fa-address-book"></i>
+                Danh sách khách hàng
+            </h4>
+
+            <span class="customer-count-label">
+                @totalItems khách hàng
+            </span>
+        </div>
 
         <!-- TÌM KIẾM -->
         @using (Html.BeginForm("Index", "Customers", new { area = "Admin" }, FormMethod.Get))
         {
             <div class="customer-search">
 
-                <input type="text"
-                       name="searchString"
-                       value="@currentFilter"
-                       placeholder="Nhập tên khách hàng cần tìm..."
-                       class="form-control" />
+                <div class="customer-search-input">
+                    <i class="fa fa-search"></i>
+
+                    <input type="text"
+                           name="searchString"
+                           value="@currentFilter"
+                           placeholder="Tìm theo tên khách hàng..." />
+                </div>
 
                 <input type="hidden" name="sortOrder" value="@currentSort" />
-
                 <input type="hidden" name="pageSize" value="@pageSizeValue" />
 
-                <button type="submit" class="btn btn-primary">
-                    <i class="glyphicon glyphicon-search"></i> Tìm kiếm
+                <button type="submit" class="btn-search-customer">
+                    <i class="fa fa-search"></i>
+                    Tìm kiếm
                 </button>
 
                 <a href="@Url.Action("Index", "Customers", new { area = "Admin" })"
-                   class="btn btn-default">
+                   class="btn-reset-customer">
+                    <i class="fa fa-refresh"></i>
                     Làm mới
                 </a>
 
             </div>
         }
 
-        <div class="table-responsive">
+        <!-- BẢNG KHÁCH HÀNG -->
+        <div class="customer-table-responsive">
 
             <table class="customer-table">
 
                 <thead>
                     <tr>
-                        <th>Mã KH</th>
+                        <th>MÃ KH</th>
 
                         <th>
                             @Html.ActionLink(
-                                "Họ tên",
-                                "Index",
-                                new
+                                     "HỌ TÊN",
+                                     "Index",
+                                     new
                                      {
-                                    searchString = currentFilter,
-                                    sortOrder = ViewBag.NameSortParm,
-                                    pageSize = pageSizeValue
-                                })
+                                         searchString = currentFilter,
+                                         sortOrder = ViewBag.NameSortParm,
+                                         pageSize = pageSizeValue
+                                     })
                         </th>
 
                         <th>
                             @Html.ActionLink(
-                                "Số điện thoại",
-                                "Index",
-                                new
+                                     "SỐ ĐIỆN THOẠI",
+                                     "Index",
+                                     new
                                      {
-                                    searchString = currentFilter,
-                                    sortOrder = ViewBag.PhoneSortParm,
-                                    pageSize = pageSizeValue
-                                })
+                                         searchString = currentFilter,
+                                         sortOrder = ViewBag.PhoneSortParm,
+                                         pageSize = pageSizeValue
+                                     })
                         </th>
 
-                        <th>Email</th>
-                        <th>Địa chỉ</th>
-                        <th>Tài khoản</th>
-                        <th>Thao tác</th>
+                        <th>EMAIL</th>
+                        <th>ĐỊA CHỈ</th>
+                        <th>TÀI KHOẢN</th>
+                        <th>THAO TÁC</th>
                     </tr>
                 </thead>
 
@@ -260,49 +651,90 @@
                     {
                         foreach (var item in Model)
                         {
+                            string customerName = string.IsNullOrWhiteSpace(item.CustomerName)
+                                ? "K"
+                                : item.CustomerName.Trim();
+
+                            string avatarLetter = customerName.Substring(0, 1).ToUpper();
+
                             <tr>
-                                <td>@item.CustomerID</td>
-
                                 <td>
-                                    <strong>@item.CustomerName</strong>
+                                    <span class="customer-id">
+                                        #@item.CustomerID
+                                    </span>
                                 </td>
 
-                                <td>@item.CustomerPhone</td>
-
-                                <td>@item.CustomerEmail</td>
-
-                                <td>@item.CustomerAddress</td>
-
                                 <td>
-                                    @(item.Username ?? "Chưa liên kết")
+                                    <div class="customer-name-cell">
+                                        <div class="customer-avatar">
+                                            @avatarLetter
+                                        </div>
+
+                                        <span class="customer-name">
+                                            @item.CustomerName
+                                        </span>
+                                    </div>
                                 </td>
 
-                                <td class="customer-actions">
+                                <td>
+                                    <span class="customer-contact">
+                                        @(item.CustomerPhone ?? "Chưa cập nhật")
+                                    </span>
+                                </td>
 
-                                    @Html.ActionLink(
-                                        "Sửa",
-                                        "Edit",
-                                        "Customers",
-                                        new { id = item.CustomerID, area = "Admin" },
-                                        new { @class = "action-edit" }
-                                    )
+                                <td>
+                                    <span class="customer-contact">
+                                        @(item.CustomerEmail ?? "Chưa cập nhật")
+                                    </span>
+                                </td>
 
-                                    @Html.ActionLink(
-                                        "Chi tiết",
-                                        "Details",
-                                        "Customers",
-                                        new { id = item.CustomerID, area = "Admin" },
-                                        new { @class = "action-details" }
-                                    )
+                                <td>
+                                    <span class="customer-contact">
+                                        @(item.CustomerAddress ?? "Chưa cập nhật")
+                                    </span>
+                                </td>
 
-                                    @Html.ActionLink(
-                                        "Xóa",
-                                        "Delete",
-                                        "Customers",
-                                        new { id = item.CustomerID, area = "Admin" },
-                                        new { @class = "action-delete" }
-                                    )
+                                <td>
+                                    @if (!string.IsNullOrWhiteSpace(item.Username))
+                                    {
+                                        <span class="customer-account">
+                                            <i class="fa fa-user"></i>
+                                            @item.Username
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="customer-unlinked">
+                                            Chưa liên kết
+                                        </span>
+                                    }
+                                </td>
 
+                                <td>
+                                    <div class="customer-actions">
+
+                                        <a href="@Url.Action("Details", "Customers", new { area = "Admin", id = item.CustomerID })"
+                                           class="customer-action action-details"
+                                           title="Xem chi tiết">
+                                            <i class="fa fa-eye"></i>
+                                            Chi tiết
+                                        </a>
+
+                                        <a href="@Url.Action("Edit", "Customers", new { area = "Admin", id = item.CustomerID })"
+                                           class="customer-action action-edit"
+                                           title="Chỉnh sửa">
+                                            <i class="fa fa-pencil"></i>
+                                            Sửa
+                                        </a>
+
+                                        <a href="@Url.Action("Delete", "Customers", new { area = "Admin", id = item.CustomerID })"
+                                           class="customer-action action-delete"
+                                           title="Xóa khách hàng">
+                                            <i class="fa fa-trash"></i>
+                                            Xóa
+                                        </a>
+
+                                    </div>
                                 </td>
                             </tr>
                         }
@@ -310,7 +742,8 @@
                     else
                     {
                         <tr>
-                            <td colspan="7" class="empty-message">
+                            <td colspan="7" class="customer-empty">
+                                <i class="fa fa-users"></i>
                                 Không tìm thấy khách hàng nào.
                             </td>
                         </tr>
@@ -322,119 +755,95 @@
 
         </div>
 
-        <!-- CHỌN SỐ DÒNG VÀ THÔNG TIN -->
+        <!-- THÔNG TIN VÀ CHỌN SỐ DÒNG -->
         <div class="customer-footer">
 
-            <div>
-                Hiển thị @((Model == null) ? 0 : Model.Count())
-                / @totalItems khách hàng
+            <div class="customer-showing">
+                Đang hiển thị
+                <strong>@displayedItems</strong>
+                /
+                <strong>@totalItems</strong>
+                khách hàng
             </div>
 
-            <div style="display: flex; align-items: center; gap: 8px;">
+            @using (Html.BeginForm("Index", "Customers", new { area = "Admin" }, FormMethod.Get))
+            {
+                <div class="customer-page-size">
 
-                <span>Số dòng:</span>
+                    <label for="pageSize">Số dòng:</label>
 
-                @using (Html.BeginForm("Index", "Customers", new { area = "Admin" }, FormMethod.Get))
-                {
                     <input type="hidden" name="searchString" value="@currentFilter" />
                     <input type="hidden" name="sortOrder" value="@currentSort" />
 
-                    <select id="pageSize"
-                            name="pageSize"
-                            class="form-control"
-                            style="width: 85px;">
-
+                    <select id="pageSize" name="pageSize" class="form-control">
                         <option value="5" @(pageSizeValue == 5 ? "selected=\"selected\"" : "")>5</option>
                         <option value="10" @(pageSizeValue == 10 ? "selected=\"selected\"" : "")>10</option>
                         <option value="20" @(pageSizeValue == 20 ? "selected=\"selected\"" : "")>20</option>
-
                     </select>
-                }
 
-            </div>
+                    <button type="submit" class="btn-page-size">
+                        <i class="fa fa-check"></i>
+                        Áp dụng
+                    </button>
+
+                </div>
+            }
 
         </div>
 
         <!-- PHÂN TRANG -->
-        <div class="customer-pagination">
+        @if (totalPages > 1)
+        {
+            <div class="customer-pagination">
 
-            @if (currentPage > 1)
-            {
-                @Html.ActionLink(
-                    "« Trước",
-                    "Index",
-                    new
-                         {
-                        page = currentPage - 1,
-                        searchString = currentFilter,
-                        sortOrder = currentSort,
-                        pageSize = pageSizeValue
-                    },
-                    new { @class = "btn btn-default" }
-                )
-            }
+                @if (currentPage > 1)
+                {
+                    <a href="@Url.Action("Index", "Customers", new
+                        {
+                            area = "Admin",
+                            page = currentPage - 1,
+                            searchString = currentFilter,
+                            sortOrder = currentSort,
+                            pageSize = pageSizeValue
+                        })">
+                        <i class="fa fa-angle-left"></i>
+                        Trước
+                    </a>
+                }
 
-            @for (int i = 1; i <= totalPages; i++)
-            {
-                @Html.ActionLink(
-                    i.ToString(),
-                    "Index",
-                    new
-                         {
-                        page = i,
-                        searchString = currentFilter,
-                        sortOrder = currentSort,
-                        pageSize = pageSizeValue
-                    },
-                    new
-                         {
-                        @class = i == currentPage
-                            ? "btn btn-primary"
-                            : "btn btn-default"
-                    }
-                )
-            }
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <a href="@Url.Action("Index", "Customers", new
+                        {
+                            area = "Admin",
+                            page = i,
+                            searchString = currentFilter,
+                            sortOrder = currentSort,
+                            pageSize = pageSizeValue
+                        })"
+                       class="@(i == currentPage ? "active" : "")">
+                        @i
+                    </a>
+                }
 
-            @if (currentPage < totalPages)
-            {
-                @Html.ActionLink(
-                    "Sau »",
-                    "Index",
-                    new
-                         {
-                        page = currentPage + 1,
-                        searchString = currentFilter,
-                        sortOrder = currentSort,
-                        pageSize = pageSizeValue
-                    },
-                    new { @class = "btn btn-default" }
-                )
-            }
+                @if (currentPage < totalPages)
+                {
+                    <a href="@Url.Action("Index", "Customers", new
+                        {
+                            area = "Admin",
+                            page = currentPage + 1,
+                            searchString = currentFilter,
+                            sortOrder = currentSort,
+                            pageSize = pageSizeValue
+                        })">
+                        Sau
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                }
 
-        </div>
+            </div>
+        }
 
     </div>
 
 </div>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-
-        var pageSizeSelect = document.getElementById("pageSize");
-
-        if (pageSizeSelect instanceof HTMLSelectElement) {
-
-            pageSizeSelect.addEventListener("change", function (event) {
-
-                var target = event.target;
-
-                if (target instanceof HTMLSelectElement && target.form) {
-                    target.form.submit();
-                }
-
-            });
-
-        }
-
-    });
-</script>

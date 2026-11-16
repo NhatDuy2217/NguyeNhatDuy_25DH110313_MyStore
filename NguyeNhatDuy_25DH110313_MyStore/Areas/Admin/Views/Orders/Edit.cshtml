@@ -9,285 +9,452 @@
 <style>
     .order-edit-page {
         min-height: 100vh;
-        padding: 35px 20px;
-        background: #f5f7fb;
+        padding: 35px 25px 55px;
+        background: #f4f7fc;
     }
 
+    .order-edit-container {
+        max-width: 850px;
+        margin: 0 auto;
+    }
+
+    /* Tiêu đề */
     .order-edit-header {
-        text-align: center;
         margin-bottom: 25px;
     }
 
         .order-edit-header h2 {
-            color: #243247;
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: #26364a;
+            font-size: 27px;
+            font-weight: 750;
+            margin: 0 0 9px;
         }
+
+            .order-edit-header h2 .header-icon {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 46px;
+                height: 46px;
+                border-radius: 14px;
+                background: #eff6ff;
+                color: #2563eb;
+                font-size: 22px;
+            }
 
         .order-edit-header p {
-            color: #7b8798;
+            text-align: center;
+            color: #8491a3;
             font-size: 14px;
+            margin: 0;
         }
 
-    .order-edit-container {
-        max-width: 750px;
-        margin: 0 auto;
-    }
-
+    /* Thẻ biểu mẫu */
     .order-edit-card {
         background: #fff;
-        padding: 30px 35px;
-        border-radius: 14px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e9eef5;
+        border-radius: 18px;
+        box-shadow: 0 6px 25px rgba(35, 55, 85, 0.055);
+        overflow: hidden;
     }
 
-        .order-edit-card h3 {
-            font-size: 20px;
-            font-weight: 700;
-            color: #26364a;
-            margin: 0 0 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #edf0f5;
+    .order-card-heading {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        padding: 23px 30px;
+        border-bottom: 1px solid #edf1f6;
+        background: #fff;
+    }
+
+        .order-card-heading .heading-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            border-radius: 12px;
+            background: #f0f5ff;
+            color: #3975dc;
+            font-size: 19px;
         }
 
-    .order-form-group {
-        margin-bottom: 20px;
+        .order-card-heading h3 {
+            color: #26364a;
+            font-size: 17px;
+            font-weight: 700;
+            margin: 0 0 4px;
+        }
+
+        .order-card-heading p {
+            color: #98a2b3;
+            font-size: 12px;
+            margin: 0;
+        }
+
+    .order-edit-form {
+        padding: 30px;
     }
+
+    /* Nhóm nhập liệu */
+    .order-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 23px 22px;
+    }
+
+    .order-form-group {
+        min-width: 0;
+    }
+
+        .order-form-group.full-width {
+            grid-column: 1 / -1;
+        }
 
         .order-form-group label {
             display: block;
-            font-weight: 600;
             color: #344054;
-            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 9px;
         }
+
+            .order-form-group label .field-icon {
+                display: inline-block;
+                width: 20px;
+                color: #7290bd;
+                text-align: center;
+                margin-right: 4px;
+            }
 
     .order-input {
+        display: block;
         width: 100%;
-        height: 44px;
-        padding: 10px 13px;
-        border: 1px solid #dce2ea;
-        border-radius: 7px;
-        font-size: 14px;
-        color: #344054;
-        background: #fff;
-        box-sizing: border-box;
+        height: 47px;
+        padding: 0 14px;
+        border: 1px solid #e0e6ef;
+        border-radius: 10px;
         outline: none;
+        background: #fbfcfe;
+        color: #344054;
+        font-size: 13px;
+        box-sizing: border-box;
+        transition: all .2s ease;
     }
 
-        .order-input:focus {
-            border-color: #367bf5;
-            box-shadow: 0 0 0 3px rgba(54, 123, 245, 0.1);
+        .order-input:hover {
+            border-color: #bdcce2;
+            background: #fff;
         }
+
+        .order-input:focus {
+            border-color: #78a5f5;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, .09);
+        }
+
+    select.order-input {
+        cursor: pointer;
+    }
 
     .order-validation {
         display: block;
         color: #dc3545;
-        font-size: 13px;
-        margin-top: 5px;
+        font-size: 12px;
+        margin-top: 6px;
     }
 
+        .order-validation ul {
+            margin: 5px 0 0;
+            padding-left: 20px;
+        }
+
+    /* Gợi ý */
+    .order-form-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        padding: 13px 15px;
+        margin-top: 25px;
+        border: 1px solid #e4edfc;
+        border-radius: 10px;
+        background: #f7faff;
+        color: #64748b;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+        .order-form-note span {
+            color: #4285e9;
+            font-size: 15px;
+        }
+
+    /* Nút chức năng */
     .order-form-actions {
         display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 11px;
+        padding-top: 25px;
+        margin-top: 27px;
+        border-top: 1px solid #edf1f6;
+    }
+
+    .btn-order-save,
+    .btn-order-back {
+        display: inline-flex;
+        align-items: center;
         justify-content: center;
-        gap: 12px;
-        margin-top: 30px;
-        padding-top: 20px;
-        border-top: 1px solid #edf0f5;
+        gap: 8px;
+        min-width: 155px;
+        height: 44px;
+        padding: 0 20px;
+        border: none;
+        border-radius: 11px;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all .2s ease;
     }
 
     .btn-order-save {
-        background: #2563eb;
-        color: white;
-        border: none;
-        padding: 11px 25px;
-        border-radius: 7px;
-        font-size: 14px;
-        font-weight: 600;
-        text-decoration: none;
-        cursor: pointer;
+        background: #eff6ff;
+        color: #2563eb;
     }
 
         .btn-order-save:hover {
-            background: #1d4ed8;
-            color: white;
-            text-decoration: none;
+            background: #dbeafe;
+            color: #1d4ed8;
+            transform: translateY(-2px);
         }
 
     .btn-order-back {
-        background: #eef2f7;
-        color: #475467;
-        padding: 11px 25px;
-        border-radius: 7px;
-        font-size: 14px;
-        font-weight: 600;
-        text-decoration: none;
+        background: #f1f5f9;
+        color: #536174;
     }
 
         .btn-order-back:hover {
-            background: #e0e7ef;
-            color: #344054;
+            background: #e2e8f0;
+            color: #334155;
             text-decoration: none;
+            transform: translateY(-2px);
         }
 
-    @@media (max-width: 576px) {
-        .order-edit-card {
+    @@media (max-width: 650px) {
+        .order-edit-page {
+            padding: 25px 13px 40px;
+        }
+
+        .order-edit-header h2 {
+            font-size: 22px;
+        }
+
+        .order-card-heading {
+            padding: 20px;
+        }
+
+        .order-edit-form {
             padding: 22px 18px;
         }
 
-        .order-form-actions {
-            flex-direction: column;
+        .order-form-grid {
+            grid-template-columns: 1fr;
+            gap: 19px;
         }
 
-            .order-form-actions a,
-            .order-form-actions input {
-                width: 100%;
-                text-align: center;
-                box-sizing: border-box;
-            }
+        .order-form-group.full-width {
+            grid-column: auto;
+        }
+
+        .order-form-actions {
+            flex-direction: column-reverse;
+        }
+
+        .btn-order-save,
+        .btn-order-back {
+            width: 100%;
+        }
     }
 </style>
 
 <div class="order-edit-page">
-
-    <div class="order-edit-header">
-        <h2>Chỉnh sửa đơn hàng</h2>
-        <p>Cập nhật thông tin đơn hàng trong hệ thống</p>
-    </div>
-
     <div class="order-edit-container">
+
+        <div class="order-edit-header">
+            <h2>
+                <span class="header-icon">✎</span>
+                Chỉnh sửa đơn hàng
+            </h2>
+            <p>Cập nhật và quản lý thông tin đơn hàng trong hệ thống BookOra</p>
+        </div>
 
         <div class="order-edit-card">
 
-            <h3>Thông tin đơn hàng</h3>
+            <div class="order-card-heading">
+                <div class="heading-icon">📋</div>
+                <div>
+                    <h3>Thông tin đơn hàng</h3>
+                    <p>Chỉnh sửa các thông tin cần thiết bên dưới</p>
+                </div>
+            </div>
 
             @using (Html.BeginForm())
             {
                 @Html.AntiForgeryToken()
-
                 @Html.HiddenFor(model => model.OrderID)
 
-                @Html.ValidationSummary(true, "", new { @class = "order-validation" })
+                <div class="order-edit-form">
 
-                <div class="order-form-group">
-                    @Html.LabelFor(model => model.CustomerID, "Khách hàng")
+                    @Html.ValidationSummary(true, "", new { @class = "order-validation" })
 
-                    @Html.DropDownList(
-                        "CustomerID",
-                        null,
-                        "-- Chọn khách hàng --",
-                        new { @class = "order-input" }
-                    )
+                    <div class="order-form-grid">
 
-                    @Html.ValidationMessageFor(
-                        model => model.CustomerID,
-                        "",
-                        new { @class = "order-validation" }
-                    )
-                </div>
+                        <div class="order-form-group">
+                            @Html.LabelFor(model => model.CustomerID, "Khách hàng")
+                            <label for="CustomerID" style="display:none;"></label>
 
-                <div class="order-form-group">
-                    @Html.LabelFor(model => model.OrderDate, "Ngày đặt hàng")
+                            <div>
+                                @Html.DropDownList(
+                                         "CustomerID",
+                                         null,
+                                         "-- Chọn khách hàng --",
+                                         new { @class = "order-input" }
+                                     )
+                            </div>
 
-                    @Html.TextBoxFor(
-                        model => model.OrderDate,
-                        "{0:yyyy-MM-dd}",
-                        new { @class = "order-input", type = "date" }
-                    )
+                            @Html.ValidationMessageFor(
+                                     model => model.CustomerID,
+                                     "",
+                                     new { @class = "order-validation" }
+                                 )
+                        </div>
 
-                    @Html.ValidationMessageFor(
-                        model => model.OrderDate,
-                        "",
-                        new { @class = "order-validation" }
-                    )
-                </div>
+                        <div class="order-form-group">
+                            @Html.LabelFor(model => model.OrderDate, "Ngày đặt hàng")
 
-                <div class="order-form-group">
-                    @Html.LabelFor(model => model.TotalAmount, "Tổng tiền (VNĐ)")
+                            @Html.TextBoxFor(
+                                     model => model.OrderDate,
+                                     "{0:yyyy-MM-dd}",
+                                     new
+                                     {
+                                         @class = "order-input",
+                                         type = "date"
+                                     }
+                                 )
 
-                    @Html.TextBoxFor(
-                        model => model.TotalAmount,
-                        new
-                             {
-                            @class = "order-input",
-                            type = "number",
-                            min = "0",
-                            placeholder = "Nhập tổng tiền"
-                        }
-                    )
+                            @Html.ValidationMessageFor(
+                                     model => model.OrderDate,
+                                     "",
+                                     new { @class = "order-validation" }
+                                 )
+                        </div>
 
-                    @Html.ValidationMessageFor(
-                        model => model.TotalAmount,
-                        "",
-                        new { @class = "order-validation" }
-                    )
-                </div>
+                        <div class="order-form-group">
+                            @Html.LabelFor(model => model.TotalAmount, "Tổng tiền (VNĐ)")
 
-                <div class="order-form-group">
-                    @Html.LabelFor(model => model.PaymentStatus, "Trạng thái thanh toán")
+                            @Html.TextBoxFor(
+                                     model => model.TotalAmount,
+                                     new
+                                     {
+                                         @class = "order-input",
+                                         type = "number",
+                                         min = "0",
+                                         placeholder = "Nhập tổng tiền đơn hàng"
+                                     }
+                                 )
 
-                    @Html.DropDownListFor(
-                        model => model.PaymentStatus,
-                        new SelectList(
-                            new[]
-                            {
-                                new {
-                                    Value = "Chưa thanh toán",
-                                    Text = "Chưa thanh toán"
-                                },
-                                new {
-                                    Value = "Đã thanh toán",
-                                    Text = "Đã thanh toán"
-                                }
-                            },
-                            "Value",
-                            "Text",
-                            Model.PaymentStatus
-                        ),
-                        "-- Chọn trạng thái thanh toán --",
-                        new { @class = "order-input" }
-                    )
+                            @Html.ValidationMessageFor(
+                                     model => model.TotalAmount,
+                                     "",
+                                     new { @class = "order-validation" }
+                                 )
+                        </div>
 
-                    @Html.ValidationMessageFor(
-                        model => model.PaymentStatus,
-                        "",
-                        new { @class = "order-validation" }
-                    )
-                </div>
+                        <div class="order-form-group">
+                            @Html.LabelFor(model => model.PaymentStatus, "Trạng thái thanh toán")
 
-                <div class="order-form-group">
-                    @Html.LabelFor(model => model.AddressDelivery, "Địa chỉ giao hàng")
+                            @Html.DropDownListFor(
+                                     model => model.PaymentStatus,
+                                     new SelectList(
+                                         new[]
+                                         {
+                                        new {
+                                            Value = "Chưa thanh toán",
+                                            Text = "Chưa thanh toán"
+                                        },
+                                        new {
+                                            Value = "Đã thanh toán",
+                                            Text = "Đã thanh toán"
+                                        }
+                             },
+                                         "Value",
+                                         "Text",
+                                         Model.PaymentStatus
+                                     ),
+                                     "-- Chọn trạng thái thanh toán --",
+                                     new { @class = "order-input" }
+                                 )
 
-                    @Html.TextBoxFor(
-                        model => model.AddressDelivery,
-                        new
-                             {
-                            @class = "order-input",
-                            placeholder = "Nhập địa chỉ giao hàng"
-                        }
-                    )
+                            @Html.ValidationMessageFor(
+                                     model => model.PaymentStatus,
+                                     "",
+                                     new { @class = "order-validation" }
+                                 )
+                        </div>
 
-                    @Html.ValidationMessageFor(
-                        model => model.AddressDelivery,
-                        "",
-                        new { @class = "order-validation" }
-                    )
-                </div>
+                        <div class="order-form-group full-width">
+                            @Html.LabelFor(model => model.AddressDelivery, "Địa chỉ giao hàng")
 
-                <div class="order-form-actions">
-                    <input type="submit" value="Lưu thay đổi" class="btn-order-save" />
+                            @Html.TextBoxFor(
+                                     model => model.AddressDelivery,
+                                     new
+                                     {
+                                         @class = "order-input",
+                                         placeholder = "Nhập địa chỉ giao hàng"
+                                     }
+                                 )
 
-                    @Html.ActionLink(
-                        "Quay lại",
-                        "Index",
-                        null,
-                        new { @class = "btn-order-back" }
-                    )
+                            @Html.ValidationMessageFor(
+                                     model => model.AddressDelivery,
+                                     "",
+                                     new { @class = "order-validation" }
+                                 )
+                        </div>
+
+                    </div>
+
+                    <div class="order-form-note">
+                        <span>ⓘ</span>
+                        <div>
+                            Vui lòng kiểm tra kỹ thông tin khách hàng, tổng tiền và trạng thái thanh toán
+                            trước khi lưu thay đổi.
+                        </div>
+                    </div>
+
+                    <div class="order-form-actions">
+
+                        @Html.ActionLink(
+                                 "← Quay lại",
+                                 "Index",
+                                 null,
+                                 new { @class = "btn-order-back" }
+                             )
+
+                        <button type="submit" class="btn-order-save">
+                            ✓ Lưu thay đổi
+                        </button>
+
+                    </div>
+
                 </div>
             }
 
         </div>
-
     </div>
-
 </div>

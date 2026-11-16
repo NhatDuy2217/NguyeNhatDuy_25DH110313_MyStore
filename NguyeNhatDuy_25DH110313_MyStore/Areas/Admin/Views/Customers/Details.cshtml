@@ -4,216 +4,319 @@
 @{
     ViewBag.Title = "Chi tiết khách hàng";
     Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
+
+    string customerName = string.IsNullOrWhiteSpace(Model.CustomerName)
+        ? "Khách hàng"
+        : Model.CustomerName.Trim();
+
+    string avatarLetter = customerName.Substring(0, 1).ToUpper();
+
+    bool hasAccount = Model.User != null &&
+                      !string.IsNullOrWhiteSpace(Model.Username);
 }
 
 <style>
     .customer-details-page {
         min-height: 100vh;
-        padding: 35px 20px;
-        background: #f5f7fb;
+        padding: 30px;
+        background: #f3f6fc;
     }
-
-    .customer-details-header {
-        text-align: center;
-        margin-bottom: 28px;
-    }
-
-        .customer-details-header h2 {
-            color: #243247;
-            font-size: 27px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .customer-details-header p {
-            color: #8492a6;
-            font-size: 14px;
-            margin: 0;
-        }
 
     .customer-details-container {
-        max-width: 620px;
+        max-width: 850px;
         margin: 0 auto;
+    }
+
+    .customer-details-breadcrumb {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 9px;
+        margin-bottom: 22px;
+        color: #94a3b8;
+        font-size: 12px;
+    }
+
+        .customer-details-breadcrumb a {
+            color: #64748b;
+            text-decoration: none;
+        }
+
+            .customer-details-breadcrumb a:hover {
+                color: #2563eb;
+            }
+
+    .customer-details-heading {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .customer-details-heading-icon {
+        width: 54px;
+        height: 54px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 15px;
+        background: linear-gradient(135deg, #1e40af, #3b82f6);
+        color: #fff;
+        font-size: 22px;
+        box-shadow: 0 6px 15px rgba(37, 99, 235, 0.2);
+    }
+
+    .customer-details-heading h2 {
+        margin: 0 0 6px;
+        color: #172554;
+        font-size: 24px;
+        font-weight: 800;
+    }
+
+    .customer-details-heading p {
+        margin: 0;
+        color: #8490a5;
+        font-size: 13px;
     }
 
     .customer-details-card {
-        max-width: 550px;
-        margin: 0 auto;
-        padding: 30px 38px;
+        overflow: hidden;
+        border: 1px solid #e8eef8;
+        border-radius: 15px;
         background: #fff;
-        border: 1px solid #edf0f5;
-        border-radius: 16px;
-        box-shadow: 0 6px 24px rgba(30, 50, 80, 0.07);
+        box-shadow: 0 5px 22px rgba(30, 64, 175, 0.05);
     }
 
-    .details-avatar {
-        width: 78px;
-        height: 78px;
-        margin: 0 auto 14px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #e8efff, #d7e3ff);
-        color: #3867d6;
+    .customer-profile {
+        display: flex;
+        align-items: center;
+        gap: 17px;
+        padding: 25px 28px;
+        border-bottom: 1px solid #edf1f7;
+        background: #fbfcff;
+    }
+
+    .customer-avatar {
+        width: 66px;
+        height: 66px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 30px;
+        flex-shrink: 0;
+        border: 4px solid #eaf1ff;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+        color: #1d4ed8;
+        font-size: 25px;
+        font-weight: 800;
+    }
+
+    .customer-profile-info h3 {
+        margin: 0 0 7px;
+        color: #1e293b;
+        font-size: 19px;
+        font-weight: 800;
+    }
+
+    .customer-profile-info p {
+        margin: 0;
+        color: #94a3b8;
+        font-size: 12px;
+    }
+
+    .customer-id-badge {
+        display: inline-block;
+        margin-top: 9px;
+        padding: 5px 10px;
+        border-radius: 20px;
+        background: #eff6ff;
+        color: #2563eb;
+        font-size: 11px;
         font-weight: 700;
-        border: 4px solid #f4f7ff;
     }
 
-    .details-customer-name {
-        text-align: center;
-        color: #243247;
-        font-size: 21px;
-        font-weight: 700;
-        margin-bottom: 25px;
+    .customer-details-body {
+        padding: 27px 28px;
     }
 
-    .details-subtitle {
-        text-align: center;
-        color: #98a3b3;
-        font-size: 13px;
-        margin-top: -18px;
-        margin-bottom: 25px;
+    .customer-details-section-title {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin: 0 0 18px;
+        color: #26344d;
+        font-size: 14px;
+        font-weight: 800;
     }
 
-    .details-info {
-        padding: 13px 17px;
-        margin-bottom: 12px;
-        background: #f7f9fc;
-        border: 1px solid #edf0f5;
+        .customer-details-section-title i {
+            color: #3b82f6;
+            font-size: 16px;
+        }
+
+    .customer-info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .customer-info-item {
+        min-width: 0;
+        padding: 15px 16px;
+        border: 1px solid #edf1f7;
         border-radius: 10px;
-        text-align: left;
+        background: #f8faff;
         transition: all 0.2s ease;
     }
 
-        .details-info:hover {
-            background: #f1f5fc;
-            border-color: #dce6f8;
+        .customer-info-item:hover {
+            border-color: #dbeafe;
+            background: #f1f6ff;
+            transform: translateY(-2px);
         }
 
-        .details-info label {
-            display: block;
-            color: #8492a6;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 7px;
+        .customer-info-item.full-width {
+            grid-column: 1 / -1;
         }
 
-        .details-info p {
-            color: #243247;
-            font-size: 14px;
-            font-weight: 600;
-            margin: 0;
-            word-break: break-word;
-        }
-
-    .account-badge {
-        display: inline-block;
-        padding: 5px 12px;
-        background: #e8efff;
-        color: #3867d6;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 600;
-    }
-
-    .password-wrapper {
+    .customer-info-label {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 7px;
+        margin-bottom: 9px;
+        color: #8490a5;
+        font-size: 11px;
+        font-weight: 700;
     }
 
-    .password-text {
-        flex: 1;
-        color: #243247;
-        font-size: 14px;
-        font-weight: 600;
-        letter-spacing: 2px;
+        .customer-info-label i {
+            color: #60a5fa;
+            font-size: 12px;
+        }
+
+    .customer-info-value {
+        margin: 0;
+        color: #26344d;
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1.6;
         overflow-wrap: anywhere;
     }
 
-    .btn-show-password {
-        border: 1px solid #dce3ef;
-        background: #fff;
-        color: #536174;
+    .customer-info-muted {
+        color: #a0aabc;
+        font-weight: 500;
+        font-style: italic;
+    }
+
+    .customer-account-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 6px 11px;
         border-radius: 7px;
-        padding: 6px 10px;
-        cursor: pointer;
-        font-size: 13px;
+        background: #eff6ff;
+        color: #2563eb;
+        font-size: 12px;
+        font-weight: 700;
     }
 
-        .btn-show-password:hover {
-            background: #e8efff;
-            color: #3867d6;
-        }
+    .customer-unlinked-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 6px 11px;
+        border-radius: 7px;
+        background: #f1f5f9;
+        color: #64748b;
+        font-size: 11px;
+        font-weight: 600;
+    }
 
-    .details-actions {
+    .customer-details-actions {
         display: flex;
-        justify-content: center;
-        gap: 13px;
-        margin-top: 27px;
+        justify-content: flex-end;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 25px;
+        padding-top: 21px;
+        border-top: 1px solid #edf1f7;
     }
 
-    .btn-edit,
-    .btn-back {
+    .customer-details-btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-width: 140px;
-        padding: 11px 20px;
+        gap: 8px;
+        min-width: 125px;
+        min-height: 40px;
+        padding: 0 16px;
         border: none;
         border-radius: 8px;
-        font-size: 14px;
-        font-weight: 600;
-        text-decoration: none;
-        cursor: pointer;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none !important;
         transition: all 0.2s ease;
     }
 
-    .btn-edit {
-        background: #3867d6;
-        color: #fff;
+    .btn-edit-customer {
+        background: #2563eb;
+        color: #fff !important;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15);
     }
 
-        .btn-edit:hover {
-            background: #2853bb;
-            color: #fff;
-            text-decoration: none;
-            transform: translateY(-2px);
+        .btn-edit-customer:hover {
+            background: #1d4ed8;
+            color: #fff !important;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 14px rgba(37, 99, 235, 0.2);
         }
 
-    .btn-back {
-        background: #f0f2f6;
-        color: #536174;
+    .btn-back-customer {
+        background: #f1f5f9;
+        color: #64748b !important;
     }
 
-        .btn-back:hover {
-            background: #e1e6ef;
-            color: #243247;
-            text-decoration: none;
-            transform: translateY(-2px);
+        .btn-back-customer:hover {
+            background: #e2e8f0;
+            color: #334155 !important;
+            transform: translateY(-3px);
         }
+
+    @@media (max-width: 768px) {
+        .customer-details-page {
+            padding: 20px 12px;
+        }
+
+        .customer-details-heading h2 {
+            font-size: 21px;
+        }
+
+        .customer-profile {
+            padding: 20px;
+        }
+
+        .customer-details-body {
+            padding: 20px;
+        }
+    }
 
     @@media (max-width: 576px) {
-        .customer-details-page {
-            padding: 25px 12px;
+        .customer-info-grid {
+            grid-template-columns: 1fr;
         }
 
-        .customer-details-card {
-            padding: 25px 20px;
+        .customer-info-item.full-width {
+            grid-column: auto;
         }
 
-        .customer-details-header h2 {
-            font-size: 23px;
+        .customer-details-actions {
+            flex-direction: column-reverse;
         }
 
-        .details-actions {
-            flex-direction: column;
-        }
-
-        .btn-edit,
-        .btn-back {
+        .customer-details-btn {
             width: 100%;
         }
     }
@@ -221,121 +324,184 @@
 
 <div class="customer-details-page">
 
-    <div class="customer-details-header">
-        <h2>Chi tiết khách hàng</h2>
-        <p>Xem thông tin chi tiết khách hàng trong hệ thống.</p>
-    </div>
-
     <div class="customer-details-container">
 
+        <!-- ĐƯỜNG DẪN -->
+        <div class="customer-details-breadcrumb">
+
+            <a href="@Url.Action("Index", "Home", new { area = "Admin" })">
+                <i class="fa fa-home"></i>
+                Tổng quan
+            </a>
+
+            <i class="fa fa-angle-right"></i>
+
+            <a href="@Url.Action("Index", "Customers", new { area = "Admin" })">
+                Khách hàng
+            </a>
+
+            <i class="fa fa-angle-right"></i>
+
+            <span>Chi tiết khách hàng</span>
+
+        </div>
+
+        <!-- TIÊU ĐỀ -->
+        <div class="customer-details-heading">
+
+            <div class="customer-details-heading-icon">
+                <i class="fa fa-user"></i>
+            </div>
+
+            <div>
+                <h2>Chi tiết khách hàng</h2>
+                <p>Xem và kiểm tra thông tin khách hàng trong hệ thống BookOra</p>
+            </div>
+
+        </div>
+
+        <!-- THẺ THÔNG TIN -->
         <div class="customer-details-card">
 
-            <div class="details-avatar">
-                @(string.IsNullOrEmpty(Model.CustomerName)
-                    ? "C"
-                    : Model.CustomerName.Substring(0, 1).ToUpper())
+            <!-- THÔNG TIN CƠ BẢN -->
+            <div class="customer-profile">
+
+                <div class="customer-avatar">
+                    @avatarLetter
+                </div>
+
+                <div class="customer-profile-info">
+
+                    <h3>@customerName</h3>
+
+                    <p>Hồ sơ khách hàng BookOra</p>
+
+                    <span class="customer-id-badge">
+                        <i class="fa fa-id-card"></i>
+                        Mã khách hàng: #@Model.CustomerID
+                    </span>
+
+                </div>
+
             </div>
 
-            <div class="details-customer-name">
-                @Model.CustomerName
-            </div>
+            <!-- CHI TIẾT -->
+            <div class="customer-details-body">
 
-            <div class="details-subtitle">
-                Thông tin khách hàng
-            </div>
+                <h4 class="customer-details-section-title">
+                    <i class="fa fa-address-card"></i>
+                    Thông tin cá nhân
+                </h4>
 
-            <div class="details-info">
-                <label>Mã khách hàng</label>
-                <p>@Model.CustomerID</p>
-            </div>
+                <div class="customer-info-grid">
 
-            <div class="details-info">
-                <label>Tên khách hàng</label>
-                <p>@Model.CustomerName</p>
-            </div>
+                    <div class="customer-info-item">
 
-            <div class="details-info">
-                <label>Số điện thoại</label>
-                <p>
-                    @(string.IsNullOrEmpty(Model.CustomerPhone)
-                        ? "Chưa cập nhật"
-                        : Model.CustomerPhone)
-                </p>
-            </div>
+                        <div class="customer-info-label">
+                            <i class="fa fa-user"></i>
+                            Họ và tên
+                        </div>
 
-            <div class="details-info">
-                <label>Email</label>
-                <p>
-                    @(string.IsNullOrEmpty(Model.CustomerEmail)
-                        ? "Chưa cập nhật"
-                        : Model.CustomerEmail)
-                </p>
-            </div>
+                        <p class="customer-info-value">
+                            @(string.IsNullOrWhiteSpace(Model.CustomerName)
+                                ? "Chưa cập nhật"
+                                : Model.CustomerName)
+                        </p>
 
-            <div class="details-info">
-                <label>Địa chỉ</label>
-                <p>
-                    @(string.IsNullOrEmpty(Model.CustomerAddress)
-                        ? "Chưa cập nhật"
-                        : Model.CustomerAddress)
-                </p>
-            </div>
+                    </div>
 
-            <div class="details-info">
-                <label>Tài khoản liên kết</label>
-                <p>
-                    @if (Model.User != null)
-                    {
-                        <span class="account-badge">
-                            @Model.Username
-                        </span>
-                    }
-                    else
-                    {
-                        <span>Chưa liên kết tài khoản</span>
-                    }
-                </p>
-            </div>
+                    <div class="customer-info-item">
 
-            <div class="details-actions">
+                        <div class="customer-info-label">
+                            <i class="fa fa-phone"></i>
+                            Số điện thoại
+                        </div>
 
-                @Html.ActionLink(
-                    "Chỉnh sửa",
-                    "Edit",
-                    new { id = Model.CustomerID },
-                    new { @class = "btn-edit" }
-                )
+                        <p class="customer-info-value">
+                            @(string.IsNullOrWhiteSpace(Model.CustomerPhone)
+                                ? "Chưa cập nhật"
+                                : Model.CustomerPhone)
+                        </p>
 
-                @Html.ActionLink(
-                    "Quay lại",
-                    "Index",
-                    null,
-                    new { @class = "btn-back" }
-                )
+                    </div>
+
+                    <div class="customer-info-item">
+
+                        <div class="customer-info-label">
+                            <i class="fa fa-envelope"></i>
+                            Email
+                        </div>
+
+                        <p class="customer-info-value">
+                            @(string.IsNullOrWhiteSpace(Model.CustomerEmail)
+                                ? "Chưa cập nhật"
+                                : Model.CustomerEmail)
+                        </p>
+
+                    </div>
+
+                    <div class="customer-info-item">
+
+                        <div class="customer-info-label">
+                            <i class="fa fa-user-circle"></i>
+                            Tài khoản liên kết
+                        </div>
+
+                        @if (hasAccount)
+                        {
+                            <span class="customer-account-badge">
+                                <i class="fa fa-user"></i>
+                                @Model.Username
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="customer-unlinked-badge">
+                                <i class="fa fa-info-circle"></i>
+                                Chưa liên kết tài khoản
+                            </span>
+                        }
+
+                    </div>
+
+                    <div class="customer-info-item full-width">
+
+                        <div class="customer-info-label">
+                            <i class="fa fa-map-marker"></i>
+                            Địa chỉ
+                        </div>
+
+                        <p class="customer-info-value">
+                            @(string.IsNullOrWhiteSpace(Model.CustomerAddress)
+                                ? "Chưa cập nhật"
+                                : Model.CustomerAddress)
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- NÚT CHỨC NĂNG -->
+                <div class="customer-details-actions">
+
+                    <a href="@Url.Action("Index", "Customers", new { area = "Admin" })"
+                       class="customer-details-btn btn-back-customer">
+                        <i class="fa fa-arrow-left"></i>
+                        Quay lại
+                    </a>
+
+                    <a href="@Url.Action("Edit", "Customers", new { area = "Admin", id = Model.CustomerID })"
+                       class="customer-details-btn btn-edit-customer">
+                        <i class="fa fa-pencil"></i>
+                        Chỉnh sửa
+                    </a>
+
+                </div>
 
             </div>
 
         </div>
+
     </div>
+
 </div>
-
-<script>
-    function toggleCustomerPassword() {
-        var passwordElement = document.getElementById("customerPassword");
-        var button = document.getElementById("btnShowPassword");
-
-        if (!passwordElement || !button) {
-            return;
-        }
-
-        if (button.textContent.indexOf("Hiện") >= 0) {
-            passwordElement.textContent =
-                passwordElement.getAttribute("data-password");
-
-            button.textContent = "🙈 Ẩn";
-        } else {
-            passwordElement.textContent = "••••••••";
-            button.textContent = "👁 Hiện";
-        }
-    }
-</script>

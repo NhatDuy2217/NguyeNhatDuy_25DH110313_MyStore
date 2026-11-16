@@ -4,6 +4,9 @@
 @{
     ViewBag.Title = "Trang chủ";
     Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+
+    var soldQuantities = ViewBag.SoldQuantities
+        as System.Collections.Generic.Dictionary<int, int>;
 }
 
 <style>
@@ -297,10 +300,31 @@
     }
 
     .product-price {
-        margin-bottom: 13px;
+        margin-bottom: 9px;
         color: #e05252;
         font-size: 18px;
         font-weight: 800;
+    }
+
+    /* SOLD QUANTITY */
+    .product-sold {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        width: fit-content;
+        max-width: 100%;
+        margin-bottom: 13px;
+        padding: 6px 10px;
+        background: #edf6ff;
+        border: 1px solid #d8eaff;
+        border-radius: 20px;
+        color: #2563a6;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .product-sold-icon {
+        font-size: 13px;
     }
 
     .product-detail-btn {
@@ -602,6 +626,11 @@
             font-size: 12px;
         }
 
+        .product-sold {
+            font-size: 11px;
+            padding: 5px 8px;
+        }
+
         .promotion-top {
             padding: 30px 18px 22px;
         }
@@ -658,7 +687,6 @@
                 }
 
                 <div class="home-action-buttons">
-
                     <a href="@Url.Action("About", "Home")"
                        class="home-about-btn">
                         ℹ️ Giới thiệu BookOra
@@ -668,7 +696,6 @@
                        class="home-contact-btn">
                         ☎ Liên hệ với chúng tôi
                     </a>
-
                 </div>
             </div>
         </section>
@@ -724,6 +751,11 @@
 
                     @foreach (var item in Model.FeaturedProducts)
                     {
+                        int sold = soldQuantities != null &&
+                                   soldQuantities.ContainsKey(item.ProductID)
+                            ? soldQuantities[item.ProductID]
+                            : 0;
+
                         <div class="col-lg-3 col-md-4 col-6 mb-4">
                             <div class="product-card">
 
@@ -748,6 +780,11 @@
 
                                 <div class="product-price">
                                     @item.ProductPrice.ToString("N0") đ
+                                </div>
+
+                                <div class="product-sold">
+                                    <span class="product-sold-icon">📈</span>
+                                    <span>Đã bán: @sold</span>
                                 </div>
 
                                 <a href="@Url.Action("ProductDetail", "Home",
@@ -808,6 +845,11 @@
 
                     @foreach (var item in Model.NewProducts)
                     {
+                        int sold = soldQuantities != null &&
+                                   soldQuantities.ContainsKey(item.ProductID)
+                            ? soldQuantities[item.ProductID]
+                            : 0;
+
                         <div class="col-lg-3 col-md-4 col-6 mb-4">
                             <div class="product-card">
 
@@ -832,6 +874,11 @@
 
                                 <div class="product-price">
                                     @item.ProductPrice.ToString("N0") đ
+                                </div>
+
+                                <div class="product-sold">
+                                    <span class="product-sold-icon">📈</span>
+                                    <span>Đã bán: @sold</span>
                                 </div>
 
                                 <a href="@Url.Action("ProductDetail", "Home",

@@ -5,85 +5,185 @@
     ViewBag.Title = "Xóa chi tiết đơn hàng";
     Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
 
-    decimal total = Model.Quantity * Model.UnitPrice;
+    decimal total = Model == null ? 0 : Model.Quantity * Model.UnitPrice;
+
+    string productName = Model == null || Model.Product == null
+        ? "Không có thông tin"
+        : Model.Product.ProductName;
+
+    string paymentStatus = Model == null || Model.Order == null
+        ? "Không có thông tin"
+        : Convert.ToString(Model.Order.PaymentStatus);
+
+    bool isPaid = paymentStatus == "Đã thanh toán";
+    bool isUnpaid = paymentStatus == "Chưa thanh toán";
 }
 
 <style>
     .detail-delete-page {
         min-height: 100vh;
-        padding: 35px 20px;
-        background: #f5f7fb;
+        padding: 35px 20px 55px;
+        background: #f4f7fc;
+    }
+
+    .detail-delete-container {
+        max-width: 850px;
+        margin: 0 auto;
     }
 
     .detail-delete-header {
-        text-align: center;
-        margin-bottom: 25px;
+        margin-bottom: 22px;
     }
 
-        .detail-delete-header h2 {
-            color: #263445;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
+    .detail-delete-heading {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 8px;
+    }
 
-        .detail-delete-header p {
-            color: #7b8794;
-            margin: 0;
-        }
+    .detail-delete-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        background: #fef2f2;
+        color: #dc2626;
+        border-radius: 13px;
+        font-size: 23px;
+    }
+
+    .detail-delete-heading h2 {
+        margin: 0;
+        color: #263445;
+        font-size: 25px;
+        font-weight: 700;
+    }
+
+    .detail-delete-header p {
+        margin: 0 0 0 62px;
+        color: #7b8794;
+        font-size: 14px;
+    }
 
     .detail-delete-card {
-        max-width: 700px;
-        margin: auto;
-        padding: 30px;
+        padding: 28px;
         background: #fff;
-        border-radius: 14px;
-        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e9eef5;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(35, 55, 80, 0.05);
     }
 
     .delete-warning {
-        padding: 15px 18px;
+        display: flex;
+        align-items: flex-start;
+        gap: 13px;
+        padding: 17px 19px;
         margin-bottom: 25px;
-        background: #fff3f3;
-        border: 1px solid #f5c2c7;
-        border-radius: 9px;
-        color: #b02a37;
+        background: #fff7f7;
+        border: 1px solid #fecaca;
+        border-radius: 11px;
+        color: #b42332;
     }
 
-        .delete-warning strong {
-            display: block;
-            margin-bottom: 5px;
-        }
+    .delete-warning-icon {
+        font-size: 21px;
+        line-height: 1.4;
+        flex-shrink: 0;
+    }
+
+    .delete-warning-content strong {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .delete-warning-content p {
+        margin: 0;
+        color: #a33a45;
+        font-size: 13px;
+        line-height: 1.6;
+    }
 
     .detail-info-title {
-        font-size: 18px;
-        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 15px;
         color: #263445;
-        margin-bottom: 18px;
+        font-size: 17px;
+        font-weight: 700;
     }
+
+        .detail-info-title span {
+            color: #64748b;
+            font-size: 18px;
+        }
 
     .detail-info-row {
         display: flex;
         justify-content: space-between;
-        gap: 15px;
-        padding: 14px 0;
-        border-bottom: 1px solid #edf0f4;
+        align-items: center;
+        gap: 18px;
+        padding: 15px 2px;
+        border-bottom: 1px solid #edf1f6;
     }
 
     .detail-info-label {
         color: #718096;
+        font-size: 14px;
         font-weight: 500;
     }
 
     .detail-info-value {
         color: #263445;
+        font-size: 14px;
         font-weight: 600;
         text-align: right;
         word-break: break-word;
     }
 
+    .detail-payment {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 11px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .payment-paid {
+        background: #ecfdf3;
+        color: #15803d;
+    }
+
+    .payment-unpaid {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+    .payment-unknown {
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+    .detail-total-row {
+        margin-top: 5px;
+        padding: 17px 2px;
+        border-bottom: none;
+    }
+
+        .detail-total-row .detail-info-label {
+            color: #263445;
+            font-weight: 700;
+        }
+
     .detail-total {
-        color: #dc3545;
-        font-size: 19px;
+        color: #dc2626;
+        font-size: 20px;
         font-weight: 700;
     }
 
@@ -91,132 +191,191 @@
         display: flex;
         justify-content: flex-end;
         gap: 12px;
-        margin-top: 30px;
+        padding-top: 23px;
+        margin-top: 12px;
+        border-top: 1px solid #edf1f6;
+    }
+
+    .btn-delete,
+    .btn-back {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 19px;
+        border: 1px solid transparent;
+        border-radius: 11px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
     }
 
     .btn-delete {
-        background: #dc3545;
-        color: white;
-        border: none;
-        padding: 11px 22px;
-        border-radius: 7px;
-        font-weight: 600;
-        cursor: pointer;
+        background: #fef2f2;
+        color: #dc2626;
+        border-color: #fecaca;
     }
 
         .btn-delete:hover {
-            background: #bb2d3b;
-            color: white;
+            background: #fee2e2;
+            color: #b91c1c;
+            border-color: #fca5a5;
+            text-decoration: none;
         }
 
     .btn-back {
-        background: #e9ecef;
-        color: #495057;
-        padding: 11px 22px;
-        border-radius: 7px;
-        text-decoration: none;
-        font-weight: 600;
+        background: #f1f5f9;
+        color: #536174;
+        border-color: #e2e8f0;
     }
 
         .btn-back:hover {
-            background: #dfe3e6;
-            color: #343a40;
+            background: #e2e8f0;
+            color: #334155;
             text-decoration: none;
         }
 
     @@media (max-width: 576px) {
+        .detail-delete-page {
+            padding: 25px 12px 40px;
+        }
+
         .detail-delete-card {
-            padding: 20px;
+            padding: 20px 16px;
+        }
+
+        .detail-delete-heading h2 {
+            font-size: 20px;
+        }
+
+        .detail-delete-header p {
+            margin-left: 0;
+            margin-top: 8px;
+        }
+
+        .detail-info-row {
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .detail-info-label,
+        .detail-info-value {
+            font-size: 13px;
         }
 
         .detail-delete-actions {
-            flex-direction: column;
+            flex-direction: column-reverse;
         }
 
             .detail-delete-actions a,
             .detail-delete-actions button {
                 width: 100%;
-                text-align: center;
             }
     }
 </style>
 
 <div class="detail-delete-page">
+    <div class="detail-delete-container">
 
-    <div class="detail-delete-header">
-        <h2>XÓA CHI TIẾT ĐƠN HÀNG</h2>
-        <p>Xác nhận thông tin trước khi thực hiện xóa</p>
-    </div>
-
-    <div class="detail-delete-card">
-
-        <div class="delete-warning">
-            <strong>⚠ Bạn có chắc chắn muốn xóa?</strong>
-            Chi tiết đơn hàng này sẽ bị xóa khỏi hệ thống. Thao tác này không thể hoàn tác.
-        </div>
-
-        <div class="detail-info-title">
-            Thông tin chi tiết đơn hàng
-        </div>
-
-        <div class="detail-info-row">
-            <span class="detail-info-label">Mã chi tiết</span>
-            <span class="detail-info-value">@Model.ID</span>
-        </div>
-
-        <div class="detail-info-row">
-            <span class="detail-info-label">Mã đơn hàng</span>
-            <span class="detail-info-value">@Model.OrderID</span>
-        </div>
-
-        <div class="detail-info-row">
-            <span class="detail-info-label">Tên sản phẩm</span>
-            <span class="detail-info-value">
-                @(Model.Product == null ? "Không có thông tin" : Model.Product.ProductName)
-            </span>
-        </div>
-
-        <div class="detail-info-row">
-            <span class="detail-info-label">Số lượng</span>
-            <span class="detail-info-value">@Model.Quantity</span>
-        </div>
-
-        <div class="detail-info-row">
-            <span class="detail-info-label">Đơn giá</span>
-            <span class="detail-info-value">@Model.UnitPrice.ToString("N0") VNĐ</span>
-        </div>
-
-        <div class="detail-info-row">
-            <span class="detail-info-label">Tình trạng thanh toán</span>
-            <span class="detail-info-value">
-                @(Model.Order == null ? "Không có thông tin" : Convert.ToString(Model.Order.PaymentStatus))
-            </span>
-        </div>
-
-        <div class="detail-info-row">
-            <span class="detail-info-label">Thành tiền</span>
-            <span class="detail-info-value detail-total">
-                @total.ToString("N0") VNĐ
-            </span>
-        </div>
-
-        @using (Html.BeginForm("Delete", "OrderDetails", FormMethod.Post, new { area = "Admin" }))
-        {
-            @Html.AntiForgeryToken()
-            @Html.HiddenFor(model => model.ID)
-
-            <div class="detail-delete-actions">
-                <a href="@Url.Action("Index", "OrderDetails", new { area = "Admin" })"
-                   class="btn-back">
-                    Quay lại
-                </a>
-
-                <button type="submit" class="btn-delete"
-                        onclick="return confirm('Bạn có chắc chắn muốn xóa chi tiết đơn hàng này không?');">
-                    Xác nhận xóa
-                </button>
+        <div class="detail-delete-header">
+            <div class="detail-delete-heading">
+                <div class="detail-delete-icon">🗑</div>
+                <h2>Xóa chi tiết đơn hàng</h2>
             </div>
-        }
+            <p>Kiểm tra thông tin chi tiết trước khi xác nhận xóa</p>
+        </div>
 
+        <div class="detail-delete-card">
+
+            <div class="delete-warning">
+                <div class="delete-warning-icon">⚠️</div>
+                <div class="delete-warning-content">
+                    <strong>Bạn có chắc chắn muốn xóa chi tiết đơn hàng này?</strong>
+                    <p>
+                        Dữ liệu chi tiết đơn hàng sẽ bị xóa khỏi hệ thống.
+                        Thao tác này không thể hoàn tác.
+                    </p>
+                </div>
+            </div>
+
+            <div class="detail-info-title">
+                <span>📋</span>
+                Thông tin chi tiết đơn hàng
+            </div>
+
+            <div class="detail-info-row">
+                <span class="detail-info-label">Mã chi tiết</span>
+                <span class="detail-info-value">@Model.ID</span>
+            </div>
+
+            <div class="detail-info-row">
+                <span class="detail-info-label">Mã đơn hàng</span>
+                <span class="detail-info-value">#@Model.OrderID</span>
+            </div>
+
+            <div class="detail-info-row">
+                <span class="detail-info-label">Tên sản phẩm</span>
+                <span class="detail-info-value">@productName</span>
+            </div>
+
+            <div class="detail-info-row">
+                <span class="detail-info-label">Số lượng</span>
+                <span class="detail-info-value">@Model.Quantity</span>
+            </div>
+
+            <div class="detail-info-row">
+                <span class="detail-info-label">Đơn giá</span>
+                <span class="detail-info-value">@Model.UnitPrice.ToString("N0") VNĐ</span>
+            </div>
+
+            <div class="detail-info-row">
+                <span class="detail-info-label">Tình trạng thanh toán</span>
+                <span class="detail-info-value">
+                    @if (isPaid)
+                    {
+                        <span class="detail-payment payment-paid">Đã thanh toán</span>
+                    }
+                    else if (isUnpaid)
+                    {
+                        <span class="detail-payment payment-unpaid">Chưa thanh toán</span>
+                    }
+                    else
+                    {
+                        <span class="detail-payment payment-unknown">@paymentStatus</span>
+                    }
+                </span>
+            </div>
+
+            <div class="detail-info-row detail-total-row">
+                <span class="detail-info-label">Thành tiền</span>
+                <span class="detail-info-value detail-total">
+                    @total.ToString("N0") VNĐ
+                </span>
+            </div>
+
+            @using (Html.BeginForm("Delete", "OrderDetails", new { area = "Admin" }, FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.ID)
+
+                <div class="detail-delete-actions">
+                    <a href="@Url.Action("Index", "OrderDetails", new { area = "Admin" })"
+                       class="btn-back">
+                        ← Quay lại
+                    </a>
+
+                    <button type="submit"
+                            class="btn-delete"
+                            onclick="return confirm('Bạn có chắc chắn muốn xóa chi tiết đơn hàng này không?');">
+                        <span>🗑</span>
+                        Xác nhận xóa
+                    </button>
+                </div>
+            }
+
+        </div>
     </div>
 </div>
