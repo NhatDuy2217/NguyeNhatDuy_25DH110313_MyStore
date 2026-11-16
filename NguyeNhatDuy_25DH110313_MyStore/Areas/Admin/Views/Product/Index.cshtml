@@ -6,12 +6,16 @@
     Layout = "~/Areas/Admin/Views/_AdminLayout.cshtml";
 
     int currentPage = ViewBag.CurrentPage == null ? 1 : (int)ViewBag.CurrentPage;
-    int totalPages = ViewBag.TotalPages == null ? 1 : (int)ViewBag.TotalPages;
+    int totalPages = ViewBag.TotalPages == null ? 0 : (int)ViewBag.TotalPages;
     int totalItems = ViewBag.TotalItems == null ? 0 : (int)ViewBag.TotalItems;
     int pageSizeValue = ViewBag.PageSize == null ? 5 : (int)ViewBag.PageSize;
 
     string currentFilter = ViewBag.CurrentFilter as string ?? "";
     string currentSort = ViewBag.CurrentSort as string ?? "";
+
+    int? currentCategoryId = ViewBag.CurrentCategoryId == null
+        ? (int?)null
+        : (int?)ViewBag.CurrentCategoryId;
 }
 
 <style>
@@ -70,21 +74,33 @@
         flex: 1;
     }
 
-        .product-search input[type="text"] {
-            width: 280px;
-            max-width: 100%;
+        .product-search input[type="text"],
+        .product-search select {
             padding: 10px 12px;
             border: 1px solid #ced4da;
             border-radius: 6px;
             outline: none;
+            background: white;
         }
 
-            .product-search input[type="text"]:focus {
+        .product-search input[type="text"] {
+            width: 260px;
+            max-width: 100%;
+        }
+
+        .product-search select {
+            min-width: 190px;
+            max-width: 100%;
+        }
+
+            .product-search input:focus,
+            .product-search select:focus {
                 border-color: #86b7fe;
                 box-shadow: 0 0 0 3px rgba(13, 110, 253, .12);
             }
 
-    .btn-search, .btn-reset {
+    .btn-search,
+    .btn-reset {
         display: inline-block;
         padding: 10px 14px;
         border: none;
@@ -248,7 +264,6 @@
     .product-no-image {
         width: 100px;
         height: 130px;
-        box-sizing: border-box;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -357,7 +372,8 @@
             font-size: 22px;
         }
 
-        .product-cover, .product-no-image {
+        .product-cover,
+        .product-no-image {
             width: 85px;
             height: 115px;
         }
@@ -366,9 +382,18 @@
             min-width: 105px;
         }
 
-        .product-search input[type="text"] {
-            width: 100%;
+        .product-search {
+            align-items: stretch;
+            flex-direction: column;
         }
+
+            .product-search input[type="text"],
+            .product-search select,
+            .product-search button,
+            .product-search .btn-reset {
+                width: 100%;
+                box-sizing: border-box;
+            }
 
         .product-toolbar {
             align-items: stretch;
@@ -382,6 +407,7 @@
 
 <div class="product-page">
 
+    <!-- TIÊU ĐỀ -->
     <div class="product-heading">
         <div>
             <h2>Quản lý sản phẩm</h2>
@@ -390,79 +416,159 @@
 
         <div>
             @Html.ActionLink(
-                "+ Thêm sản phẩm",
-                "Create",
-                "Product",
-                new { area = "Admin" },
-                new { @class = "btn-add-product" }
-            )
+                     "+ Thêm sản phẩm",
+                     "Create",
+                     "Product",
+                     new { area = "Admin" },
+                     new { @class = "btn-add-product" }
+                 )
         </div>
     </div>
 
-    @using (Html.BeginForm("Index", "Product", new { area = "Admin" }, FormMethod.Get))
+    <!-- TÌM KIẾM VÀ LỌC DANH MỤC -->
+    @using (Html.BeginForm(
+        "Index",
+        "Product",
+        new { area = "Admin" },
+        FormMethod.Get))
     {
         <div class="product-toolbar">
+
             <div class="product-search">
+
                 <input type="text"
                        name="searchString"
                        value="@currentFilter"
                        placeholder="Nhập tên sản phẩm cần tìm..." />
 
+                <!-- Danh sách danh mục lấy từ Controller -->
+                @Html.DropDownList(
+                         "categoryId",
+                         ViewBag.Categories as IEnumerable<System.Web.Mvc.SelectListItem>,
+                         "-- Tất cả danh mục --",
+                         new { @class = "category-select" }
+                     )
+
                 <input type="hidden"
                        name="sortOrder"
                        value="@currentSort" />
 
-                <button type="submit" class="btn-search">Tìm kiếm</button>
+                <button type="submit" class="btn-search">
+                    Tìm kiếm
+                </button>
 
                 @Html.ActionLink(
-                    "Làm mới",
-                    "Index",
-                    "Product",
-                    new { area = "Admin" },
-                    new { @class = "btn-reset" }
-                )
+                         "Làm mới",
+                         "Index",
+                         "Product",
+                         new { area = "Admin" },
+                         new { @class = "btn-reset" }
+                     )
+
             </div>
 
             <div class="page-size-selector">
                 <label for="pageSize">Sản phẩm/trang:</label>
+
                 <select id="pageSize" name="pageSize">
                     <option value="5" @(pageSizeValue == 5 ? "selected=\"selected\"" : "")>5</option>
                     <option value="10" @(pageSizeValue == 10 ? "selected=\"selected\"" : "")>10</option>
                     <option value="20" @(pageSizeValue == 20 ? "selected=\"selected\"" : "")>20</option>
                 </select>
             </div>
+
         </div>
     }
 
+    <!-- SẮP XẾP -->
     <div class="product-sort-links">
         <span class="sort-label">Sắp xếp:</span>
 
-        @Html.ActionLink("Tên A → Z", "Index",
-            new { searchString = currentFilter, sortOrder = "name_asc", pageSize = pageSizeValue },
-            new { @class = currentSort == "name_asc" ? "sort-active" : "" })
+        @Html.ActionLink(
+                 "Tên A → Z",
+                 "Index",
+                 new
+                 {
+                     searchString = currentFilter,
+                     sortOrder = "name_asc",
+                     pageSize = pageSizeValue,
+                     categoryId = currentCategoryId
+                 },
+                 new
+                 {
+                     @class = currentSort == "name_asc" ? "sort-active" : ""
+                 }
+             )
 
-        @Html.ActionLink("Tên Z → A", "Index",
-            new { searchString = currentFilter, sortOrder = "name_desc", pageSize = pageSizeValue },
-            new { @class = currentSort == "name_desc" ? "sort-active" : "" })
+        @Html.ActionLink(
+                 "Tên Z → A",
+                 "Index",
+                 new
+                 {
+                     searchString = currentFilter,
+                     sortOrder = "name_desc",
+                     pageSize = pageSizeValue,
+                     categoryId = currentCategoryId
+                 },
+                 new
+                 {
+                     @class = currentSort == "name_desc" ? "sort-active" : ""
+                 }
+             )
 
-        @Html.ActionLink("Giá thấp → cao", "Index",
-            new { searchString = currentFilter, sortOrder = "price_asc", pageSize = pageSizeValue },
-            new { @class = currentSort == "price_asc" ? "sort-active" : "" })
+        @Html.ActionLink(
+                 "Giá thấp → cao",
+                 "Index",
+                 new
+                 {
+                     searchString = currentFilter,
+                     sortOrder = "price_asc",
+                     pageSize = pageSizeValue,
+                     categoryId = currentCategoryId
+                 },
+                 new
+                 {
+                     @class = currentSort == "price_asc" ? "sort-active" : ""
+                 }
+             )
 
-        @Html.ActionLink("Giá cao → thấp", "Index",
-            new { searchString = currentFilter, sortOrder = "price_desc", pageSize = pageSizeValue },
-            new { @class = currentSort == "price_desc" ? "sort-active" : "" })
+        @Html.ActionLink(
+                 "Giá cao → thấp",
+                 "Index",
+                 new
+                 {
+                     searchString = currentFilter,
+                     sortOrder = "price_desc",
+                     pageSize = pageSizeValue,
+                     categoryId = currentCategoryId
+                 },
+                 new
+                 {
+                     @class = currentSort == "price_desc" ? "sort-active" : ""
+                 }
+             )
     </div>
 
+    <!-- THÔNG TIN KẾT QUẢ -->
     <div class="product-count">
         Tìm thấy <strong>@totalItems</strong> sản phẩm
+
         @if (!string.IsNullOrWhiteSpace(currentFilter))
         {
-            <span>với từ khóa "<strong>@currentFilter</strong>"</span>
+            <span>
+                với từ khóa "<strong>@currentFilter</strong>"
+            </span>
+        }
+
+        @if (currentCategoryId.HasValue)
+        {
+            <span> trong danh mục đã chọn</span>
         }
     </div>
 
+    <!-- BẢNG SẢN PHẨM -->
     <div class="product-table-wrapper">
+
         <table class="product-table">
             <thead>
                 <tr>
@@ -481,7 +587,9 @@
                     foreach (var item in Model)
                     {
                         <tr>
-                            <td class="product-name">@item.ProductName</td>
+                            <td class="product-name">
+                                @item.ProductName
+                            </td>
 
                             <td class="product-description">
                                 <div class="product-description-text">
@@ -502,7 +610,9 @@
                                 }
                                 else
                                 {
-                                    <div class="product-no-image">Chưa có ảnh</div>
+                                    <div class="product-no-image">
+                                        Chưa có ảnh
+                                    </div>
                                 }
                             </td>
 
@@ -513,17 +623,43 @@
                             </td>
 
                             <td class="product-actions">
-                                @Html.ActionLink("Sửa", "Edit", "Product",
-                                    new { id = item.ProductID, area = "Admin" },
-                                    new { @class = "action-edit" })
 
-                                @Html.ActionLink("Chi tiết", "Details", "Product",
-                                    new { id = item.ProductID, area = "Admin" },
-                                    new { @class = "action-details" })
+                                @Html.ActionLink(
+                                         "Sửa",
+                                         "Edit",
+                                         "Product",
+                                         new
+                                         {
+                                             id = item.ProductID,
+                                             area = "Admin"
+                                         },
+                                         new { @class = "action-edit" }
+                                     )
 
-                                @Html.ActionLink("Xóa", "Delete", "Product",
-                                    new { id = item.ProductID, area = "Admin" },
-                                    new { @class = "action-delete" })
+                                @Html.ActionLink(
+                                         "Chi tiết",
+                                         "Details",
+                                         "Product",
+                                         new
+                                         {
+                                             id = item.ProductID,
+                                             area = "Admin"
+                                         },
+                                         new { @class = "action-details" }
+                                     )
+
+                                @Html.ActionLink(
+                                         "Xóa",
+                                         "Delete",
+                                         "Product",
+                                         new
+                                         {
+                                             id = item.ProductID,
+                                             area = "Admin"
+                                         },
+                                         new { @class = "action-delete" }
+                                     )
+
                             </td>
                         </tr>
                     }
@@ -532,28 +668,51 @@
                 {
                     <tr>
                         <td colspan="6" class="empty-products">
-                            @if (!string.IsNullOrWhiteSpace(currentFilter))
+
+                            @if (!string.IsNullOrWhiteSpace(currentFilter)
+                                && currentCategoryId.HasValue)
                             {
-                                <span>Không tìm thấy sản phẩm phù hợp với từ khóa "@currentFilter".</span>
+                                <span>
+                                    Không tìm thấy sản phẩm phù hợp với từ khóa
+                                    "@currentFilter" trong danh mục đã chọn.
+                                </span>
+                            }
+                            else if (!string.IsNullOrWhiteSpace(currentFilter))
+                            {
+                                <span>
+                                    Không tìm thấy sản phẩm phù hợp với từ khóa
+                                    "@currentFilter".
+                                </span>
+                            }
+                            else if (currentCategoryId.HasValue)
+                            {
+                                <span>
+                                    Không có sản phẩm trong danh mục đã chọn.
+                                </span>
                             }
                             else
                             {
-                                <span>Chưa có sản phẩm nào trong cửa hàng.</span>
+                                <span>
+                                    Chưa có sản phẩm nào đang kinh doanh.
+                                </span>
                             }
+
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
 
+        <!-- PHÂN TRANG -->
         <div class="product-pagination">
+
             <div class="pagination-info">
                 @if (totalItems > 0)
                 {
                     <span>
                         Hiển thị
                         <strong>@((currentPage - 1) * pageSizeValue + 1)</strong>
-
+                        -
                         <strong>@Math.Min(currentPage * pageSizeValue, totalItems)</strong>
                         trong tổng số <strong>@totalItems</strong> sản phẩm
                     </span>
@@ -565,16 +724,21 @@
             </div>
 
             <div class="pagination-buttons">
+
                 @if (currentPage > 1)
                 {
-                    @Html.ActionLink("« Trước", "Index",
-                        new
+                    @Html.ActionLink(
+                             "« Trước",
+                             "Index",
+                             new
                              {
-                            searchString = currentFilter,
-                            sortOrder = currentSort,
-                            page = currentPage - 1,
-                            pageSize = pageSizeValue
-                        })
+                                 searchString = currentFilter,
+                                 sortOrder = currentSort,
+                                 page = currentPage - 1,
+                                 pageSize = pageSizeValue,
+                                 categoryId = currentCategoryId
+                             }
+                         )
                 }
                 else
                 {
@@ -589,49 +753,75 @@
                     }
                     else
                     {
-                        @Html.ActionLink(i.ToString(), "Index",
-                            new
+                        @Html.ActionLink(
+                                 i.ToString(),
+                                 "Index",
+                                 new
                                  {
-                                searchString = currentFilter,
-                                sortOrder = currentSort,
-                                page = i,
-                                pageSize = pageSizeValue
-                            })
+                                     searchString = currentFilter,
+                                     sortOrder = currentSort,
+                                     page = i,
+                                     pageSize = pageSizeValue,
+                                     categoryId = currentCategoryId
+                                 }
+                             )
                     }
                 }
 
                 @if (currentPage < totalPages)
                 {
-                    @Html.ActionLink("Sau »", "Index",
-                        new
+                    @Html.ActionLink(
+                             "Sau »",
+                             "Index",
+                             new
                              {
-                            searchString = currentFilter,
-                            sortOrder = currentSort,
-                            page = currentPage + 1,
-                            pageSize = pageSizeValue
-                        })
+                                 searchString = currentFilter,
+                                 sortOrder = currentSort,
+                                 page = currentPage + 1,
+                                 pageSize = pageSizeValue,
+                                 categoryId = currentCategoryId
+                             }
+                         )
                 }
                 else
                 {
                     <span class="disabled-page">Sau »</span>
                 }
+
             </div>
         </div>
+
     </div>
 </div>
-
 <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                var pageSizeSelect = document.getElementById("pageSize");
+        document.addEventListener("DOMContentLoaded", function () {
 
-                if (pageSizeSelect instanceof HTMLSelectElement) {
-                    pageSizeSelect.addEventListener("change", function (event) {
-                        var target = event.target;
+            var element = document.getElementById("pageSize");
 
-                        if (target instanceof HTMLSelectElement && target.form) {
-                            target.form.submit();
-                        }
-                    });
+            if (element === null) {
+                return;
+            }
+
+            if (!(element instanceof HTMLSelectElement)) {
+                return;
+            }
+
+            var pageSizeSelect = element;
+
+            pageSizeSelect.addEventListener("change", function () {
+
+                var formElement = pageSizeSelect.parentElement;
+
+                while (formElement !== null &&
+                       !(formElement instanceof HTMLFormElement)) {
+                    formElement = formElement.parentElement;
                 }
+
+                if (formElement instanceof HTMLFormElement) {
+                    formElement.submit();
+                }
+
             });
+
+        });
 </script>

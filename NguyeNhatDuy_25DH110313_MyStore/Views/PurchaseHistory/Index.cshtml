@@ -8,145 +8,383 @@
 }
 
 <style>
+    * {
+        box-sizing: border-box;
+    }
+
     .history-page {
         min-height: 100vh;
-        padding: 40px 20px 60px;
-        background: #f5f7fb;
+        padding: 45px 20px 70px;
+        background: #f4f7fc;
     }
 
     .history-container {
-        max-width: 1100px;
-        margin: auto;
+        max-width: 1200px;
+        margin: 0 auto;
     }
 
-    .history-header {
+    /* HEADER */
+    .history-heading {
+        position: relative;
+        overflow: hidden;
+        padding: 35px 38px;
         margin-bottom: 28px;
+        border-radius: 20px;
+        color: #fff;
+        background: linear-gradient(120deg, #101d3a, #1d3d75 65%, #2864a8);
+        box-shadow: 0 12px 30px rgba(20, 45, 90, .13);
     }
 
-        .history-header h2 {
-            color: #1e293b;
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 8px;
+        .history-heading::after {
+            content: "";
+            position: absolute;
+            width: 230px;
+            height: 230px;
+            right: -55px;
+            top: -105px;
+            border: 35px solid rgba(255,255,255,.07);
+            border-radius: 50%;
         }
 
-        .history-header p {
-            color: #64748b;
-            margin: 0;
-        }
+    .history-heading-content {
+        position: relative;
+        z-index: 1;
+    }
 
+    .history-eyebrow {
+        color: #f5c76b;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 3px;
+        margin-bottom: 10px;
+    }
+
+    .history-heading h2 {
+        margin: 0 0 10px;
+        font-size: 30px;
+        font-weight: 800;
+        color: #fff;
+    }
+
+    .history-heading p {
+        margin: 0;
+        color: #d7e3f5;
+        font-size: 14px;
+    }
+
+    /* CONTENT CARD */
     .history-card {
         background: #fff;
-        border-radius: 14px;
-        padding: 25px;
-        box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+        border: 1px solid #e8edf5;
+        border-radius: 18px;
+        padding: 28px;
+        box-shadow: 0 8px 28px rgba(25, 45, 80, .055);
+    }
+
+    .history-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 22px;
+    }
+
+    .history-card-title {
+        margin: 0;
+        color: #172744;
+        font-size: 19px;
+        font-weight: 800;
+    }
+
+    .history-card-subtitle {
+        color: #8490a3;
+        font-size: 13px;
+        margin-top: 5px;
+    }
+
+    .history-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 13px;
+        color: #315b98;
+        background: #edf4ff;
+        border-radius: 30px;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    /* TABLE */
+    .history-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        border: 1px solid #e9edf4;
+        border-radius: 12px;
     }
 
     .history-table {
         width: 100%;
+        min-width: 900px;
         border-collapse: collapse;
     }
 
+        .history-table thead {
+            background: #f5f7fb;
+        }
+
         .history-table th {
-            background: #f1f5f9;
-            color: #475569;
-            padding: 15px 12px;
+            padding: 16px 13px;
+            color: #62718a;
             text-align: center;
-            font-size: 14px;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: .3px;
+            white-space: nowrap;
+            border-bottom: 1px solid #e8edf5;
         }
 
         .history-table td {
-            padding: 17px 12px;
-            border-bottom: 1px solid #e2e8f0;
+            padding: 19px 13px;
+            color: #475569;
             text-align: center;
-            color: #334155;
+            font-size: 13px;
             vertical-align: middle;
+            border-bottom: 1px solid #edf0f5;
         }
 
-        .history-table tr:hover {
-            background: #f8fafc;
+        .history-table tbody tr {
+            transition: background .2s ease;
         }
+
+            .history-table tbody tr:hover {
+                background: #f8faff;
+            }
+
+            .history-table tbody tr:last-child td {
+                border-bottom: none;
+            }
 
     .order-id {
-        color: #2563eb;
-        font-weight: 700;
+        color: #2459a6 !important;
+        font-weight: 800;
+        font-size: 14px !important;
+    }
+
+    .order-date {
+        color: #64748b;
+        white-space: nowrap;
     }
 
     .order-total {
-        color: #dc2626;
-        font-weight: 700;
+        color: #d97706 !important;
+        font-size: 14px !important;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .order-address {
+        max-width: 190px;
+        text-align: left !important;
+        line-height: 1.6;
+        overflow-wrap: anywhere;
+    }
+
+    /* STATUS */
+    .status-paid,
+    .status-unpaid {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 7px 11px;
+        border-radius: 30px;
+        font-size: 11px;
+        font-weight: 800;
+        white-space: nowrap;
     }
 
     .status-paid {
-        color: #15803d;
-        background: #dcfce7;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 600;
-        display: inline-block;
+        color: #16804a;
+        background: #e7f8ef;
     }
 
     .status-unpaid {
-        color: #b45309;
-        background: #fef3c7;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 600;
-        display: inline-block;
+        color: #b7791f;
+        background: #fff5dc;
     }
 
+    /* BUTTON */
     .btn-history-detail {
-        display: inline-block;
-        padding: 8px 14px;
-        color: #fff;
-        background: #2563eb;
-        border-radius: 7px;
-        text-decoration: none;
-        font-size: 13px;
-        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 9px 13px;
+        color: #fff !important;
+        background: #2459a6;
+        border-radius: 8px;
+        text-decoration: none !important;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+        transition: all .2s ease;
     }
 
         .btn-history-detail:hover {
-            background: #1d4ed8;
             color: #fff;
-            text-decoration: none;
+            background: #173f7c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(36, 89, 166, .2);
         }
 
+    /* EMPTY */
     .history-empty {
+        padding: 65px 20px;
         text-align: center;
-        padding: 45px 15px;
-        color: #64748b;
     }
 
-        .history-empty a {
-            display: inline-block;
-            margin-top: 15px;
-            padding: 10px 20px;
+    .empty-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 90px;
+        height: 90px;
+        margin: 0 auto 22px;
+        border-radius: 50%;
+        background: #edf4ff;
+        font-size: 38px;
+    }
+
+    .history-empty h4 {
+        margin-bottom: 10px;
+        color: #172744;
+        font-size: 21px;
+        font-weight: 800;
+    }
+
+    .history-empty p {
+        margin-bottom: 23px;
+        color: #8490a3;
+        font-size: 14px;
+    }
+
+    .btn-shopping {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 22px;
+        color: #fff !important;
+        background: linear-gradient(110deg, #2459a6, #347bd0);
+        border-radius: 9px;
+        text-decoration: none !important;
+        font-size: 13px;
+        font-weight: 700;
+        transition: .2s;
+    }
+
+        .btn-shopping:hover {
             color: #fff;
-            background: #2563eb;
-            border-radius: 7px;
-            text-decoration: none;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 16px rgba(36, 89, 166, .2);
         }
 
+    /* PAGINATION */
     .history-pagination {
-        margin-top: 25px;
-        text-align: center;
+        display: flex;
+        justify-content: center;
+        margin-top: 28px;
     }
+
+        .history-pagination ul {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .history-pagination li a,
+        .history-pagination li span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 36px;
+            height: 36px;
+            padding: 0 11px;
+            color: #40516d;
+            background: #f1f5fb;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .history-pagination li.active span {
+            color: #fff;
+            background: #2459a6;
+        }
+
+        .history-pagination li a:hover {
+            color: #fff;
+            background: #347bd0;
+        }
+
+    /* FOOT NOTE */
+    .history-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+        padding: 15px 17px;
+        margin-top: 22px;
+        color: #64748b;
+        background: #f5f8fd;
+        border-radius: 10px;
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+        .history-note strong {
+            color: #315b98;
+        }
 
     @@media (max-width: 768px) {
+        .history-page {
+            padding: 25px 12px 45px;
+        }
+
+        .history-heading {
+            padding: 27px 23px;
+            border-radius: 15px;
+        }
+
+            .history-heading h2 {
+                font-size: 24px;
+            }
+
         .history-card {
-            padding: 12px;
-            overflow-x: auto;
+            padding: 18px 13px;
+            border-radius: 14px;
+        }
+
+        .history-card-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .history-label {
+            align-self: flex-start;
         }
 
         .history-table {
-            min-width: 750px;
+            min-width: 850px;
         }
 
-        .history-header h2 {
-            font-size: 23px;
+        .history-empty {
+            padding: 45px 12px;
         }
     }
 </style>
@@ -154,90 +392,134 @@
 <div class="history-page">
     <div class="history-container">
 
-        <div class="history-header">
-            <h2>📦 Lịch sử mua hàng</h2>
-            <p>Theo dõi các đơn hàng bạn đã đặt tại MyStore.</p>
+        <!-- PAGE HEADER -->
+        <div class="history-heading">
+            <div class="history-heading-content">
+                <div class="history-eyebrow">BOOKORA · MY ACCOUNT</div>
+                <h2>📦 Lịch sử mua hàng</h2>
+                <p>Theo dõi đơn hàng và xem lại thông tin những cuốn sách bạn đã đặt mua.</p>
+            </div>
         </div>
 
+        <!-- ORDER HISTORY -->
         <div class="history-card">
+
+            <div class="history-card-header">
+                <div>
+                    <h3 class="history-card-title">Đơn hàng của tôi</h3>
+                    <div class="history-card-subtitle">
+                        Thông tin các đơn hàng đã được đặt tại BookOra
+                    </div>
+                </div>
+
+                <div class="history-label">
+                    <span>📚</span>
+                    Lịch sử đơn hàng
+                </div>
+            </div>
 
             @if (Model == null || !Model.Any())
             {
                 <div class="history-empty">
-                    <h4>Bạn chưa có đơn hàng nào</h4>
-                    <p>Hãy khám phá sản phẩm và đặt hàng ngay hôm nay.</p>
+                    <div class="empty-icon">🛍️</div>
 
-                    <a href="@Url.Action("ProductList", "Home")">
-                        Mua sắm ngay
+                    <h4>Bạn chưa có đơn hàng nào</h4>
+
+                    <p>
+                        Những đơn hàng bạn đặt sẽ được hiển thị tại đây.
+                        Hãy khám phá bộ sưu tập sách của BookOra nhé!
+                    </p>
+
+                    <a href="@Url.Action("ProductList", "Home")"
+                       class="btn-shopping">
+                        Khám phá sách
+                        <span>→</span>
                     </a>
                 </div>
             }
             else
             {
-                <table class="history-table">
-                    <thead>
-                        <tr>
-                            <th>Mã đơn hàng</th>
-                            <th>Ngày đặt</th>
-                            <th>Tổng tiền</th>
-                            <th>Trạng thái</th>
-                            <th>Địa chỉ giao hàng</th>
-                            <th>Chi tiết</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
+                <div class="history-table-wrapper">
+                    <table class="history-table">
+                        <thead>
                             <tr>
-                                <td class="order-id">
-                                    #@item.OrderID
-                                </td>
-
-                                <td>
-                                    @item.OrderDate.ToString("dd/MM/yyyy HH:mm")
-                                </td>
-
-                                <td class="order-total">
-                                    @item.TotalAmount.ToString("N0") đ
-                                </td>
-
-                                <td>
-                                    @if (item.PaymentStatus != null &&
-                                         item.PaymentStatus.Trim() == "Đã thanh toán")
-                                    {
-                                        <span class="status-paid">
-                                            Đã thanh toán
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="status-unpaid">
-                                            @item.PaymentStatus
-                                        </span>
-                                    }
-                                </td>
-
-                                <td>
-                                    @item.AddressDelivery
-                                </td>
-
-                                <td>
-                                    <a href="@Url.Action("Details", "PurchaseHistory", new { id = item.OrderID })"
-                                       class="btn-history-detail">
-                                        Xem chi tiết
-                                    </a>
-                                </td>
+                                <th>MÃ ĐƠN HÀNG</th>
+                                <th>NGÀY ĐẶT</th>
+                                <th>TỔNG TIỀN</th>
+                                <th>TRẠNG THÁI</th>
+                                <th>ĐỊA CHỈ GIAO HÀNG</th>
+                                <th>THAO TÁC</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
 
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="order-id">
+                                        #@item.OrderID
+                                    </td>
+
+                                    <td class="order-date">
+                                        @item.OrderDate.ToString("dd/MM/yyyy HH:mm")
+                                    </td>
+
+                                    <td class="order-total">
+                                        @item.TotalAmount.ToString("N0") đ
+                                    </td>
+
+                                    <td>
+                                        @if (item.PaymentStatus != null &&
+                                             item.PaymentStatus.Trim() == "Đã thanh toán")
+                                        {
+                                            <span class="status-paid">
+                                                ✓ Đã thanh toán
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="status-unpaid">
+                                                ⏳ @(string.IsNullOrWhiteSpace(item.PaymentStatus)
+                                                    ? "Chưa xác định"
+                                                    : item.PaymentStatus)
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td class="order-address">
+                                        @(string.IsNullOrWhiteSpace(item.AddressDelivery)
+                                            ? "Chưa có địa chỉ"
+                                            : item.AddressDelivery)
+                                    </td>
+
+                                    <td>
+                                        <a href="@Url.Action("Details", "PurchaseHistory", new { id = item.OrderID })"
+                                           class="btn-history-detail">
+                                            Xem chi tiết
+                                            <span>→</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- PAGINATION -->
                 <div class="history-pagination">
                     @Html.PagedListPager(
-                        Model,
-                        page => Url.Action("Index", new { page })
-                    )
+                             Model,
+                             page => Url.Action("Index", new { page })
+                         )
+                </div>
+
+                <div class="history-note">
+                    <span>ℹ️</span>
+                    <div>
+                        <strong>Lưu ý:</strong>
+                        Bạn có thể chọn <strong>Xem chi tiết</strong> để kiểm tra
+                        thông tin sản phẩm, số lượng và thông tin giao hàng của từng đơn hàng.
+                    </div>
                 </div>
             }
 

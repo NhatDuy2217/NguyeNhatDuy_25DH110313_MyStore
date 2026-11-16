@@ -5,128 +5,501 @@
 }
 
 <style>
-    .account-page {
-        min-height: 75vh;
-        background: #f5f7fb;
-        padding: 55px 15px;
+    .register-page {
+        min-height: 85vh;
+        padding: 45px 20px;
+        background: radial-gradient(circle at 10% 15%, rgba(69, 112, 190, .10), transparent 28%), radial-gradient(circle at 90% 85%, rgba(231, 170, 54, .12), transparent 25%), #f4f7fc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    .account-card {
-        max-width: 550px;
-        margin: auto;
-        padding: 35px;
-        background: white;
-        border-radius: 14px;
-        box-shadow: 0 5px 25px rgba(0,0,0,.08);
+    .register-container {
+        width: 100%;
+        max-width: 1050px;
+        display: grid;
+        grid-template-columns: .85fr 1.15fr;
+        background: #fff;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 18px 55px rgba(27, 48, 87, .10);
     }
 
-        .account-card h2 {
-            text-align: center;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: #222;
+    /* BRAND PANEL */
+    .register-brand {
+        position: relative;
+        padding: 55px 40px;
+        background: linear-gradient(145deg, #172f61, #3157a4);
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+        .register-brand::before,
+        .register-brand::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,.06);
         }
 
-    .account-subtitle {
-        text-align: center;
-        color: #777;
+        .register-brand::before {
+            width: 300px;
+            height: 300px;
+            top: -120px;
+            right: -120px;
+        }
+
+        .register-brand::after {
+            width: 230px;
+            height: 230px;
+            bottom: -100px;
+            left: -90px;
+        }
+
+    .brand-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .brand-logo {
+        font-size: 29px;
+        font-weight: 800;
+        letter-spacing: -.5px;
+        margin-bottom: 45px;
+    }
+
+        .brand-logo span {
+            color: #f2bb50;
+        }
+
+    .brand-icon {
+        font-size: 52px;
+        margin-bottom: 20px;
+    }
+
+    .register-brand h2 {
+        font-size: 28px;
+        line-height: 1.4;
+        font-weight: 800;
+        margin-bottom: 17px;
+    }
+
+    .register-brand p {
+        color: rgba(255,255,255,.82);
+        font-size: 14px;
+        line-height: 1.8;
         margin-bottom: 28px;
     }
 
-    .account-card label {
-        font-weight: 600;
-        margin-bottom: 7px;
+    .brand-benefit {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 17px;
+        color: rgba(255,255,255,.94);
+        font-size: 13px;
     }
 
-    .account-card .form-control {
-        height: 44px;
-        border-radius: 7px;
-        margin-bottom: 18px;
+    .brand-benefit-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.15);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #f2bb50;
+        flex-shrink: 0;
     }
 
-    .account-btn {
+    /* FORM PANEL */
+    .register-form-panel {
+        padding: 42px 48px;
+    }
+
+    .register-heading {
+        color: #172b4d;
+        font-size: 28px;
+        font-weight: 800;
+        margin: 0 0 8px;
+    }
+
+    .register-subtitle {
+        color: #8993a6;
+        font-size: 14px;
+        margin-bottom: 25px;
+        line-height: 1.6;
+    }
+
+    .register-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 16px;
+    }
+
+    .register-field {
+        margin-bottom: 16px;
+        min-width: 0;
+    }
+
+        .register-field.full-width {
+            grid-column: 1 / -1;
+        }
+
+    .register-label {
+        display: block;
+        color: #34445e;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .register-input-wrapper {
+        position: relative;
+    }
+
+    .register-input-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #8993a6;
+        font-size: 15px;
+        z-index: 2;
+    }
+
+    .register-input {
         width: 100%;
         height: 46px;
+        border: 1px solid #e0e5ef;
+        border-radius: 9px;
+        padding: 0 13px 0 40px;
+        color: #263753;
+        font-size: 13px;
+        outline: none;
+        background: #fff;
+        box-sizing: border-box;
+        transition: .2s;
+    }
+
+        .register-input:focus {
+            border-color: #3157a4;
+            box-shadow: 0 0 0 3px rgba(49, 87, 164, .09);
+        }
+
+        .register-input::placeholder {
+            color: #aab2c0;
+        }
+
+    .register-validation {
+        grid-column: 1 / -1;
+        color: #dc3545;
+        font-size: 13px;
+        line-height: 1.6;
+        margin-bottom: 14px;
+    }
+
+        .register-validation ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+
+    .register-btn {
+        width: 100%;
+        height: 48px;
         border: none;
-        border-radius: 7px;
-        background: #0d6efd;
-        color: white;
-        font-weight: 600;
+        border-radius: 10px;
+        background: #3157a4;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: .4px;
+        cursor: pointer;
+        transition: .25s;
         margin-top: 5px;
     }
 
-        .account-btn:hover {
-            background: #0b5ed7;
+        .register-btn:hover {
+            background: #203f82;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(49, 87, 164, .2);
         }
 
-    .account-footer {
+    .register-footer {
         text-align: center;
+        color: #778197;
+        font-size: 13px;
         margin-top: 22px;
     }
 
-    .text-danger {
-        color: #dc3545;
-        display: block;
-        margin-bottom: 12px;
+        .register-footer a {
+            color: #3157a4;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+            .register-footer a:hover {
+                color: #e49b18;
+                text-decoration: underline;
+            }
+
+    .register-security {
+        text-align: center;
+        color: #a0a8b6;
+        font-size: 12px;
+        margin-top: 17px;
+    }
+
+    /* RESPONSIVE */
+    @@media (max-width: 768px) {
+        .register-page {
+            padding: 25px 12px;
+        }
+
+        .register-container {
+            grid-template-columns: 1fr;
+            max-width: 500px;
+        }
+
+        .register-brand {
+            padding: 28px;
+        }
+
+        .brand-logo {
+            font-size: 25px;
+            margin-bottom: 18px;
+        }
+
+        .brand-icon {
+            font-size: 38px;
+            margin-bottom: 10px;
+        }
+
+        .register-brand h2 {
+            font-size: 23px;
+        }
+
+        .register-brand p {
+            margin-bottom: 12px;
+        }
+
+        .brand-benefit {
+            margin-top: 9px;
+        }
+
+        .register-form-panel {
+            padding: 32px 25px;
+        }
+
+        .register-heading {
+            font-size: 25px;
+        }
+    }
+
+    @@media (max-width: 420px) {
+        .register-form {
+            grid-template-columns: 1fr;
+        }
+
+        .register-field.full-width {
+            grid-column: auto;
+        }
     }
 </style>
 
-<div class="account-page">
-    <div class="account-card">
-        <h2>Tạo tài khoản</h2>
-        <p class="account-subtitle">
-            Đăng ký để trải nghiệm mua sắm tại MyStore
-        </p>
+<div class="register-page">
+    <div class="register-container">
 
-        @using (Html.BeginForm("Register", "Account", FormMethod.Post))
-        {
-            @Html.AntiForgeryToken()
+        <!-- BRAND PANEL -->
+        <div class="register-brand">
+            <div class="brand-content">
 
-            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                <div class="brand-logo">
+                    Book<span>Ora</span>
+                </div>
 
-            <label>Họ và tên</label>
-            <input type="text" name="CustomerName"
-                   class="form-control" required
-                   placeholder="Nhập họ và tên" />
+                <div class="brand-icon">📖</div>
 
-            <label>Số điện thoại</label>
-            <input type="text" name="CustomerPhone"
-                   class="form-control" required
-                   placeholder="Nhập số điện thoại" />
+                <h2>Bắt đầu hành trình khám phá tri thức</h2>
 
-            <label>Email</label>
-            <input type="email" name="CustomerEmail"
-                   class="form-control" required
-                   placeholder="Nhập email" />
+                <p>
+                    Tạo tài khoản BookOra để khám phá những cuốn sách thú vị,
+                    lưu giữ lựa chọn yêu thích và mua sắm thuận tiện hơn.
+                </p>
 
-            <label>Địa chỉ</label>
-            <input type="text" name="CustomerAddress"
-                   class="form-control" required
-                   placeholder="Nhập địa chỉ" />
+                <div class="brand-benefit">
+                    <span class="brand-benefit-icon">✓</span>
+                    Khám phá kho sách đa dạng
+                </div>
 
-            <label>Tên đăng nhập</label>
-            <input type="text" name="Username"
-                   class="form-control" required
-                   placeholder="Nhập tên đăng nhập" />
+                <div class="brand-benefit">
+                    <span class="brand-benefit-icon">✓</span>
+                    Theo dõi đơn hàng dễ dàng
+                </div>
 
-            <label>Mật khẩu</label>
-            <input type="password" name="password"
-                   class="form-control" required
-                   placeholder="Nhập mật khẩu" />
+                <div class="brand-benefit">
+                    <span class="brand-benefit-icon">✓</span>
+                    Trải nghiệm mua sắm thuận tiện
+                </div>
 
-            <label>Xác nhận mật khẩu</label>
-            <input type="password" name="confirmPassword"
-                   class="form-control" required
-                   placeholder="Nhập lại mật khẩu" />
+            </div>
+        </div>
 
-            <button type="submit" class="account-btn">
-                ĐĂNG KÝ
-            </button>
-        }
+        <!-- REGISTER FORM -->
+        <div class="register-form-panel">
 
-        <div class="account-footer">
-            Đã có tài khoản?
-            <a href="@Url.Action("Login", "Account")">Đăng nhập</a>
+            <h2 class="register-heading">Tạo tài khoản</h2>
+
+            <p class="register-subtitle">
+                Điền thông tin bên dưới để trở thành thành viên BookOra.
+            </p>
+
+            @using (Html.BeginForm("Register", "Account", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="register-form">
+
+                    @Html.ValidationSummary(false, "",
+                             new { @class = "register-validation" })
+
+                    <!-- HỌ TÊN -->
+                    <div class="register-field full-width">
+                        <label class="register-label">Họ và tên</label>
+
+                        <div class="register-input-wrapper">
+                            <span class="register-input-icon glyphicon glyphicon-user"></span>
+
+                            <input type="text"
+                                   name="CustomerName"
+                                   class="register-input"
+                                   required
+                                   placeholder="Nhập họ và tên"
+                                   autocomplete="name" />
+                        </div>
+                    </div>
+
+                    <!-- SỐ ĐIỆN THOẠI -->
+                    <div class="register-field">
+                        <label class="register-label">Số điện thoại</label>
+
+                        <div class="register-input-wrapper">
+                            <span class="register-input-icon glyphicon glyphicon-phone"></span>
+
+                            <input type="text"
+                                   name="CustomerPhone"
+                                   class="register-input"
+                                   required
+                                   placeholder="Nhập số điện thoại"
+                                   autocomplete="tel" />
+                        </div>
+                    </div>
+
+                    <!-- EMAIL -->
+                    <div class="register-field">
+                        <label class="register-label">Email</label>
+
+                        <div class="register-input-wrapper">
+                            <span class="register-input-icon glyphicon glyphicon-envelope"></span>
+
+                            <input type="email"
+                                   name="CustomerEmail"
+                                   class="register-input"
+                                   required
+                                   placeholder="Nhập email"
+                                   autocomplete="email" />
+                        </div>
+                    </div>
+
+                    <!-- ĐỊA CHỈ -->
+                    <div class="register-field full-width">
+                        <label class="register-label">Địa chỉ</label>
+
+                        <div class="register-input-wrapper">
+                            <span class="register-input-icon glyphicon glyphicon-map-marker"></span>
+
+                            <input type="text"
+                                   name="CustomerAddress"
+                                   class="register-input"
+                                   required
+                                   placeholder="Nhập địa chỉ"
+                                   autocomplete="street-address" />
+                        </div>
+                    </div>
+
+                    <!-- USERNAME -->
+                    <div class="register-field full-width">
+                        <label class="register-label">Tên đăng nhập</label>
+
+                        <div class="register-input-wrapper">
+                            <span class="register-input-icon glyphicon glyphicon-user"></span>
+
+                            <input type="text"
+                                   name="Username"
+                                   class="register-input"
+                                   required
+                                   placeholder="Tạo tên đăng nhập"
+                                   autocomplete="username" />
+                        </div>
+                    </div>
+
+                    <!-- PASSWORD -->
+                    <div class="register-field">
+                        <label class="register-label">Mật khẩu</label>
+
+                        <div class="register-input-wrapper">
+                            <span class="register-input-icon glyphicon glyphicon-lock"></span>
+
+                            <input type="password"
+                                   name="password"
+                                   class="register-input"
+                                   required
+                                   placeholder="Tạo mật khẩu"
+                                   autocomplete="new-password" />
+                        </div>
+                    </div>
+
+                    <!-- CONFIRM PASSWORD -->
+                    <div class="register-field">
+                        <label class="register-label">Xác nhận mật khẩu</label>
+
+                        <div class="register-input-wrapper">
+                            <span class="register-input-icon glyphicon glyphicon-lock"></span>
+
+                            <input type="password"
+                                   name="confirmPassword"
+                                   class="register-input"
+                                   required
+                                   placeholder="Nhập lại mật khẩu"
+                                   autocomplete="new-password" />
+                        </div>
+                    </div>
+
+                    <!-- SUBMIT -->
+                    <div class="register-field full-width">
+                        <button type="submit" class="register-btn">
+                            ĐĂNG KÝ TÀI KHOẢN
+                            <span class="glyphicon glyphicon-arrow-right"></span>
+                        </button>
+                    </div>
+
+                </div>
+            }
+
+            <div class="register-footer">
+                Đã có tài khoản?
+                <a href="@Url.Action("Login", "Account")">
+                    Đăng nhập ngay
+                </a>
+            </div>
+
+            <div class="register-security">
+                🔒 Thông tin của bạn được sử dụng để tạo tài khoản BookOra.
+            </div>
+
         </div>
     </div>
 </div>

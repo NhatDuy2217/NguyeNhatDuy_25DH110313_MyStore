@@ -1,6 +1,5 @@
 ﻿
 using System;
-using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
@@ -17,35 +16,54 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
         public ActionResult Index(
             string searchString,
             string sortOrder,
+            int? categoryId,
             int? page,
             int? pageSize)
         {
-            ViewBag.CurrentSort = sortOrder;
-
-            ViewBag.NameSortParm =
-                sortOrder == "name_asc" ? "name_desc" : "name_asc";
-
-            ViewBag.PriceSortParm =
-                sortOrder == "price_asc" ? "price_desc" : "price_asc";
-
-            ViewBag.CurrentFilter = searchString;
-
-            // Chỉ lấy sản phẩm đang kinh doanh
+            // Chỉ hiển thị sản phẩm đang kinh doanh
             var products = db.Products
-                .Where(p => p.IsActive)
-                .Include(p => p.Category)
-                .AsQueryable();
+                             .Where(p => p.IsActive)
+                             .Include(p => p.Category)
+                             .AsQueryable();
 
-            // Tìm kiếm
+            // Lấy danh sách danh mục cho dropdown
+            var categories = db.Categories
+                               .OrderBy(c => c.CategoryName)
+                               .ToList();
+
+            ViewBag.Categories = new SelectList(
+                categories,
+                "CategoryID",
+                "CategoryName",
+                categoryId
+            );
+
+            // Lưu thông tin tìm kiếm, sắp xếp và danh mục
+            ViewBag.CurrentFilter = searchString;
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.CurrentCategoryId = categoryId;
+
+            ViewBag.NameSortParm = sortOrder == "name_asc"
+                ? "name_desc" : "name_asc";
+
+            ViewBag.PriceSortParm = sortOrder == "price_asc"
+                ? "price_desc" : "price_asc";
+
+            // Tìm kiếm theo tên sản phẩm
             if (!string.IsNullOrWhiteSpace(searchString))
             {
-                searchString = searchString.Trim();
-
                 products = products.Where(p =>
                     p.ProductName.Contains(searchString));
             }
 
-            // Sắp xếp
+            // Lọc theo danh mục
+            if (categoryId.HasValue)
+            {
+                products = products.Where(p =>
+                    p.CategoryID == categoryId.Value);
+            }
+
+            // Sắp xếp sản phẩm
             switch (sortOrder)
             {
                 case "name_asc":
@@ -69,46 +87,50 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
                     break;
             }
 
-            // Phân trang
-            int selectedPageSize = pageSize ?? 5;
-
-            if (selectedPageSize != 5 &&
-                selectedPageSize != 10 &&
-                selectedPageSize != 20)
-            {
-                selectedPageSize = 5;
-            }
-
-            int pageNumber = page ?? 1;
-
-            if (pageNumber < 1)
-            {
-                pageNumber = 1;
-            }
-
+            // Đếm tổng số sản phẩm sau khi lọc
             int totalItems = products.Count();
 
-            int totalPages = Math.Max(
-                1,
-                (int)Math.Ceiling(
-                    (double)totalItems / selectedPageSize));
+            // Số sản phẩm hiển thị trên mỗi trang
+            int currentPageSize = pageSize ?? 5;
 
-            if (pageNumber > totalPages)
+            if (currentPageSize != 5 &&
+                currentPageSize != 10 &&
+                currentPageSize != 20)
             {
-                pageNumber = totalPages;
+                currentPageSize = 5;
             }
 
-            ViewBag.CurrentPage = pageNumber;
+            // Trang hiện tại
+            int currentPage = page ?? 1;
+
+            if (currentPage < 1)
+            {
+                currentPage = 1;
+            }
+
+            // Tính tổng số trang
+            int totalPages = (int)Math.Ceiling(
+                (double)totalItems / currentPageSize
+            );
+
+            // Kiểm tra trang hiện tại
+            if (totalPages > 0 && currentPage > totalPages)
+            {
+                currentPage = totalPages;
+            }
+
+            // Lưu thông tin phân trang
+            ViewBag.CurrentPage = currentPage;
             ViewBag.TotalPages = totalPages;
             ViewBag.TotalItems = totalItems;
-            ViewBag.PageSize = selectedPageSize;
+            ViewBag.PageSize = currentPageSize;
 
-            var result = products
-                .Skip((pageNumber - 1) * selectedPageSize)
-                .Take(selectedPageSize)
-                .ToList();
+            // Lấy sản phẩm theo trang
+            products = products
+                .Skip((currentPage - 1) * currentPageSize)
+                .Take(currentPageSize);
 
-            return View(result);
+            return View(products.ToList());
         }
 
         // GET: Admin/Product/Details/5
@@ -116,10 +138,14 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return new HttpStatusCodeResult(
+                    HttpStatusCode.BadRequest
+                );
             }
 
-            Product product = db.Products.Find(id);
+            Product product = db.Products
+                                .Include(p => p.Category)
+                                .FirstOrDefault(p => p.ProductID == id);
 
             if (product == null)
             {
@@ -174,26 +200,25 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
                 }
                 catch (Exception ex)
                 {
-                    string errorMessage = ex.GetBaseException().Message;
-
                     ModelState.AddModelError(
                         "",
-                        "Lỗi khi thêm sản phẩm: " + errorMessage
+                        "Lỗi khi thêm sản phẩm: " +
+                        ex.GetBaseException().Message
                     );
                 }
             }
 
-            // Hiển thị lỗi kiểm tra dữ liệu
             if (!ModelState.IsValid)
             {
                 var errors = ModelState.Values
                     .SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage);
 
-                ViewBag.ValidationErrors = string.Join(" | ", errors);
+                ViewBag.ValidationErrors =
+                    string.Join(" | ", errors);
             }
 
-            // Nạp lại danh mục khi form có lỗi
+            // Nạp lại danh mục nếu form có lỗi
             ViewBag.CategoryID = new SelectList(
                 db.Categories.ToList(),
                 "CategoryID",
@@ -209,7 +234,9 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return new HttpStatusCodeResult(
+                    HttpStatusCode.BadRequest
+                );
             }
 
             Product product = db.Products.Find(id);
@@ -219,7 +246,6 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
                 return HttpNotFound();
             }
 
-            // Lấy danh sách danh mục và chọn đúng danh mục hiện tại
             ViewBag.Categories = new SelectList(
                 db.Categories.ToList(),
                 "CategoryID",
@@ -230,13 +256,12 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
             return View(product);
         }
 
-
         // POST: Admin/Product/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(
             [Bind(Include = "ProductID,CategoryID,ProductName,ProductDecription,ProductPrice,ProductImage")]
-    Product product)
+            Product product)
         {
             if (product == null)
             {
@@ -247,22 +272,21 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
             {
                 try
                 {
-                    // Lấy dữ liệu gốc từ database
-                    Product existingProduct = db.Products.Find(product.ProductID);
+                    Product existingProduct =
+                        db.Products.Find(product.ProductID);
 
                     if (existingProduct == null)
                     {
                         return HttpNotFound();
                     }
 
-                    // Chỉ cập nhật các trường thông tin sản phẩm
                     existingProduct.CategoryID = product.CategoryID;
                     existingProduct.ProductName = product.ProductName;
-                    existingProduct.ProductDecription = product.ProductDecription;
+                    existingProduct.ProductDecription =
+                        product.ProductDecription;
                     existingProduct.ProductPrice = product.ProductPrice;
                     existingProduct.ProductImage = product.ProductImage;
 
-                    // Lưu thay đổi
                     db.SaveChanges();
 
                     TempData["DeleteSuccess"] =
@@ -280,7 +304,7 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
                 }
             }
 
-            // Nếu có lỗi, nạp lại danh mục và giữ lựa chọn hiện tại
+            // Nạp lại danh mục nếu form có lỗi
             ViewBag.Categories = new SelectList(
                 db.Categories.ToList(),
                 "CategoryID",
@@ -296,11 +320,16 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return new HttpStatusCodeResult(
+                    HttpStatusCode.BadRequest
+                );
             }
 
-            Product product = db.Products.Find(id);
+            Product product = db.Products
+                                .Include(p => p.Category)
+                                .FirstOrDefault(p => p.ProductID == id);
 
+            // Không tìm thấy hoặc sản phẩm đã ngừng kinh doanh
             if (product == null || !product.IsActive)
             {
                 return HttpNotFound();
@@ -310,7 +339,8 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
         }
 
         // POST: Admin/Product/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
+        [ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
@@ -334,8 +364,7 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Areas.Admin.Controllers
                     return RedirectToAction("Index");
                 }
 
-                // Ngừng kinh doanh sản phẩm được chọn
-                // Không xóa OrderDetail để bảo toàn lịch sử đơn hàng
+                // Xóa mềm: ngừng kinh doanh, giữ lịch sử đơn hàng
                 product.IsActive = false;
 
                 db.SaveChanges();

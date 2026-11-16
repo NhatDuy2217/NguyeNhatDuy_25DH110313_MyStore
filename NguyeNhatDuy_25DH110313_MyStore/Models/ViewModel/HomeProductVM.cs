@@ -5,15 +5,19 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Models.ViewModel
 {
     public class HomeProductVM
     {
-        // Danh sách 10 sản phẩm bán chạy nhất
+        // Danh sách sách bán chạy
         public List<Product> FeaturedProducts { get; set; }
 
-        // Danh sách 20 sản phẩm mới, có phân trang
+        // Danh sách sách mới có phân trang
         public IPagedList<Product> NewProducts { get; set; }
+
+        // Danh sách danh mục sách
+        public List<Category> Categories { get; set; }
 
         public HomeProductVM()
         {
             FeaturedProducts = new List<Product>();
+            Categories = new List<Category>();
         }
     }
 }

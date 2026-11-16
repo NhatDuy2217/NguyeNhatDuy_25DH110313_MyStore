@@ -5,203 +5,391 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>@ViewBag.Title - MyStore</title>
+    <title>@ViewBag.Title - BookOra</title>
 
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             padding: 0;
-            background: #f8fafc;
+            background: #f5f7fb;
             font-family: Arial, Helvetica, sans-serif;
-            color: #1e293b;
+            color: #24344d;
+        }
+
+        a {
+            transition: .2s ease;
         }
 
         /* HEADER */
         .customer-header {
-            background: #ffffff;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
             position: relative;
-            z-index: 100;
+            z-index: 1000;
+            background: #fff;
+            box-shadow: 0 3px 15px rgba(15, 40, 70, .07);
         }
 
         .customer-header-top {
-            background: #2563eb;
-            color: white;
-            text-align: center;
             padding: 9px 15px;
+            background: #102b50;
+            color: #fff;
+            text-align: center;
             font-size: 13px;
+            letter-spacing: .2px;
         }
 
         .customer-navbar {
-            max-width: 1200px;
+            max-width: 1240px;
+            min-height: 82px;
             margin: auto;
-            padding: 18px 20px;
+            padding: 14px 25px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 25px;
+            gap: 28px;
         }
 
+        /* LOGO */
         .customer-logo {
-            color: #2563eb;
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            color: #174b7c;
             font-size: 27px;
-            font-weight: 800;
+            font-weight: 900;
             text-decoration: none;
             white-space: nowrap;
+            letter-spacing: -.8px;
         }
 
             .customer-logo:hover {
-                color: #1d4ed8;
+                color: #f59e0b;
                 text-decoration: none;
             }
 
+        .customer-logo-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 39px;
+            height: 39px;
+            background: #edf4fc;
+            border-radius: 11px;
+            font-size: 22px;
+        }
+
+        .customer-logo span:last-child {
+            color: #174b7c;
+        }
+
+        /* MENU */
         .customer-nav-links {
             display: flex;
             align-items: center;
-            gap: 25px;
+            justify-content: center;
+            gap: 27px;
         }
 
             .customer-nav-links a {
-                color: #334155;
-                text-decoration: none;
-                font-size: 15px;
-                font-weight: 600;
-                transition: 0.2s;
-            }
-
-                .customer-nav-links a:hover {
-                    color: #2563eb;
-                }
-
-        .customer-nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-            flex-wrap: wrap;
-        }
-
-            .customer-nav-actions a {
+                position: relative;
                 color: #334155;
                 text-decoration: none;
                 font-size: 14px;
-                font-weight: 600;
+                font-weight: 700;
+                white-space: nowrap;
             }
 
-                .customer-nav-actions a:hover {
-                    color: #2563eb;
+                .customer-nav-links a::after {
+                    content: "";
+                    position: absolute;
+                    bottom: -8px;
+                    left: 0;
+                    width: 0;
+                    height: 2px;
+                    background: #f59e0b;
+                    transition: .2s;
                 }
 
-        /* GIỎ HÀNG */
-        .customer-cart {
-            background: #eff6ff;
-            color: #2563eb !important;
-            padding: 10px 15px;
-            border-radius: 9px;
+                .customer-nav-links a:hover {
+                    color: #174b7c;
+                    text-decoration: none;
+                }
+
+                    .customer-nav-links a:hover::after {
+                        width: 100%;
+                    }
+
+        /* ACTIONS */
+        .customer-nav-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
-        /* NÚT TRANG QUẢN TRỊ CHỈ DÀNH CHO ADMIN */
-        .customer-admin-link {
-            background: #212529;
-            color: white !important;
-            padding: 10px 15px;
-            border-radius: 9px;
-            transition: 0.2s;
-        }
-
-            .customer-admin-link:hover {
-                background: #343a40;
-                color: white !important;
+            .customer-nav-actions > a {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 38px;
+                padding: 9px 12px;
+                color: #334155;
                 text-decoration: none;
+                font-size: 13px;
+                font-weight: 700;
+                border-radius: 8px;
+                white-space: nowrap;
             }
 
-        /* MAIN CONTENT */
+                .customer-nav-actions > a:hover {
+                    color: #174b7c;
+                    background: #edf4fc;
+                    text-decoration: none;
+                }
+
+        .customer-user {
+            color: #174b7c;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        /* CART */
+        .customer-nav-actions > a.customer-cart {
+            padding: 10px 15px;
+            background: #fff5e6;
+            color: #bd7200;
+            border: 1px solid #ffe3b3;
+        }
+
+            .customer-nav-actions > a.customer-cart:hover {
+                background: #f59e0b;
+                border-color: #f59e0b;
+                color: white;
+            }
+
+        /* ADMIN */
+        .customer-nav-actions > a.customer-admin-link {
+            background: #102b50;
+            color: white;
+        }
+
+            .customer-nav-actions > a.customer-admin-link:hover {
+                background: #174b7c;
+                color: white;
+            }
+
+        /* MAIN */
         .customer-content {
             min-height: 65vh;
         }
 
         /* FOOTER */
         .customer-footer {
-            background: #172554;
+            margin-top: 50px;
+            padding: 48px 25px 20px;
+            background: #102b50;
             color: #cbd5e1;
-            padding: 35px 20px;
-            margin-top: 45px;
         }
 
         .customer-footer-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1.3fr;
+            gap: 45px;
             max-width: 1200px;
             margin: auto;
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 30px;
+        }
+
+        .footer-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 14px;
+            color: white;
+            font-size: 25px;
+            font-weight: 900;
+        }
+
+        .footer-brand-icon {
+            font-size: 24px;
         }
 
         .customer-footer h4 {
+            margin: 4px 0 18px;
             color: white;
-            font-size: 17px;
-            font-weight: 700;
-            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 800;
         }
 
         .customer-footer p {
-            font-size: 14px;
-            line-height: 1.8;
-            margin-bottom: 7px;
+            margin-bottom: 9px;
+            color: #cbd5e1;
+            font-size: 13px;
+            line-height: 1.9;
+        }
+
+        .customer-footer a {
+            display: block;
+            width: fit-content;
+            margin-bottom: 12px;
+            color: #cbd5e1;
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+            .customer-footer a:hover {
+                color: #fbbf24;
+                text-decoration: none;
+            }
+
+        .footer-description {
+            max-width: 390px;
         }
 
         .customer-footer-bottom {
             max-width: 1200px;
-            margin: 25px auto 0;
-            padding-top: 18px;
-            border-top: 1px solid rgba(255,255,255,0.15);
+            margin: 30px auto 0;
+            padding-top: 19px;
+            border-top: 1px solid rgba(255,255,255,.15);
+            color: #94a3b8;
             text-align: center;
-            font-size: 13px;
+            font-size: 12px;
         }
 
-        /* MOBILE MENU */
+        /* MOBILE BUTTON */
         .customer-menu-toggle {
             display: none;
-            border: none;
-            background: #eff6ff;
-            color: #2563eb;
+            width: 42px;
+            height: 42px;
+            border: 1px solid #dce6f2;
+            border-radius: 9px;
+            background: #edf4fc;
+            color: #174b7c;
             font-size: 23px;
-            padding: 7px 12px;
-            border-radius: 8px;
             cursor: pointer;
         }
 
-        @@media (max-width: 768px) {
+        /* TABLET */
+        @@media (max-width: 1050px) {
             .customer-navbar {
+                gap: 15px;
+                padding: 14px 18px;
+            }
+
+            .customer-nav-links {
+                gap: 15px;
+            }
+
+            .customer-nav-actions {
+                gap: 5px;
+            }
+
+                .customer-nav-actions > a {
+                    padding: 8px;
+                    font-size: 12px;
+                }
+
+            .customer-logo {
+                font-size: 24px;
+            }
+        }
+
+        /* MOBILE */
+        @@media (max-width: 768px) {
+            .customer-header-top {
+                padding: 8px 10px;
+                font-size: 11px;
+            }
+
+            .customer-navbar {
+                min-height: auto;
+                padding: 13px 16px;
                 flex-wrap: wrap;
+                gap: 13px;
+            }
+
+            .customer-logo {
+                font-size: 24px;
             }
 
             .customer-menu-toggle {
                 display: block;
+                margin-left: auto;
             }
 
             .customer-nav-links {
                 display: none;
+                order: 3;
                 width: 100%;
                 flex-direction: column;
-                align-items: flex-start;
-                gap: 18px;
-                padding: 15px 0;
+                align-items: stretch;
+                gap: 0;
+                padding: 7px 0;
+                border-top: 1px solid #edf0f5;
             }
 
                 .customer-nav-links.show {
                     display: flex;
                 }
 
+                .customer-nav-links a {
+                    padding: 12px 5px;
+                    border-bottom: 1px solid #f0f2f5;
+                }
+
+                    .customer-nav-links a::after {
+                        display: none;
+                    }
+
             .customer-nav-actions {
+                order: 4;
                 width: 100%;
                 justify-content: flex-start;
-                padding-bottom: 8px;
+                gap: 7px;
+                padding: 10px 0 3px;
+                border-top: 1px solid #edf0f5;
+            }
+
+                .customer-nav-actions > a {
+                    min-height: 36px;
+                    padding: 8px 10px;
+                    font-size: 12px;
+                }
+
+            .customer-user {
+                width: 100%;
+                padding: 5px 0;
+            }
+
+            .customer-footer {
+                padding: 35px 20px 18px;
             }
 
             .customer-footer-container {
                 grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .customer-footer-bottom {
+                margin-top: 20px;
+            }
+        }
+
+        @@media (max-width: 380px) {
+            .customer-nav-actions > a {
+                font-size: 11px;
+                padding: 7px 8px;
+            }
+
+            .customer-logo {
+                font-size: 22px;
             }
         }
     </style>
@@ -215,29 +403,31 @@
     <header class="customer-header">
 
         <div class="customer-header-top">
-            📚 MyStore - Không gian mua sắm sách trực tuyến
+            📚 BookOra - Không gian dành cho những người yêu sách
         </div>
 
         <div class="customer-navbar">
 
-            <!-- LOGO -->
+            <!-- LOGO BOOKORA -->
             @Html.ActionLink(
-                     "📚 MyStore",
+                     "📚 BookOra",
                      "Index",
                      "Home",
                      new { area = "" },
                      new { @class = "customer-logo" }
                  )
 
-            <!-- NÚT MENU MOBILE -->
+            <!-- MOBILE MENU -->
             <button type="button"
                     class="customer-menu-toggle"
-                    onclick="toggleCustomerMenu()"
-                    aria-label="Mở menu">
+                    id="customerMenuToggle"
+                    aria-label="Mở menu"
+                    aria-expanded="false"
+                    aria-controls="customerNavLinks">
                 ☰
             </button>
 
-            <!-- MENU CHÍNH -->
+            <!-- MAIN NAVIGATION -->
             <nav class="customer-nav-links" id="customerNavLinks">
 
                 @Html.ActionLink(
@@ -264,23 +454,39 @@
                          null
                      )
 
+                @Html.ActionLink(
+                         "Giới thiệu",
+                         "About",
+                         "Home",
+                         new { area = "" },
+                         null
+                     )
+
+                @Html.ActionLink(
+                         "Liên hệ",
+                         "Contact",
+                         "Home",
+                         new { area = "" },
+                         null
+                     )
+
             </nav>
 
-            <!-- MENU CÁ NHÂN -->
+            <!-- ACCOUNT AND CART -->
             <div class="customer-nav-actions">
 
                 @if (Session["Username"] != null)
                 {
-                    <span style="color:#2563eb; font-size:14px; font-weight:600;">
+                    <span class="customer-user">
                         👤 Xin chào, @Session["Username"]
                     </span>
 
-                    @* CHỈ ADMIN MỚI HIỂN THỊ NÚT TRANG QUẢN TRỊ *@
+                    @* ADMIN CHUYỂN VỀ TRANG QUẢN TRỊ *@
                     if (Session["UserRole"] != null &&
                         Session["UserRole"].ToString() == "Admin")
                     {
                         @Html.ActionLink(
-                                 "⚙️ Trang quản trị",
+                                 "⚙️ Quản trị",
                                  "Index",
                                  "Home",
                                  new { area = "Admin" },
@@ -288,12 +494,12 @@
                              )
                     }
 
-                    @* KHÁCH HÀNG MỚI HIỂN THỊ LỊCH SỬ MUA HÀNG *@
+                    @* KHÁCH HÀNG XEM LỊCH SỬ MUA HÀNG *@
                     if (Session["UserRole"] != null &&
                         Session["UserRole"].ToString() == "Customer")
                     {
                         @Html.ActionLink(
-                                 "📦 Lịch sử mua hàng",
+                                 "📦 Đơn hàng",
                                  "Index",
                                  "PurchaseHistory",
                                  new { area = "" },
@@ -328,7 +534,7 @@
                          )
                 }
 
-                <!-- GIỎ HÀNG -->
+                <!-- CART -->
                 @Html.ActionLink(
                          "🛒 Giỏ hàng",
                          "Index",
@@ -353,33 +559,100 @@
 
         <div class="customer-footer-container">
 
+            <!-- BRAND -->
             <div>
-                <h4>📚 MyStore</h4>
+                <div class="footer-brand">
+                    <span class="footer-brand-icon">📚</span>
+                    <span>BookOra</span>
+                </div>
+
+                <p class="footer-description">
+                    BookOra là không gian mua sắm sách trực tuyến,
+                    nơi bạn có thể khám phá nhiều đầu sách và tìm
+                    thấy những câu chuyện, kiến thức mà mình yêu thích.
+                </p>
+
                 <p>
-                    Website bán sách trực tuyến MyStore.
-                    Mang đến cho khách hàng không gian mua sắm
-                    sách tiện lợi và dễ dàng.
+                    Cảm ơn bạn đã đồng hành cùng BookOra!
                 </p>
             </div>
 
+            <!-- INFORMATION -->
             <div>
-                <h4>Thông tin</h4>
-                <p>Trang chủ</p>
-                <p>Danh mục sách</p>
-                <p>Sản phẩm</p>
+                <h4>Khám phá BookOra</h4>
+
+                @Html.ActionLink(
+                         "Trang chủ",
+                         "Index",
+                         "Home",
+                         new { area = "" },
+                         null
+                     )
+
+                @Html.ActionLink(
+                         "Danh mục sách",
+                         "ProductList",
+                         "Home",
+                         new { area = "" },
+                         null
+                     )
+
+                @Html.ActionLink(
+                         "Giới thiệu",
+                         "About",
+                         "Home",
+                         new { area = "" },
+                         null
+                     )
+
+                @Html.ActionLink(
+                         "Liên hệ",
+                         "Contact",
+                         "Home",
+                         new { area = "" },
+                         null
+                     )
             </div>
 
+            <!-- CUSTOMER SUPPORT -->
             <div>
                 <h4>Hỗ trợ khách hàng</h4>
-                <p>Tài khoản</p>
-                <p>Giỏ hàng</p>
-                <p>Đơn hàng của tôi</p>
+
+                @Html.ActionLink(
+                         "Tài khoản của tôi",
+                         "Login",
+                         "Account",
+                         new { area = "" },
+                         null
+                     )
+
+                @Html.ActionLink(
+                         "Giỏ hàng",
+                         "Index",
+                         "Cart",
+                         new { area = "" },
+                         null
+                     )
+
+                @if (Session["Username"] != null &&
+                     Session["UserRole"] != null &&
+                     Session["UserRole"].ToString() == "Customer")
+                {
+                    @Html.ActionLink(
+                             "Lịch sử mua hàng",
+                             "Index",
+                             "PurchaseHistory",
+                             new { area = "" },
+                             null
+                         )
+                }
             </div>
 
         </div>
 
         <div class="customer-footer-bottom">
-            © @DateTime.Now.Year MyStore - Website bán sách trực tuyến
+            © @DateTime.Now.Year BookOra - Website bán sách trực tuyến.
+            All rights reserved.
         </div>
 
     </footer>
@@ -388,15 +661,39 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
 
-    <script>
-                function toggleCustomerMenu() {
-                    var menu = document.getElementById("customerNavLinks");
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
 
-                    if (menu !== null) {
-                        menu.classList.toggle("show");
-                    }
-                }
-    </script>
+        const menuElement = document.getElementById("customerNavLinks");
+        const toggleElement = document.getElementById("customerMenuToggle");
+
+        // Kiểm tra đúng kiểu phần tử và tránh lỗi null
+        if (!(menuElement instanceof HTMLElement)) {
+            return;
+        }
+
+        if (!(toggleElement instanceof HTMLButtonElement)) {
+            return;
+        }
+
+        // Gán vào các biến đã xác định chắc chắn tồn tại
+        const menu = menuElement;
+        const toggle = toggleElement;
+
+        toggle.addEventListener("click", function () {
+
+            const isOpen = menu.classList.toggle("show");
+
+            toggle.setAttribute(
+                "aria-expanded",
+                isOpen ? "true" : "false"
+            );
+
+            toggle.innerHTML = isOpen ? "×" : "☰";
+        });
+
+    });
+</script>
 
     @RenderSection("scripts", required: false)
 

@@ -1,4 +1,5 @@
-﻿@model NguyeNhatDuy_25DH110313_MyStore.Models.ViewModel.HomeProductVM
+﻿
+@model NguyeNhatDuy_25DH110313_MyStore.Models.ViewModel.HomeProductVM
 
 @{
     ViewBag.Title = "Trang chủ";
@@ -8,67 +9,109 @@
 <style>
     .home-page {
         background: #f5f7fb;
-        padding-bottom: 50px;
+        padding-bottom: 55px;
+        color: #24344d;
     }
 
-    /* BANNER TRANG CHỦ */
-    .home-banner {
-        background: linear-gradient(120deg, #123b70, #2878bd);
+        .home-page .container {
+            max-width: 1200px;
+        }
+
+    /* HERO */
+    .bookora-hero {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(120deg, #102b50, #174b7c 65%, #2878a8);
         color: white;
         padding: 65px 35px;
-        border-radius: 16px;
-        margin: 25px 0 35px;
+        margin: 28px 0 25px;
+        border-radius: 20px;
         text-align: center;
+        box-shadow: 0 12px 30px rgba(16, 43, 80, .15);
     }
 
-        .home-banner h1 {
-            font-size: 36px;
-            font-weight: 700;
-            margin-bottom: 15px;
+        .bookora-hero::before,
+        .bookora-hero::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,.06);
         }
 
-        .home-banner p {
-            font-size: 17px;
-            margin-bottom: 25px;
+        .bookora-hero::before {
+            width: 260px;
+            height: 260px;
+            top: -130px;
+            left: -70px;
         }
 
-    /* THANH TÌM KIẾM */
+        .bookora-hero::after {
+            width: 320px;
+            height: 320px;
+            bottom: -210px;
+            right: -70px;
+        }
+
+    .hero-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-label {
+        display: inline-block;
+        padding: 7px 16px;
+        background: rgba(255,255,255,.13);
+        border: 1px solid rgba(255,255,255,.2);
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 17px;
+    }
+
+    .bookora-hero h1 {
+        font-size: 39px;
+        line-height: 1.3;
+        font-weight: 800;
+        margin: 0 0 14px;
+    }
+
+    .bookora-hero p {
+        color: #e1ebf7;
+        font-size: 16px;
+        line-height: 1.7;
+        margin-bottom: 25px;
+    }
+
+    /* SEARCH */
     .home-search {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 125px;
         width: 100%;
-        max-width: 700px;
+        max-width: 680px;
         height: 56px;
         margin: 0 auto;
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) 130px;
-        background: white;
-        border-radius: 8px;
         overflow: hidden;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 18px rgba(0,0,0,.12);
     }
 
         .home-search input {
             width: 100%;
             min-width: 0;
-            height: 56px;
-            padding: 15px 18px;
             border: none;
             outline: none;
+            padding: 0 20px;
             font-size: 15px;
-            box-sizing: border-box;
+            color: #334155;
         }
 
         .home-search button {
-            width: 100%;
-            height: 56px;
-            margin: 0;
-            padding: 0;
-            display: block;
+            border: none;
             background: #f59e0b;
             color: white;
-            border: none;
-            border-radius: 0;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            box-sizing: border-box;
             transition: .2s;
         }
 
@@ -76,146 +119,260 @@
                 background: #d97706;
             }
 
-    /* NHÓM NÚT GIỚI THIỆU VÀ LIÊN HỆ */
+    /* HERO LINKS */
     .home-action-buttons {
         display: flex;
         justify-content: center;
-        align-items: center;
-        gap: 15px;
         flex-wrap: wrap;
-        margin-top: 22px;
+        gap: 12px;
+        margin-top: 23px;
     }
 
-    /* HAI NÚT CÓ CÙNG GIAO DIỆN */
     .home-about-btn,
     .home-contact-btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 9px;
-        padding: 12px 25px;
-        background: white;
-        color: #1d65a6 !important;
-        border: 2px solid white;
+        gap: 8px;
+        padding: 11px 20px;
+        border: 1px solid rgba(255,255,255,.65);
         border-radius: 8px;
-        font-size: 15px;
-        font-weight: 700;
+        color: white !important;
         text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
         transition: .2s;
     }
 
-        /* HIỆU ỨNG KHI DI CHUỘT VÀO */
         .home-about-btn:hover,
         .home-contact-btn:hover {
-            background: #f59e0b;
-            border-color: #f59e0b;
-            color: white !important;
+            background: white;
+            color: #174b7c !important;
             text-decoration: none;
             transform: translateY(-2px);
         }
 
-    /* KHU VỰC SẢN PHẨM */
+    /* BENEFITS */
+    .home-benefits {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin: 25px 0 40px;
+    }
+
+    .benefit-item {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        padding: 19px;
+        background: white;
+        border: 1px solid #edf0f5;
+        border-radius: 12px;
+    }
+
+    .benefit-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 43px;
+        height: 43px;
+        background: #edf4fc;
+        color: #174b7c;
+        border-radius: 11px;
+        font-size: 21px;
+    }
+
+    .benefit-item strong {
+        display: block;
+        color: #183b63;
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+
+    .benefit-item small {
+        color: #7b8798;
+        font-size: 12px;
+    }
+
+    /* PRODUCT SECTION */
     .home-section {
-        margin-top: 35px;
+        margin-top: 42px;
     }
 
     .home-section-title {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 12px;
         margin-bottom: 22px;
-        border-bottom: 2px solid #e5eaf1;
-        padding-bottom: 12px;
+        padding-bottom: 13px;
+        border-bottom: 1px solid #e2e8f0;
     }
 
-        .home-section-title h2 {
-            font-size: 25px;
-            font-weight: 700;
-            color: #173d6b;
-            margin: 0;
+    .section-heading {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .section-mark {
+        width: 5px;
+        height: 29px;
+        border-radius: 5px;
+        background: #f59e0b;
+    }
+
+    .home-section-title h2 {
+        margin: 0;
+        color: #173d6b;
+        font-size: 24px;
+        font-weight: 800;
+    }
+
+    .home-view-all {
+        color: #1d65a6;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+        .home-view-all:hover {
+            color: #f59e0b;
+            text-decoration: none;
         }
 
-    /* THẺ SẢN PHẨM */
+    /* PRODUCT CARD */
     .product-card {
-        background: white;
-        border-radius: 12px;
-        padding: 15px;
         height: 100%;
-        box-shadow: 0 3px 12px rgba(0,0,0,.05);
-        transition: .2s;
+        padding: 14px;
+        background: white;
+        border: 1px solid #edf0f5;
+        border-radius: 13px;
+        box-shadow: 0 3px 12px rgba(20,40,70,.04);
+        transition: .25s;
     }
 
         .product-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 7px 20px rgba(0,0,0,.1);
+            box-shadow: 0 10px 24px rgba(20,40,70,.1);
         }
 
+    .product-image-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 220px;
+        margin-bottom: 13px;
+        overflow: hidden;
+        background: #f8fafc;
+        border-radius: 9px;
+    }
+
     .product-image {
+        display: block;
         width: 100%;
-        height: 210px;
+        height: 100%;
         object-fit: contain;
-        margin-bottom: 12px;
+        padding: 8px;
+        transition: .25s;
+    }
+
+    .product-card:hover .product-image {
+        transform: scale(1.04);
+    }
+
+    .product-no-image {
+        color: #94a3b8;
+        font-size: 13px;
     }
 
     .product-name {
+        min-height: 43px;
+        margin-bottom: 9px;
         color: #26384d;
-        font-size: 16px;
-        font-weight: 600;
-        min-height: 44px;
-        margin-bottom: 8px;
+        font-size: 15px;
+        line-height: 1.5;
+        font-weight: 700;
     }
 
     .product-price {
-        color: #dc3545;
+        margin-bottom: 13px;
+        color: #e05252;
         font-size: 18px;
-        font-weight: 700;
-        margin-bottom: 12px;
+        font-weight: 800;
     }
 
     .product-detail-btn {
         display: block;
-        text-align: center;
-        background: #1d65a6;
+        padding: 10px;
+        background: #174b7c;
         color: white;
-        padding: 9px;
+        text-align: center;
         border-radius: 7px;
         text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        transition: .2s;
     }
 
         .product-detail-btn:hover {
-            background: #124778;
+            background: #102f52;
             color: white;
             text-decoration: none;
         }
 
-    /* KHI KHÔNG CÓ SẢN PHẨM */
+    .product-cart-form {
+        width: 100%;
+        margin-top: 8px;
+    }
+
+    .product-add-cart-btn {
+        display: block;
+        width: 100%;
+        padding: 10px 6px;
+        background: #198754;
+        color: white;
+        border: none;
+        border-radius: 7px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+        .product-add-cart-btn:hover {
+            background: #146c43;
+            transform: translateY(-2px);
+        }
+
+    /* EMPTY */
     .home-empty {
+        padding: 42px 20px;
         background: white;
-        padding: 35px 20px;
-        border-radius: 12px;
+        border: 1px solid #edf0f5;
+        border-radius: 13px;
         text-align: center;
-        color: #777;
-        box-shadow: 0 3px 12px rgba(0,0,0,.04);
     }
 
     .home-empty-icon {
-        font-size: 42px;
         margin-bottom: 12px;
+        font-size: 42px;
     }
 
     .home-empty h3 {
         color: #173d6b;
         font-size: 20px;
         font-weight: 700;
-        margin-bottom: 10px;
     }
 
     .home-empty p {
-        margin-bottom: 0;
-        font-size: 15px;
+        margin: 0;
+        color: #7b8798;
+        font-size: 14px;
     }
 
-    /* PHÂN TRANG */
+    /* PAGINATION */
     .home-pagination {
         margin-top: 25px;
         text-align: center;
@@ -224,122 +381,147 @@
         .home-pagination a,
         .home-pagination span {
             display: inline-block;
-            padding: 8px 13px;
+            min-width: 36px;
             margin: 3px;
-            border-radius: 6px;
+            padding: 8px 12px;
             background: white;
-            border: 1px solid #ddd;
-            color: #1d65a6;
+            border: 1px solid #dce3ec;
+            border-radius: 7px;
+            color: #174b7c;
             text-decoration: none;
         }
 
         .home-pagination span {
-            background: #1d65a6;
+            background: #174b7c;
             color: white;
-            border-color: #1d65a6;
+            border-color: #174b7c;
         }
 
         .home-pagination a:hover {
-            background: #e8f1fa;
+            background: #edf4fc;
         }
 
-    /* POPUP GIỚI THIỆU MYSTORE */
-    .about-popup-overlay {
+    /* PROMOTION POPUP */
+    .promotion-overlay {
         display: none;
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.65);
         z-index: 99999;
-        justify-content: center;
         align-items: center;
-        padding: 20px;
+        justify-content: center;
+        padding: 18px;
+        background: rgba(8, 22, 42, .72);
     }
 
-    .about-popup {
+    .promotion-popup {
         position: relative;
         width: 100%;
-        max-width: 550px;
+        max-width: 510px;
+        overflow: hidden;
         background: white;
-        border-radius: 16px;
-        padding: 35px;
+        border-radius: 18px;
         text-align: center;
-        box-shadow: 0 10px 40px rgba(0,0,0,.25);
-        animation: popupShow .35s ease;
+        box-shadow: 0 18px 55px rgba(0,0,0,.25);
+        animation: promotionShow .35s ease;
     }
 
-    .about-popup-close {
-        position: absolute;
-        top: 12px;
-        right: 18px;
-        border: none;
-        background: none;
-        color: #777;
-        font-size: 30px;
-        cursor: pointer;
-    }
-
-        .about-popup-close:hover {
-            color: #dc3545;
-        }
-
-    .about-popup-icon {
-        font-size: 48px;
-        margin-bottom: 15px;
-    }
-
-    .about-popup h2 {
-        color: #173d6b;
-        font-size: 26px;
-        font-weight: 700;
-        margin-bottom: 18px;
-    }
-
-    .about-popup p {
-        color: #555;
-        font-size: 15px;
-        line-height: 1.8;
-        margin-bottom: 20px;
-    }
-
-    .about-popup-button {
-        display: inline-block;
-        background: #1d65a6;
+    .promotion-top {
+        padding: 34px 25px 25px;
+        background: linear-gradient(135deg, #102b50, #205d91);
         color: white;
-        padding: 11px 25px;
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: 600;
+    }
+
+    .promotion-icon {
+        margin-bottom: 12px;
+        font-size: 42px;
+    }
+
+    .promotion-top h2 {
+        margin: 0 0 10px;
+        font-size: 26px;
+        font-weight: 800;
+    }
+
+    .promotion-top p {
+        margin: 0;
+        color: #e4edf7;
+        font-size: 14px;
+    }
+
+    .promotion-discount {
+        padding: 23px 20px 10px;
+        color: #e58b08;
+        font-size: 46px;
+        font-weight: 900;
+    }
+
+    .promotion-description {
+        padding: 0 25px 22px;
+        color: #526174;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .promotion-actions {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 0 20px 27px;
+    }
+
+    .promotion-buy-btn,
+    .promotion-close-btn {
+        display: inline-block;
+        padding: 11px 23px;
         border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 700;
+        text-decoration: none;
         cursor: pointer;
         transition: .2s;
     }
 
-        .about-popup-button:hover {
-            background: #124778;
+    .promotion-buy-btn {
+        background: #f59e0b;
+        color: white;
+    }
+
+        .promotion-buy-btn:hover {
+            background: #d97706;
             color: white;
             text-decoration: none;
         }
 
-    .about-popup-secondary {
-        display: inline-block;
-        margin-left: 8px;
-        background: #e9ecef;
-        color: #495057;
-        padding: 11px 25px;
-        border-radius: 8px;
+    .promotion-close-btn {
+        background: #edf1f5;
+        color: #526174;
+    }
+
+        .promotion-close-btn:hover {
+            background: #dce3ec;
+        }
+
+    .promotion-popup-close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        z-index: 2;
+        width: 34px;
+        height: 34px;
+        background: rgba(255,255,255,.15);
         border: none;
-        font-weight: 600;
+        border-radius: 50%;
+        color: white;
+        font-size: 24px;
         cursor: pointer;
     }
 
-        .about-popup-secondary:hover {
-            background: #d6d8db;
-        }
-
-    @@keyframes popupShow {
+    @@keyframes promotionShow {
         from {
             opacity: 0;
-            transform: translateY(-20px) scale(.95);
+            transform: translateY(20px) scale(.96);
         }
 
         to {
@@ -348,28 +530,34 @@
         }
     }
 
-    /* GIAO DIỆN ĐIỆN THOẠI */
+    /* RESPONSIVE */
     @@media (max-width: 768px) {
-        .home-banner {
-            padding: 40px 18px;
+        .bookora-hero {
+            padding: 43px 18px;
+            margin-top: 18px;
+            border-radius: 14px;
         }
 
-            .home-banner h1 {
-                font-size: 27px;
+            .bookora-hero h1 {
+                font-size: 28px;
+            }
+
+            .bookora-hero p {
+                font-size: 14px;
             }
 
         .home-search {
-            grid-template-columns: minmax(0, 1fr) 100px;
+            grid-template-columns: minmax(0, 1fr) 95px;
+            height: 50px;
         }
 
             .home-search input {
-                padding: 13px 10px;
-                font-size: 14px;
+                padding: 0 11px;
+                font-size: 13px;
             }
 
             .home-search button {
-                width: 100%;
-                font-size: 14px;
+                font-size: 13px;
             }
 
         .home-about-btn,
@@ -378,24 +566,62 @@
             max-width: 280px;
         }
 
-        .product-image {
-            height: 160px;
+        .home-benefits {
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .benefit-item {
+            padding: 13px;
         }
 
         .home-section-title h2 {
-            font-size: 21px;
+            font-size: 20px;
         }
 
-        .about-popup {
-            padding: 30px 20px;
+        .product-image-wrap {
+            height: 165px;
         }
 
-            .about-popup h2 {
+        .product-card {
+            padding: 10px;
+        }
+
+        .product-name {
+            font-size: 13px;
+            min-height: 40px;
+        }
+
+        .product-price {
+            font-size: 16px;
+        }
+
+        .product-detail-btn,
+        .product-add-cart-btn {
+            font-size: 12px;
+        }
+
+        .promotion-top {
+            padding: 30px 18px 22px;
+        }
+
+            .promotion-top h2 {
                 font-size: 22px;
             }
 
-        .about-popup-secondary {
-            margin: 10px 0 0;
+        .promotion-discount {
+            font-size: 39px;
+        }
+    }
+
+    @@media (max-width: 380px) {
+        .product-image-wrap {
+            height: 135px;
+        }
+
+        .home-section-title h2 {
+            font-size: 18px;
         }
     }
 </style>
@@ -403,43 +629,75 @@
 <div class="home-page">
     <div class="container">
 
-        <!-- BANNER VÀ TÌM KIẾM -->
-        <section class="home-banner">
+        <!-- HERO BOOKORA -->
+        <section class="bookora-hero">
+            <div class="hero-content">
 
-            <h1>Chào mừng đến với MyStore</h1>
+                <div class="hero-label">
+                    📚 Không gian dành cho người yêu sách
+                </div>
 
-            <p>
-                Khám phá kho sách phong phú và tìm cuốn sách yêu thích của bạn.
-            </p>
+                <h1>Chào mừng đến với BookOra</h1>
 
-            @using (Html.BeginForm("Index", "Home", FormMethod.Get,
-                new { @class = "home-search" }))
-            {
-                <input type="text"
-                       name="searchString"
-                       value="@ViewBag.SearchString"
-                       placeholder="Nhập tên sách hoặc nội dung cần tìm..." />
+                <p>
+                    Mỗi cuốn sách là một hành trình mới.
+                    Cùng BookOra khám phá tri thức và những câu chuyện tuyệt vời.
+                </p>
 
-                <button type="submit">
-                    Tìm kiếm
-                </button>
-            }
+                @using (Html.BeginForm("Index", "Home", FormMethod.Get,
+                    new { @class = "home-search" }))
+                {
+                    <input type="text"
+                           name="searchString"
+                           value="@ViewBag.SearchString"
+                           placeholder="Bạn đang tìm kiếm cuốn sách nào?" />
 
-            <!-- NÚT GIỚI THIỆU VÀ LIÊN HỆ -->
-            <div class="home-action-buttons">
+                    <button type="submit">
+                        🔍 Tìm kiếm
+                    </button>
+                }
 
-                <a href="@Url.Action("About", "Home")"
-                   class="home-about-btn">
-                    <span>ℹ️</span>
-                    <span>Giới thiệu về MyStore</span>
-                </a>
+                <div class="home-action-buttons">
 
-                <a href="@Url.Action("Contact", "Home")"
-                   class="home-contact-btn">
-                    <span>📞</span>
-                    <span>Liên hệ với MyStore</span>
-                </a>
+                    <a href="@Url.Action("About", "Home")"
+                       class="home-about-btn">
+                        ℹ️ Giới thiệu BookOra
+                    </a>
 
+                    <a href="@Url.Action("Contact", "Home")"
+                       class="home-contact-btn">
+                        ☎ Liên hệ với chúng tôi
+                    </a>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- LỢI ÍCH -->
+        <section class="home-benefits">
+
+            <div class="benefit-item">
+                <div class="benefit-icon">📚</div>
+                <div>
+                    <strong>Kho sách đa dạng</strong>
+                    <small>Nhiều thể loại sách để lựa chọn</small>
+                </div>
+            </div>
+
+            <div class="benefit-item">
+                <div class="benefit-icon">🛒</div>
+                <div>
+                    <strong>Mua sắm tiện lợi</strong>
+                    <small>Đặt sách nhanh chóng và dễ dàng</small>
+                </div>
+            </div>
+
+            <div class="benefit-item">
+                <div class="benefit-icon">💙</div>
+                <div>
+                    <strong>Trải nghiệm thân thiện</strong>
+                    <small>Đồng hành cùng niềm đam mê đọc sách</small>
+                </div>
             </div>
 
         </section>
@@ -448,7 +706,15 @@
         <section class="home-section">
 
             <div class="home-section-title">
-                <h2>Sản phẩm nổi bật</h2>
+                <div class="section-heading">
+                    <div class="section-mark"></div>
+                    <h2>Sách nổi bật</h2>
+                </div>
+
+                <a href="@Url.Action("ProductList", "Home")"
+                   class="home-view-all">
+                    Xem tất cả →
+                </a>
             </div>
 
             @if (Model.FeaturedProducts != null &&
@@ -461,18 +727,20 @@
                         <div class="col-lg-3 col-md-4 col-6 mb-4">
                             <div class="product-card">
 
-                                @if (!String.IsNullOrEmpty(item.ProductImage))
-                                {
-                                    <img src="@Url.Content(item.ProductImage)"
-                                         class="product-image"
-                                         alt="@item.ProductName" />
-                                }
-                                else
-                                {
-                                    <div class="product-image d-flex align-items-center justify-content-center text-muted">
-                                        Chưa có hình ảnh
-                                    </div>
-                                }
+                                <div class="product-image-wrap">
+                                    @if (!String.IsNullOrEmpty(item.ProductImage))
+                                    {
+                                        <img src="@Url.Content(item.ProductImage)"
+                                             class="product-image"
+                                             alt="@item.ProductName" />
+                                    }
+                                    else
+                                    {
+                                        <div class="product-no-image">
+                                            📖 Chưa có hình ảnh
+                                        </div>
+                                    }
+                                </div>
 
                                 <div class="product-name">
                                     @item.ProductName
@@ -488,6 +756,19 @@
                                     Xem chi tiết
                                 </a>
 
+                                @using (Html.BeginForm("AddToCart", "Cart",
+                                    FormMethod.Post,
+                                    new { @class = "product-cart-form" }))
+                                {
+                                    @Html.Hidden("id", item.ProductID)
+                                    @Html.Hidden("quantity", 1)
+
+                                    <button type="submit"
+                                            class="product-add-cart-btn">
+                                        🛒 Thêm vào giỏ hàng
+                                    </button>
+                                }
+
                             </div>
                         </div>
                     }
@@ -498,8 +779,8 @@
             {
                 <div class="home-empty">
                     <div class="home-empty-icon">📚</div>
-                    <h3>Chưa có sản phẩm nổi bật</h3>
-                    <p>Hiện tại cửa hàng chưa có sản phẩm nào được hiển thị.</p>
+                    <h3>Chưa có sách nổi bật</h3>
+                    <p>BookOra đang cập nhật danh sách sách nổi bật.</p>
                 </div>
             }
 
@@ -509,7 +790,15 @@
         <section class="home-section">
 
             <div class="home-section-title">
-                <h2>Sản phẩm mới</h2>
+                <div class="section-heading">
+                    <div class="section-mark"></div>
+                    <h2>Sách mới cập nhật</h2>
+                </div>
+
+                <a href="@Url.Action("ProductList", "Home")"
+                   class="home-view-all">
+                    Khám phá thêm →
+                </a>
             </div>
 
             @if (Model.NewProducts != null &&
@@ -522,18 +811,20 @@
                         <div class="col-lg-3 col-md-4 col-6 mb-4">
                             <div class="product-card">
 
-                                @if (!String.IsNullOrEmpty(item.ProductImage))
-                                {
-                                    <img src="@Url.Content(item.ProductImage)"
-                                         class="product-image"
-                                         alt="@item.ProductName" />
-                                }
-                                else
-                                {
-                                    <div class="product-image d-flex align-items-center justify-content-center text-muted">
-                                        Chưa có hình ảnh
-                                    </div>
-                                }
+                                <div class="product-image-wrap">
+                                    @if (!String.IsNullOrEmpty(item.ProductImage))
+                                    {
+                                        <img src="@Url.Content(item.ProductImage)"
+                                             class="product-image"
+                                             alt="@item.ProductName" />
+                                    }
+                                    else
+                                    {
+                                        <div class="product-no-image">
+                                            📖 Chưa có hình ảnh
+                                        </div>
+                                    }
+                                </div>
 
                                 <div class="product-name">
                                     @item.ProductName
@@ -548,6 +839,19 @@
                                    class="product-detail-btn">
                                     Xem chi tiết
                                 </a>
+
+                                @using (Html.BeginForm("AddToCart", "Cart",
+                                    FormMethod.Post,
+                                    new { @class = "product-cart-form" }))
+                                {
+                                    @Html.Hidden("id", item.ProductID)
+                                    @Html.Hidden("quantity", 1)
+
+                                    <button type="submit"
+                                            class="product-add-cart-btn">
+                                        🛒 Thêm vào giỏ hàng
+                                    </button>
+                                }
 
                             </div>
                         </div>
@@ -605,11 +909,9 @@
             else
             {
                 <div class="home-empty">
-                    <div class="home-empty-icon">🛒</div>
-                    <h3>Cửa hàng đang cập nhật sản phẩm</h3>
-                    <p>
-                        Hiện chưa có sản phẩm nào. Vui lòng quay lại sau nhé!
-                    </p>
+                    <div class="home-empty-icon">📖</div>
+                    <h3>Chưa có sách mới</h3>
+                    <p>BookOra đang cập nhật thêm sách mới. Bạn hãy quay lại sau nhé!</p>
                 </div>
             }
 
@@ -617,43 +919,47 @@
 
     </div>
 
-    <!-- POPUP GIỚI THIỆU MYSTORE -->
-    <div class="about-popup-overlay" id="aboutPopup">
+    <!-- POPUP KHUYẾN MÃI BOOKORA -->
+    <div class="promotion-overlay" id="promotionPopup">
 
-        <div class="about-popup">
+        <div class="promotion-popup">
 
             <button type="button"
-                    class="about-popup-close"
-                    id="closeAboutPopup"
+                    class="promotion-popup-close"
+                    id="closePromotionPopup"
                     aria-label="Đóng">
                 &times;
             </button>
 
-            <div class="about-popup-icon">📚</div>
+            <div class="promotion-top">
+                <div class="promotion-icon">🎁</div>
+                <h2>Ưu đãi đặc biệt từ BookOra</h2>
+                <p>Cảm ơn bạn đã ghé thăm nhà sách trực tuyến của chúng tôi!</p>
+            </div>
 
-            <h2>Chào mừng đến với MyStore!</h2>
+            <div class="promotion-discount">
+                GIẢM 20%
+            </div>
 
-            <p>
-                MyStore là cửa hàng sách trực tuyến, nơi bạn có thể
-                khám phá và lựa chọn những cuốn sách yêu thích.
-                Chúng tôi mong muốn mang đến trải nghiệm mua sắm
-                thuận tiện, nhanh chóng và thân thiện cho khách hàng.
-            </p>
+            <div class="promotion-description">
+                Ưu đãi dành cho đơn hàng từ <strong>500.000đ</strong>.
+                Hãy khám phá những cuốn sách yêu thích và tận hưởng ưu đãi nhé!
+            </div>
 
-            <p>
-                Cảm ơn bạn đã ghé thăm MyStore!
-            </p>
+            <div class="promotion-actions">
 
-            <a href="@Url.Action("About", "Home")"
-               class="about-popup-button">
-                Tìm hiểu thêm
-            </a>
+                <a href="@Url.Action("ProductList", "Home")"
+                   class="promotion-buy-btn">
+                    Khám phá sách ngay
+                </a>
 
-            <button type="button"
-                    class="about-popup-secondary"
-                    id="confirmAboutPopup">
-                Đóng
-            </button>
+                <button type="button"
+                        class="promotion-close-btn"
+                        id="confirmPromotionPopup">
+                    Để sau
+                </button>
+
+            </div>
 
         </div>
 
@@ -664,43 +970,34 @@
 <script>
         document.addEventListener("DOMContentLoaded", function () {
 
-            var popupElement = document.getElementById("aboutPopup");
-            var closeButton = document.getElementById("closeAboutPopup");
-            var confirmButton = document.getElementById("confirmAboutPopup");
+            var popupElement = document.getElementById("promotionPopup");
+            var closeButton = document.getElementById("closePromotionPopup");
+            var confirmButton = document.getElementById("confirmPromotionPopup");
 
-            var popupKey = "MyStore_AboutPopup_Closed";
-
-            // Kiểm tra popup tồn tại
             if (popupElement === null) {
                 return;
             }
 
-            // Lưu popup vào biến sau khi đã kiểm tra
             var popup = popupElement;
+            var popupKey = "BookOra_PromotionPopup_Closed";
 
-            // Hiển thị popup nếu chưa đóng trong phiên hiện tại
+            // Hiển thị popup nếu khách chưa đóng trong phiên truy cập
             if (!sessionStorage.getItem(popupKey)) {
                 popup.style.display = "flex";
             }
 
-            // Hàm đóng popup
+            // Đóng popup
             function closePopup() {
                 popup.style.display = "none";
                 sessionStorage.setItem(popupKey, "true");
             }
 
-            // Nhấn dấu X
             if (closeButton !== null) {
-                closeButton.addEventListener("click", function () {
-                    closePopup();
-                });
+                closeButton.addEventListener("click", closePopup);
             }
 
-            // Nhấn nút Đóng
             if (confirmButton !== null) {
-                confirmButton.addEventListener("click", function () {
-                    closePopup();
-                });
+                confirmButton.addEventListener("click", closePopup);
             }
 
             // Nhấn bên ngoài popup
@@ -710,9 +1007,10 @@
                 }
             });
 
-            // Nhấn phím ESC
+            // Nhấn ESC
             document.addEventListener("keydown", function (event) {
-                if (event.key === "Escape") {
+                if (event.key === "Escape" &&
+                    popup.style.display === "flex") {
                     closePopup();
                 }
             });

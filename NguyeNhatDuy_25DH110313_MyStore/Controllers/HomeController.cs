@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Linq;
 using System.Web.Mvc;
 using PagedList;
@@ -12,20 +11,20 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
     {
         private MyStoreEntities db = new MyStoreEntities();
 
-        // 1. Trang chủ: sản phẩm nổi bật và sản phẩm mới
+        // 1. Trang chủ BookOra
         public ActionResult Index(string searchString, int? page)
         {
             int pageNumber = page ?? 1;
-            int pageSize = 6;
+            int pageSize = 8;
 
-            // Lấy sản phẩm nổi bật đang hoạt động
+            // Lấy sách bán chạy đang hoạt động
             var featuredQuery = db.Products
                 .Where(p => p.IsActive)
                 .OrderByDescending(p =>
                     p.OrderDetails.Sum(od => (int?)od.Quantity) ?? 0);
 
-            // Tìm kiếm sản phẩm nổi bật
-            if (!String.IsNullOrEmpty(searchString))
+            // Tìm kiếm sách bán chạy
+            if (!String.IsNullOrWhiteSpace(searchString))
             {
                 featuredQuery = featuredQuery.Where(p =>
                     p.ProductName.Contains(searchString) ||
@@ -36,15 +35,16 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
             }
 
             var featuredProducts = featuredQuery
-                .Take(10)
+                .Take(8)
                 .ToList();
 
-            // Lấy 20 sản phẩm mới nhất đang hoạt động
+            // Lấy sách mới đang hoạt động
             var newQuery = db.Products
                 .Where(p => p.IsActive)
                 .AsQueryable();
 
-            if (!String.IsNullOrEmpty(searchString))
+            // Tìm kiếm sách mới
+            if (!String.IsNullOrWhiteSpace(searchString))
             {
                 newQuery = newQuery.Where(p =>
                     p.ProductName.Contains(searchString) ||
@@ -58,11 +58,17 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
                 .ToList()
                 .ToPagedList(pageNumber, pageSize);
 
+            // Lấy danh sách danh mục đang có
+            var categories = db.Categories
+                .OrderBy(c => c.CategoryName)
+                .ToList();
+
             // Đưa dữ liệu vào ViewModel
             var model = new HomeProductVM
             {
                 FeaturedProducts = featuredProducts,
-                NewProducts = newProducts
+                NewProducts = newProducts,
+                Categories = categories
             };
 
             ViewBag.SearchString = searchString;
@@ -89,7 +95,7 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
             }
 
             // Tìm kiếm theo tên hoặc mô tả
-            if (!String.IsNullOrEmpty(searchString))
+            if (!String.IsNullOrWhiteSpace(searchString))
             {
                 products = products.Where(p =>
                     p.ProductName.Contains(searchString) ||
@@ -216,7 +222,7 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
                 return View();
             }
 
-            // Chưa tích hợp gửi email hoặc lưu database.
+            // Chưa tích hợp gửi email hoặc lưu database
             ViewBag.ContactSuccess =
                 "Thông tin đã được kiểm tra hợp lệ. " +
                 "Chức năng gửi email/lưu yêu cầu sẽ được tích hợp sau.";

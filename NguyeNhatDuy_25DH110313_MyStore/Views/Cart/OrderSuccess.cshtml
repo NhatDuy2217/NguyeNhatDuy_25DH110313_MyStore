@@ -6,94 +6,343 @@
 
 <style>
     .success-page {
-        min-height: 70vh;
-        background: #f5f7fb;
+        min-height: 80vh;
+        background: #f4f7fc;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 40px 15px;
+        padding: 55px 15px;
+        font-family: Arial, sans-serif;
+    }
+
+    .success-container {
+        width: 100%;
+        max-width: 650px;
+        margin: auto;
     }
 
     .success-card {
-        max-width: 600px;
-        width: 100%;
-        background: white;
-        padding: 45px 30px;
-        border-radius: 15px;
+        position: relative;
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #e8edf5;
+        border-radius: 20px;
+        padding: 48px 40px;
         text-align: center;
-        box-shadow: 0 5px 25px rgba(0,0,0,.07);
+        box-shadow: 0 12px 35px rgba(23, 37, 84, .07);
+    }
+
+    /* DECORATION */
+
+    .success-top-line {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(90deg, #2563eb, #38bdf8, #f5b942);
+    }
+
+    .success-decoration {
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: #eff6ff;
+        opacity: .7;
+        top: -100px;
+        right: -75px;
+    }
+
+    /* ICON */
+
+    .success-icon-wrapper {
+        position: relative;
+        width: 105px;
+        height: 105px;
+        margin: 0 auto 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #dcfce7;
+        border-radius: 50%;
+        box-shadow: 0 0 0 12px #f0fdf4;
     }
 
     .success-icon {
-        width: 85px;
-        height: 85px;
-        margin: 0 auto 22px;
-        border-radius: 50%;
-        background: #dcfce7;
         color: #16a34a;
-        font-size: 48px;
-        line-height: 85px;
+        font-size: 55px;
+        font-weight: 700;
+        line-height: 1;
+        animation: successPop .55s ease-out;
     }
 
-    .success-card h2 {
+    @@keyframes successPop {
+        0% {
+            transform: scale(.4);
+            opacity: 0;
+        }
+
+        70% {
+            transform: scale(1.15);
+            opacity: 1;
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    /* CONTENT */
+
+    .success-label {
+        display: inline-block;
         color: #16a34a;
-        font-weight: 700;
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        border-radius: 30px;
+        padding: 7px 15px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1px;
         margin-bottom: 15px;
     }
 
-    .success-card p {
+    .success-card h2 {
+        color: #172554;
+        font-size: 28px;
+        font-weight: 800;
+        margin: 0 0 14px;
+    }
+
+    .success-description {
         color: #64748b;
-        font-size: 16px;
+        font-size: 14px;
+        line-height: 1.8;
+        max-width: 440px;
+        margin: 0 auto 27px;
+    }
+
+    .success-brand {
+        color: #2563eb;
+        font-weight: 800;
+    }
+
+    /* ORDER CODE */
+
+    .success-order-box {
+        background: #f7f9fd;
+        border: 1px dashed #bfdbfe;
+        border-radius: 13px;
+        padding: 20px;
         margin-bottom: 25px;
     }
 
+    .success-order-title {
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
     .success-order-code {
-        background: #f1f5f9;
-        padding: 15px;
-        border-radius: 8px;
-        margin-bottom: 25px;
-        font-weight: 600;
+        color: #1d4ed8;
+        font-size: 17px;
+        font-weight: 800;
+        line-height: 1.5;
+        word-break: break-word;
+    }
+
+    /* NOTICE */
+
+    .success-notice {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        text-align: left;
+        background: #eff6ff;
+        border: 1px solid #dbeafe;
+        border-radius: 11px;
+        padding: 14px 16px;
+        margin-bottom: 27px;
+    }
+
+    .success-notice-icon {
+        font-size: 19px;
+        flex-shrink: 0;
+    }
+
+    .success-notice-text {
+        color: #475569;
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+        .success-notice-text strong {
+            color: #1e40af;
+        }
+
+    /* BUTTONS */
+
+    .success-actions {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
     }
 
     .success-btn {
         display: inline-block;
-        padding: 12px 25px;
-        background: #2563eb;
+        padding: 13px 23px;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
         color: white;
-        border-radius: 8px;
+        border-radius: 9px;
         text-decoration: none;
-        font-weight: 600;
+        font-size: 13px;
+        font-weight: 800;
+        transition: .25s;
+        box-shadow: 0 5px 14px rgba(37, 99, 235, .18);
     }
 
         .success-btn:hover {
-            background: #1d4ed8;
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
             color: white;
             text-decoration: none;
+            transform: translateY(-2px);
         }
+
+    .success-home-btn {
+        display: inline-block;
+        padding: 13px 23px;
+        background: #f1f5f9;
+        color: #334155;
+        border-radius: 9px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 800;
+        transition: .25s;
+    }
+
+        .success-home-btn:hover {
+            background: #e2e8f0;
+            color: #172554;
+            text-decoration: none;
+        }
+
+    .success-footer {
+        color: #94a3b8;
+        font-size: 12px;
+        margin-top: 28px;
+    }
+
+        .success-footer span {
+            color: #2563eb;
+            font-weight: 800;
+        }
+
+    /* RESPONSIVE */
+
+    @@media (max-width: 576px) {
+        .success-page {
+            padding: 35px 12px;
+        }
+
+        .success-card {
+            padding: 42px 20px 30px;
+        }
+
+            .success-card h2 {
+                font-size: 23px;
+            }
+
+        .success-icon-wrapper {
+            width: 90px;
+            height: 90px;
+        }
+
+        .success-icon {
+            font-size: 46px;
+        }
+
+        .success-actions {
+            flex-direction: column;
+        }
+
+        .success-btn,
+        .success-home-btn {
+            width: 100%;
+        }
+    }
 </style>
 
 <div class="success-page">
-    <div class="success-card">
+    <div class="success-container">
 
-        <div class="success-icon">
-            ✓
+        <div class="success-card">
+
+            <div class="success-top-line"></div>
+            <div class="success-decoration"></div>
+
+            <!-- BIỂU TƯỢNG THÀNH CÔNG -->
+            <div class="success-icon-wrapper">
+                <div class="success-icon">✓</div>
+            </div>
+
+            <span class="success-label">
+                ORDER COMPLETED
+            </span>
+
+            <h2>Đặt hàng thành công!</h2>
+
+            <p class="success-description">
+                Cảm ơn bạn đã tin tưởng và lựa chọn
+                <span class="success-brand">BookOra</span>.
+                Đơn hàng của bạn đã được ghi nhận.
+                Chúng mình sẽ sớm chuẩn bị những cuốn sách để gửi đến bạn.
+            </p>
+
+            <!-- THÔNG TIN ĐƠN HÀNG -->
+            <div class="success-order-box">
+                <div class="success-order-title">
+                    THÔNG TIN ĐƠN HÀNG
+                </div>
+
+                <div class="success-order-code">
+                    @ViewBag.Message
+                </div>
+            </div>
+
+            <!-- THÔNG BÁO -->
+            <div class="success-notice">
+                <div class="success-notice-icon">📦</div>
+
+                <div class="success-notice-text">
+                    <strong>Đơn hàng đang chờ xử lý.</strong>
+                    Bạn vui lòng chú ý điện thoại để nhận thông tin
+                    và hỗ trợ giao hàng khi cần thiết.
+                </div>
+            </div>
+
+            <!-- NÚT ĐIỀU HƯỚNG -->
+            <div class="success-actions">
+
+                <a href="@Url.Action("ProductList", "Home")"
+                   class="success-btn">
+                    TIẾP TỤC MUA SẮM &nbsp; →
+                </a>
+
+                <a href="@Url.Action("Index", "Home")"
+                   class="success-home-btn">
+                    Về trang chủ
+                </a>
+
+            </div>
+
+            <div class="success-footer">
+                Cảm ơn bạn đã đồng hành cùng <span>BookOra</span> ♥
+            </div>
+
         </div>
-
-        <h2>Đặt hàng thành công!</h2>
-
-        <p>
-            Cảm ơn bạn đã mua sắm tại MyStore.
-            Đơn hàng của bạn đã được ghi nhận.
-        </p>
-
-        <div class="success-order-code">
-            @ViewBag.Message
-        </div>
-
-        <a href="@Url.Action("ProductList", "Home")"
-           class="success-btn">
-            Tiếp tục mua sắm
-        </a>
 
     </div>
 </div>

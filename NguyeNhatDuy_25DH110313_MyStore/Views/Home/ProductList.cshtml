@@ -8,228 +8,404 @@
 
 <style>
     .product-list-page {
-        background: #f5f7fb;
+        background: #f5f7fc;
         min-height: 100vh;
-        padding: 35px 0 55px;
+        padding: 45px 0 65px;
     }
 
-    /* TIÊU ĐỀ */
+    .product-list-container {
+        max-width: 1200px;
+        margin: auto;
+        padding: 0 20px;
+    }
+
+    /* HEADER */
     .product-list-header {
-        margin-bottom: 25px;
+        margin-bottom: 28px;
     }
 
-        .product-list-header h2 {
-            color: #173d6b;
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
+    .product-list-label {
+        display: inline-block;
+        color: #3157a4;
+        background: #eaf0ff;
+        padding: 7px 15px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: .5px;
+        margin-bottom: 12px;
+    }
 
-        .product-list-header p {
-            color: #777;
-            margin: 0;
-        }
+    .product-list-header h2 {
+        color: #172b4d;
+        font-size: 32px;
+        font-weight: 800;
+        margin: 0 0 10px;
+    }
 
-    /* TÌM KIẾM VÀ LỌC DANH MỤC */
+    .product-list-header p {
+        color: #778197;
+        font-size: 15px;
+        margin: 0;
+    }
+
+    /* FILTER */
     .product-filter {
-        background: white;
-        padding: 18px;
-        border-radius: 10px;
-        margin-bottom: 25px;
-        box-shadow: 0 3px 12px rgba(0,0,0,.04);
+        background: #fff;
+        padding: 22px;
+        border-radius: 17px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 22px rgba(25, 45, 85, .05);
     }
 
-        .product-filter form {
-            display: flex;
-            flex-direction: row;
-            align-items: stretch;
-            gap: 10px;
-            width: 100%;
-            margin: 0;
-        }
+    .filter-heading {
+        color: #172b4d;
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
 
-        .product-filter input {
-            flex: 1 1 auto;
-            min-width: 0;
-            padding: 11px 14px;
-            border: 1px solid #ddd;
-            border-radius: 7px;
-            outline: none;
-            font-size: 14px;
-        }
+    .product-filter form {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 0;
+    }
 
-            .product-filter input:focus,
-            .product-filter select:focus {
-                border-color: #1d65a6;
-                box-shadow: 0 0 0 2px rgba(29,101,166,.1);
-            }
-
-        .product-filter select {
-            flex: 0 0 210px;
-            width: 210px;
-            padding: 11px 14px;
-            border: 1px solid #ddd;
-            border-radius: 7px;
-            background: white;
-            outline: none;
-            font-size: 14px;
-        }
-
-        .product-filter button {
-            flex: 0 0 auto;
-            padding: 11px 22px;
-            background: #1d65a6;
-            color: white;
-            border: none;
-            border-radius: 7px;
-            font-weight: 600;
-            white-space: nowrap;
-            cursor: pointer;
-        }
-
-            .product-filter button:hover {
-                background: #124778;
-            }
-
-    /* THẺ SẢN PHẨM */
-    .product-card {
-        background: white;
-        border-radius: 12px;
-        padding: 15px;
-        height: 100%;
-        box-shadow: 0 3px 12px rgba(0,0,0,.05);
+    .filter-input,
+    .filter-select {
+        height: 48px;
+        border: 1px solid #e0e5ef;
+        border-radius: 10px;
+        padding: 0 15px;
+        outline: none;
+        background: #fff;
+        color: #34445e;
+        font-size: 14px;
         transition: .2s;
     }
 
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 7px 20px rgba(0,0,0,.1);
+    .filter-input {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .filter-select {
+        width: 230px;
+    }
+
+        .filter-input:focus,
+        .filter-select:focus {
+            border-color: #3157a4;
+            box-shadow: 0 0 0 3px rgba(49, 87, 164, .09);
         }
+
+    .filter-button {
+        height: 48px;
+        padding: 0 25px;
+        border: none;
+        border-radius: 10px;
+        background: #3157a4;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 700;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+        .filter-button:hover {
+            background: #203f82;
+            transform: translateY(-1px);
+        }
+
+    /* RESULT HEADING */
+    .product-result-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+        .product-result-heading h3 {
+            color: #172b4d;
+            font-size: 19px;
+            font-weight: 750;
+            margin: 0;
+        }
+
+    .product-result-note {
+        color: #8993a6;
+        font-size: 13px;
+    }
+
+    /* PRODUCT CARD */
+    .product-card {
+        background: #fff;
+        border: 1px solid #edf0f5;
+        border-radius: 16px;
+        padding: 14px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        transition: all .25s ease;
+        box-shadow: 0 4px 15px rgba(25, 45, 85, .035);
+    }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 28px rgba(25, 45, 85, .10);
+            border-color: #dce5f7;
+        }
+
+    .product-image-wrapper {
+        height: 225px;
+        background: #f7f8fc;
+        border-radius: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        margin-bottom: 15px;
+        padding: 12px;
+    }
 
     .product-image {
         width: 100%;
-        height: 210px;
+        height: 100%;
         object-fit: contain;
-        margin-bottom: 12px;
+        transition: transform .3s ease;
+    }
+
+    .product-card:hover .product-image {
+        transform: scale(1.045);
+    }
+
+    .product-no-image {
+        color: #9aa3b5;
+        font-size: 13px;
+        text-align: center;
     }
 
     .product-name {
-        color: #26384d;
-        font-size: 16px;
-        font-weight: 600;
-        min-height: 44px;
-        margin-bottom: 8px;
+        color: #263753;
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.5;
+        min-height: 45px;
+        margin-bottom: 9px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
     .product-price {
-        color: #dc3545;
-        font-size: 18px;
-        font-weight: 700;
-        margin-bottom: 12px;
+        color: #e49b18;
+        font-size: 19px;
+        font-weight: 800;
+        margin-bottom: 15px;
     }
 
+    .product-card-actions {
+        margin-top: auto;
+    }
+
+    /* DETAIL BUTTON */
     .product-detail-btn {
         display: block;
         text-align: center;
-        background: #1d65a6;
-        color: white;
-        padding: 9px;
-        border-radius: 7px;
+        padding: 10px;
+        border: 1px solid #3157a4;
+        border-radius: 9px;
+        color: #3157a4;
+        background: #fff;
+        font-size: 13px;
+        font-weight: 700;
         text-decoration: none;
+        transition: .2s;
     }
 
         .product-detail-btn:hover {
-            background: #124778;
-            color: white;
+            background: #edf2ff;
+            color: #203f82;
             text-decoration: none;
         }
 
-    /* KHÔNG CÓ SẢN PHẨM */
-    .product-empty {
-        background: white;
-        padding: 35px;
-        border-radius: 10px;
-        text-align: center;
-        color: #777;
+    /* CART BUTTON */
+    .product-cart-form {
+        width: 100%;
+        margin-top: 9px;
     }
 
-        .product-empty h4 {
-            color: #173d6b;
-            margin-bottom: 10px;
+    .product-add-cart-btn {
+        display: block;
+        width: 100%;
+        padding: 11px 8px;
+        border: none;
+        border-radius: 9px;
+        background: #3157a4;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+        .product-add-cart-btn:hover {
+            background: #203f82;
+            transform: translateY(-1px);
         }
 
-    /* PHÂN TRANG */
-    .product-pagination {
-        margin-top: 30px;
+    /* EMPTY */
+    .product-empty {
+        background: #fff;
+        padding: 55px 20px;
+        border-radius: 17px;
         text-align: center;
+        box-shadow: 0 5px 22px rgba(25, 45, 85, .04);
+    }
+
+    .empty-icon {
+        font-size: 45px;
+        margin-bottom: 15px;
+    }
+
+    .product-empty h4 {
+        color: #172b4d;
+        font-weight: 750;
+        margin-bottom: 10px;
+    }
+
+    .product-empty p {
+        color: #8993a6;
+        margin: 0;
+    }
+
+    /* PAGINATION */
+    .product-pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 7px;
+        margin-top: 35px;
     }
 
         .product-pagination a,
         .product-pagination span {
-            display: inline-block;
-            padding: 8px 13px;
-            margin: 3px;
-            border-radius: 6px;
-            background: white;
-            border: 1px solid #ddd;
-            color: #1d65a6;
+            min-width: 39px;
+            height: 39px;
+            padding: 0 12px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 9px;
+            border: 1px solid #e0e5ef;
+            background: #fff;
+            color: #3157a4;
             text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: .2s;
         }
 
         .product-pagination span {
-            background: #1d65a6;
-            color: white;
-            border-color: #1d65a6;
+            background: #3157a4;
+            color: #fff;
+            border-color: #3157a4;
         }
 
         .product-pagination a:hover {
-            background: #e8f1fa;
+            background: #edf2ff;
+            border-color: #3157a4;
         }
 
     /* RESPONSIVE */
     @@media (max-width: 768px) {
-        .product-list-header h2 {
-            font-size: 23px;
+        .product-list-page {
+            padding: 30px 0 45px;
         }
 
-        .product-image {
-            height: 160px;
+        .product-list-header h2 {
+            font-size: 26px;
         }
 
         .product-filter form {
             flex-direction: column;
+            align-items: stretch;
         }
 
-        .product-filter input,
-        .product-filter select,
-        .product-filter button {
+        .filter-input,
+        .filter-select,
+        .filter-button {
             width: 100%;
-            flex: 1 1 auto;
+            flex: none;
+        }
+
+        .product-image-wrapper {
+            height: 175px;
+        }
+
+        .product-card {
+            padding: 10px;
+        }
+
+        .product-name {
+            font-size: 13px;
+            min-height: 40px;
+        }
+
+        .product-price {
+            font-size: 16px;
+        }
+
+        .product-add-cart-btn,
+        .product-detail-btn {
+            font-size: 12px;
+            padding: 9px 5px;
+        }
+
+        .product-result-heading {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 7px;
         }
     }
 </style>
 
 <div class="product-list-page">
-    <div class="container">
+    <div class="product-list-container">
 
-        <!-- TIÊU ĐỀ -->
+        <!-- HEADER -->
         <div class="product-list-header">
-            <h2>Danh sách sản phẩm</h2>
-            <p>Khám phá các sản phẩm tại MyStore</p>
+            <span class="product-list-label">BOOKORA COLLECTION</span>
+
+            <h2>Khám phá thế giới sách</h2>
+
+            <p>
+                Tìm kiếm những cuốn sách yêu thích và chọn cho mình
+                những câu chuyện truyền cảm hứng.
+            </p>
         </div>
 
-        <!-- TÌM KIẾM VÀ LỌC DANH MỤC -->
+        <!-- SEARCH AND FILTER -->
         <div class="product-filter">
+
+            <div class="filter-heading">
+                🔎 Tìm kiếm và lọc sản phẩm
+            </div>
 
             @using (Html.BeginForm("ProductList", "Home", FormMethod.Get))
             {
                 <input type="text"
+                       class="filter-input"
                        name="searchString"
                        value="@ViewBag.SearchString"
                        placeholder="Nhập tên sách hoặc nội dung cần tìm..." />
 
-                <select name="categoryID">
-                    <option value="">-- Tất cả danh mục --</option>
+                <select class="filter-select" name="categoryID">
+                    <option value="">Tất cả danh mục</option>
 
                     @if (ViewBag.Categories != null)
                     {
@@ -244,57 +420,91 @@
                     }
                 </select>
 
-                <button type="submit">
-                    Lọc sản phẩm
+                <button type="submit" class="filter-button">
+                    Tìm kiếm
                 </button>
             }
 
         </div>
 
-        <!-- DANH SÁCH SẢN PHẨM -->
+        <!-- PRODUCT LIST -->
         @if (Model != null && Model.Any())
         {
+            <div class="product-result-heading">
+                <h3>Sách dành cho bạn</h3>
+
+                <span class="product-result-note">
+                    Khám phá và lựa chọn cuốn sách yêu thích
+                </span>
+            </div>
+
             <div class="row">
 
                 @foreach (var item in Model)
                 {
                     <div class="col-lg-3 col-md-4 col-6 mb-4">
+
                         <div class="product-card">
 
-                            @if (!String.IsNullOrEmpty(item.ProductImage))
-                            {
-                                <img src="@Url.Content(item.ProductImage)"
-                                     class="product-image"
-                                     alt="@item.ProductName" />
-                            }
-                            else
-                            {
-                                <div class="product-image d-flex align-items-center justify-content-center text-muted">
-                                    Chưa có hình ảnh
-                                </div>
-                            }
+                            <!-- IMAGE -->
+                            <div class="product-image-wrapper">
 
+                                @if (!String.IsNullOrEmpty(item.ProductImage))
+                                {
+                                    <img src="@Url.Content(item.ProductImage)"
+                                         class="product-image"
+                                         alt="@item.ProductName" />
+                                }
+                                else
+                                {
+                                    <div class="product-no-image">
+                                        📚<br />
+                                        Chưa có hình ảnh
+                                    </div>
+                                }
+
+                            </div>
+
+                            <!-- NAME -->
                             <div class="product-name">
                                 @item.ProductName
                             </div>
 
+                            <!-- PRICE -->
                             <div class="product-price">
                                 @item.ProductPrice.ToString("N0") đ
                             </div>
 
-                            <a href="@Url.Action("ProductDetail", "Home",
-                                new { id = item.ProductID })"
-                               class="product-detail-btn">
-                                Xem chi tiết
-                            </a>
+                            <!-- ACTIONS -->
+                            <div class="product-card-actions">
+
+                                <a href="@Url.Action("ProductDetail", "Home", new { id = item.ProductID })"
+                                   class="product-detail-btn">
+                                    Xem chi tiết
+                                </a>
+
+                                @using (Html.BeginForm("AddToCart", "Cart",
+                                    FormMethod.Post,
+                                    new { @class = "product-cart-form" }))
+                                {
+                                    @Html.Hidden("id", item.ProductID)
+                                    @Html.Hidden("quantity", 1)
+
+                                    <button type="submit" class="product-add-cart-btn">
+                                        🛒 Thêm vào giỏ hàng
+                                    </button>
+                                }
+
+                            </div>
 
                         </div>
+
                     </div>
                 }
 
             </div>
 
-            <!-- PHÂN TRANG -->
+            <!-- PAGINATION -->
             if (Model.PageCount > 1)
             {
                 <div class="product-pagination">
@@ -306,7 +516,7 @@
                             categoryID = ViewBag.CategoryID,
                             searchString = ViewBag.SearchString
                         })">
-                            &laquo; Trước
+                            &laquo;
                         </a>
                     }
 
@@ -335,7 +545,7 @@
                             categoryID = ViewBag.CategoryID,
                             searchString = ViewBag.SearchString
                         })">
-                            Sau &raquo;
+                            &raquo;
                         </a>
                     }
 
@@ -345,6 +555,7 @@
         else
         {
             <div class="product-empty">
+                <div class="empty-icon">📚</div>
                 <h4>Không tìm thấy sản phẩm</h4>
                 <p>Vui lòng thử lại với từ khóa hoặc danh mục khác.</p>
             </div>
