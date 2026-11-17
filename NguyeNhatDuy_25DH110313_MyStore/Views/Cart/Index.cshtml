@@ -188,11 +188,41 @@
         white-space: nowrap;
     }
 
+
     /* QUANTITY */
+    .cart-quantity-control {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+    }
+
+    .cart-quantity-btn {
+        width: 32px;
+        height: 32px;
+        border: 1px solid #dce3ee;
+        border-radius: 8px;
+        background: #f4f7fc;
+        color: #3157a4;
+        font-size: 18px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+        .cart-quantity-btn:hover {
+            background: #e3ecff;
+            border-color: #3157a4;
+        }
+
+        .cart-quantity-btn:disabled {
+            opacity: .4;
+            cursor: not-allowed;
+        }
 
     .cart-quantity {
-        width: 68px;
-        height: 38px;
+        width: 42px;
+        height: 34px;
         border: 1px solid #dce3ee;
         border-radius: 8px;
         text-align: center;
@@ -207,23 +237,6 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, .10);
         }
 
-    .cart-update-btn {
-        display: block;
-        margin: 7px auto 0;
-        background: #eff6ff;
-        color: #2563eb;
-        border: none;
-        padding: 7px 10px;
-        border-radius: 7px;
-        font-size: 11px;
-        font-weight: 800;
-        cursor: pointer;
-        transition: .2s;
-    }
-
-        .cart-update-btn:hover {
-            background: #dbeafe;
-        }
 
     /* REMOVE */
 
@@ -543,23 +556,39 @@
                                     </td>
 
                                     <td>
-                                        @using (Html.BeginForm("UpdateQuantity", "Cart", FormMethod.Post))
+                                        @using (Html.BeginForm("UpdateQuantity", "Cart", FormMethod.Post,
+                                            new { @class = "cart-quantity-form" }))
                                         {
                                             @Html.Hidden("productID", item.ProductID)
 
-                                            <input type="number"
-                                                   name="quantity"
-                                                   class="cart-quantity"
-                                                   value="@item.Quantity"
-                                                   min="1"
-                                                   max="99"
-                                                   required />
+                                            <div class="cart-quantity-control">
 
-                                            <button type="submit" class="cart-update-btn">
-                                                Cập nhật
-                                            </button>
+                                                <button type="button"
+                                                        class="cart-quantity-btn"
+                                                        data-change="-1"
+                                                        title="Giảm số lượng">
+                                                    −
+                                                </button>
+
+                                                <input type="number"
+                                                       name="quantity"
+                                                       class="cart-quantity"
+                                                       value="@item.Quantity"
+                                                       min="1"
+                                                       max="99"
+                                                       readonly />
+
+                                                <button type="button"
+                                                        class="cart-quantity-btn"
+                                                        data-change="1"
+                                                        title="Tăng số lượng">
+                                                    +
+                                                </button>
+
+                                            </div>
                                         }
                                     </td>
+
 
                                     <td class="cart-subtotal">
                                         @item.TotalPrice.ToString("N0") đ
@@ -668,3 +697,68 @@
 
     </div>
 </div>
+
+<script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            var quantityForms = document.querySelectorAll(".cart-quantity-form");
+
+            quantityForms.forEach(function (formElement) {
+
+                // Kiểm tra form hợp lệ
+                if (!(formElement instanceof HTMLFormElement)) {
+                    return;
+                }
+
+                var form = formElement;
+
+                var inputElement = form.querySelector(".cart-quantity");
+
+                // Kiểm tra ô nhập số lượng
+                if (!(inputElement instanceof HTMLInputElement)) {
+                    return;
+                }
+
+                var quantityInput = inputElement;
+
+                var buttons = form.querySelectorAll(".cart-quantity-btn");
+
+                buttons.forEach(function (buttonElement) {
+
+                    if (!(buttonElement instanceof HTMLButtonElement)) {
+                        return;
+                    }
+
+                    var button = buttonElement;
+
+                    button.addEventListener("click", function () {
+
+                        var currentQuantity = parseInt(quantityInput.value, 10) || 1;
+
+                        var changeValue = button.getAttribute("data-change") || "0";
+                        var change = parseInt(changeValue, 10);
+
+                        var newQuantity = currentQuantity + change;
+
+                        // Giới hạn số lượng từ 1 đến 99
+                        newQuantity = Math.max(1, Math.min(99, newQuantity));
+
+                        if (newQuantity === currentQuantity) {
+                            return;
+                        }
+
+                        quantityInput.value = String(newQuantity);
+
+                        // Gửi dữ liệu đến CartController
+                        HTMLFormElement.prototype.submit.call(form);
+
+                    });
+
+                });
+
+            });
+
+        });
+</script>
+
+

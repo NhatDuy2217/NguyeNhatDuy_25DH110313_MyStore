@@ -1,87 +1,101 @@
 ﻿
 @model PagedList.IPagedList<NguyeNhatDuy_25DH110313_MyStore.Models.Order>
 @using PagedList.Mvc
+@using System
+@using System.Linq
 
 @{
-    ViewBag.Title = "Lịch sử mua hàng";
+    ViewBag.Title = "Đơn hàng của tôi";
     Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+
+    string currentStatus = ViewBag.CurrentStatus == null
+        ? ""
+        : ViewBag.CurrentStatus.ToString();
+
+    string searchString = ViewBag.SearchString == null
+        ? ""
+        : ViewBag.SearchString.ToString();
+
+    int totalOrders = ViewBag.TotalOrders == null ? 0 : (int)ViewBag.TotalOrders;
+    int unpaidOrders = ViewBag.UnpaidOrders == null ? 0 : (int)ViewBag.UnpaidOrders;
+    int processingOrders = ViewBag.ProcessingOrders == null ? 0 : (int)ViewBag.ProcessingOrders;
+    int shippingOrders = ViewBag.ShippingOrders == null ? 0 : (int)ViewBag.ShippingOrders;
+    int deliveredOrders = ViewBag.DeliveredOrders == null ? 0 : (int)ViewBag.DeliveredOrders;
+    int cancelledOrders = ViewBag.CancelledOrders == null ? 0 : (int)ViewBag.CancelledOrders;
 }
 
 <style>
-    * {
-        box-sizing: border-box;
-    }
-
-    .history-page {
+    .purchase-page {
         min-height: 100vh;
-        padding: 45px 20px 70px;
+        padding: 42px 20px 70px;
         background: #f4f7fc;
+        color: #263650;
     }
 
-    .history-container {
+    .purchase-container {
         max-width: 1200px;
         margin: 0 auto;
     }
 
     /* HEADER */
-    .history-heading {
+    .purchase-heading {
         position: relative;
         overflow: hidden;
-        padding: 35px 38px;
-        margin-bottom: 28px;
-        border-radius: 20px;
+        padding: 36px 40px;
+        margin-bottom: 25px;
         color: #fff;
         background: linear-gradient(120deg, #101d3a, #1d3d75 65%, #2864a8);
+        border-radius: 20px;
         box-shadow: 0 12px 30px rgba(20, 45, 90, .13);
     }
 
-        .history-heading::after {
+        .purchase-heading::after {
             content: "";
             position: absolute;
-            width: 230px;
-            height: 230px;
+            width: 240px;
+            height: 240px;
+            top: -115px;
             right: -55px;
-            top: -105px;
             border: 35px solid rgba(255,255,255,.07);
             border-radius: 50%;
         }
 
-    .history-heading-content {
+    .purchase-heading-content {
         position: relative;
         z-index: 1;
     }
 
-    .history-eyebrow {
+    .purchase-eyebrow {
+        margin-bottom: 10px;
         color: #f5c76b;
         font-size: 11px;
         font-weight: 800;
         letter-spacing: 3px;
-        margin-bottom: 10px;
     }
 
-    .history-heading h2 {
+    .purchase-heading h2 {
         margin: 0 0 10px;
-        font-size: 30px;
-        font-weight: 800;
         color: #fff;
+        font-size: 29px;
+        font-weight: 800;
     }
 
-    .history-heading p {
+    .purchase-heading p {
         margin: 0;
         color: #d7e3f5;
         font-size: 14px;
     }
 
-    /* CONTENT CARD */
-    .history-card {
+    /* MAIN CARD */
+    .purchase-card {
+        padding: 27px;
         background: #fff;
         border: 1px solid #e8edf5;
         border-radius: 18px;
-        padding: 28px;
         box-shadow: 0 8px 28px rgba(25, 45, 80, .055);
     }
 
-    .history-card-header {
+    .purchase-card-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -89,24 +103,24 @@
         margin-bottom: 22px;
     }
 
-    .history-card-title {
+    .purchase-card-title {
         margin: 0;
         color: #172744;
-        font-size: 19px;
+        font-size: 20px;
         font-weight: 800;
     }
 
-    .history-card-subtitle {
+    .purchase-card-subtitle {
+        margin-top: 6px;
         color: #8490a3;
         font-size: 13px;
-        margin-top: 5px;
     }
 
-    .history-label {
+    .purchase-total-label {
         display: inline-flex;
         align-items: center;
-        gap: 7px;
-        padding: 8px 13px;
+        gap: 8px;
+        padding: 9px 14px;
         color: #315b98;
         background: #edf4ff;
         border-radius: 30px;
@@ -115,84 +129,182 @@
         white-space: nowrap;
     }
 
-    /* TABLE */
-    .history-table-wrapper {
-        width: 100%;
+    /* STATUS TABS */
+    .purchase-tabs {
+        display: flex;
+        gap: 7px;
         overflow-x: auto;
-        border: 1px solid #e9edf4;
-        border-radius: 12px;
+        padding-bottom: 12px;
+        margin-bottom: 19px;
+        border-bottom: 1px solid #e9edf4;
+        scrollbar-width: thin;
     }
 
-    .history-table {
-        width: 100%;
-        min-width: 900px;
-        border-collapse: collapse;
+    .purchase-tab {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        flex-shrink: 0;
+        padding: 11px 14px;
+        color: #64748b;
+        background: #f5f7fb;
+        border: 1px solid #edf0f5;
+        border-radius: 9px;
+        text-decoration: none !important;
+        font-size: 12px;
+        font-weight: 700;
+        transition: all .2s ease;
     }
 
-        .history-table thead {
-            background: #f5f7fb;
+        .purchase-tab:hover {
+            color: #2459a6;
+            background: #edf4ff;
+            border-color: #d7e6fb;
         }
 
-        .history-table th {
-            padding: 16px 13px;
-            color: #62718a;
-            text-align: center;
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: .3px;
-            white-space: nowrap;
-            border-bottom: 1px solid #e8edf5;
+        .purchase-tab.active {
+            color: #fff;
+            background: #2459a6;
+            border-color: #2459a6;
+            box-shadow: 0 4px 10px rgba(36, 89, 166, .16);
         }
 
-        .history-table td {
-            padding: 19px 13px;
-            color: #475569;
-            text-align: center;
-            font-size: 13px;
-            vertical-align: middle;
-            border-bottom: 1px solid #edf0f5;
-        }
-
-        .history-table tbody tr {
-            transition: background .2s ease;
-        }
-
-            .history-table tbody tr:hover {
-                background: #f8faff;
-            }
-
-            .history-table tbody tr:last-child td {
-                border-bottom: none;
-            }
-
-    .order-id {
-        color: #2459a6 !important;
+    .tab-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 21px;
+        height: 21px;
+        padding: 0 5px;
+        color: #52647f;
+        background: #e8edf5;
+        border-radius: 20px;
+        font-size: 10px;
         font-weight: 800;
-        font-size: 14px !important;
+    }
+
+    .purchase-tab.active .tab-count {
+        color: #2459a6;
+        background: #fff;
+    }
+
+    /* SEARCH */
+    .purchase-search {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 23px;
+    }
+
+    .purchase-search-input {
+        flex: 1;
+        min-width: 0;
+        height: 44px;
+        padding: 0 15px;
+        color: #334155;
+        background: #fff;
+        border: 1px solid #dfe6f0;
+        border-radius: 9px;
+        outline: none;
+        font-size: 13px;
+        transition: .2s;
+    }
+
+        .purchase-search-input:focus {
+            border-color: #4384d3;
+            box-shadow: 0 0 0 3px rgba(67, 132, 211, .1);
+        }
+
+    .purchase-search-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-width: 115px;
+        padding: 0 17px;
+        color: #fff;
+        background: #2459a6;
+        border: none;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+        .purchase-search-btn:hover {
+            background: #173f7c;
+        }
+
+    .purchase-clear {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 14px;
+        color: #64748b;
+        background: #f1f5f9;
+        border-radius: 9px;
+        text-decoration: none !important;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+        .purchase-clear:hover {
+            color: #2459a6;
+            background: #e8f0fb;
+        }
+
+    /* ORDER CARD */
+    .order-card {
+        overflow: hidden;
+        margin-bottom: 18px;
+        background: #fff;
+        border: 1px solid #e5eaf2;
+        border-radius: 13px;
+        transition: box-shadow .2s ease, border-color .2s ease;
+    }
+
+        .order-card:hover {
+            border-color: #d4e1f2;
+            box-shadow: 0 7px 20px rgba(30, 60, 100, .07);
+        }
+
+        .order-card:last-child {
+            margin-bottom: 0;
+        }
+
+    .order-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 15px 19px;
+        background: #f8faff;
+        border-bottom: 1px solid #edf0f5;
+    }
+
+    .order-code {
+        color: #2459a6;
+        font-size: 14px;
+        font-weight: 800;
     }
 
     .order-date {
-        color: #64748b;
-        white-space: nowrap;
+        margin-top: 5px;
+        color: #8995a7;
+        font-size: 12px;
     }
 
-    .order-total {
-        color: #d97706 !important;
-        font-size: 14px !important;
-        font-weight: 800;
-        white-space: nowrap;
+    .order-header-badges {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 8px;
     }
 
-    .order-address {
-        max-width: 190px;
-        text-align: left !important;
-        line-height: 1.6;
-        overflow-wrap: anywhere;
-    }
-
-    /* STATUS */
-    .status-paid,
-    .status-unpaid {
+    /* STATUS BADGES */
+    .order-status {
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -214,59 +326,222 @@
         background: #fff5dc;
     }
 
-    /* BUTTON */
-    .btn-history-detail {
+    .status-processing {
+        color: #2459a6;
+        background: #eaf2ff;
+    }
+
+    .status-shipping {
+        color: #087e8b;
+        background: #e4f8fa;
+    }
+
+    .status-delivered {
+        color: #16804a;
+        background: #e7f8ef;
+    }
+
+    .status-cancelled {
+        color: #c0392b;
+        background: #ffeded;
+    }
+
+    /* PRODUCTS */
+    .order-products {
+        padding: 5px 19px;
+    }
+
+    .order-product {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px 0;
+        border-bottom: 1px solid #f0f2f6;
+    }
+
+        .order-product:last-child {
+            border-bottom: none;
+        }
+
+    .order-product-image {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 65px;
+        height: 82px;
+        overflow: hidden;
+        background: #f1f5fb;
+        border: 1px solid #e8edf5;
+        border-radius: 7px;
+    }
+
+        .order-product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .order-product-placeholder {
+        color: #9aa8bc;
+        font-size: 25px;
+    }
+
+    .order-product-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .order-product-name {
+        display: block;
+        margin-bottom: 7px;
+        color: #253653;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+    }
+
+    .order-product-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 13px;
+        color: #8490a3;
+        font-size: 12px;
+    }
+
+    .order-product-price {
+        color: #d97706;
+        font-size: 13px;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    /* ORDER FOOTER */
+    .order-card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 16px 19px;
+        background: #fcfdff;
+        border-top: 1px solid #edf0f5;
+    }
+
+    .order-address {
+        max-width: 55%;
+        color: #8490a3;
+        font-size: 12px;
+        line-height: 1.6;
+        overflow-wrap: anywhere;
+    }
+
+        .order-address strong {
+            color: #52647f;
+        }
+
+    .order-total {
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    .order-total-label {
+        margin-bottom: 4px;
+        color: #8490a3;
+        font-size: 11px;
+    }
+
+    .order-total-price {
+        color: #d97706;
+        font-size: 19px;
+        font-weight: 800;
+    }
+
+    /* ACTIONS */
+    .order-actions {
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 9px;
+        padding: 13px 19px;
+        border-top: 1px solid #edf0f5;
+    }
+
+    .btn-order-detail,
+    .btn-order-again {
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 7px;
-        padding: 9px 13px;
-        color: #fff !important;
-        background: #2459a6;
+        min-height: 37px;
+        padding: 8px 14px;
         border-radius: 8px;
         text-decoration: none !important;
         font-size: 12px;
         font-weight: 700;
-        white-space: nowrap;
+        cursor: pointer;
         transition: all .2s ease;
     }
 
-        .btn-history-detail:hover {
-            color: #fff;
-            background: #173f7c;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 12px rgba(36, 89, 166, .2);
+    .btn-order-detail {
+        color: #2459a6 !important;
+        background: #edf4ff;
+        border: 1px solid #dce9fa;
+    }
+
+        .btn-order-detail:hover {
+            color: #fff !important;
+            background: #2459a6;
         }
 
+    .btn-order-again {
+        color: #fff;
+        background: #2459a6;
+        border: 1px solid #2459a6;
+    }
+
+        .btn-order-again:hover {
+            color: #fff;
+            background: #173f7c;
+            border-color: #173f7c;
+        }
+
+    .order-actions form {
+        display: inline-flex;
+        margin: 0;
+    }
+
     /* EMPTY */
-    .history-empty {
+    .purchase-empty {
         padding: 65px 20px;
         text-align: center;
     }
 
-    .empty-icon {
+    .purchase-empty-icon {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 90px;
-        height: 90px;
-        margin: 0 auto 22px;
-        border-radius: 50%;
+        width: 88px;
+        height: 88px;
+        margin: 0 auto 20px;
         background: #edf4ff;
-        font-size: 38px;
+        border-radius: 50%;
+        font-size: 37px;
     }
 
-    .history-empty h4 {
-        margin-bottom: 10px;
+    .purchase-empty h4 {
+        margin: 0 0 10px;
         color: #172744;
-        font-size: 21px;
+        font-size: 20px;
         font-weight: 800;
     }
 
-    .history-empty p {
-        margin-bottom: 23px;
+    .purchase-empty p {
+        max-width: 470px;
+        margin: 0 auto 22px;
         color: #8490a3;
-        font-size: 14px;
+        font-size: 13px;
+        line-height: 1.7;
     }
 
     .btn-shopping {
@@ -274,7 +549,7 @@
         align-items: center;
         justify-content: center;
         gap: 8px;
-        padding: 12px 22px;
+        padding: 11px 21px;
         color: #fff !important;
         background: linear-gradient(110deg, #2459a6, #347bd0);
         border-radius: 9px;
@@ -291,13 +566,13 @@
         }
 
     /* PAGINATION */
-    .history-pagination {
+    .purchase-pagination {
         display: flex;
         justify-content: center;
-        margin-top: 28px;
+        margin-top: 27px;
     }
 
-        .history-pagination ul {
+        .purchase-pagination ul {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
@@ -307,8 +582,8 @@
             list-style: none;
         }
 
-        .history-pagination li a,
-        .history-pagination li span {
+        .purchase-pagination li a,
+        .purchase-pagination li span {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -317,28 +592,27 @@
             padding: 0 11px;
             color: #40516d;
             background: #f1f5fb;
-            border: none;
             border-radius: 8px;
             text-decoration: none;
             font-size: 13px;
         }
 
-        .history-pagination li.active span {
+        .purchase-pagination li.active span {
             color: #fff;
             background: #2459a6;
         }
 
-        .history-pagination li a:hover {
+        .purchase-pagination li a:hover {
             color: #fff;
             background: #347bd0;
         }
 
-    /* FOOT NOTE */
-    .history-note {
+    /* NOTE */
+    .purchase-note {
         display: flex;
         align-items: flex-start;
-        gap: 11px;
-        padding: 15px 17px;
+        gap: 10px;
+        padding: 14px 16px;
         margin-top: 22px;
         color: #64748b;
         background: #f5f8fd;
@@ -347,91 +621,225 @@
         line-height: 1.7;
     }
 
-        .history-note strong {
+        .purchase-note strong {
             color: #315b98;
         }
 
     @@media (max-width: 768px) {
-        .history-page {
+        .purchase-page {
             padding: 25px 12px 45px;
         }
 
-        .history-heading {
+        .purchase-heading {
             padding: 27px 23px;
             border-radius: 15px;
         }
 
-            .history-heading h2 {
+            .purchase-heading h2 {
                 font-size: 24px;
             }
 
-        .history-card {
+        .purchase-card {
             padding: 18px 13px;
             border-radius: 14px;
         }
 
-        .history-card-header {
+        .purchase-card-header {
             align-items: flex-start;
             flex-direction: column;
         }
 
-        .history-label {
-            align-self: flex-start;
+        .purchase-search {
+            flex-wrap: wrap;
         }
 
-        .history-table {
-            min-width: 850px;
+        .purchase-search-input {
+            flex-basis: 100%;
         }
 
-        .history-empty {
+        .purchase-search-btn,
+        .purchase-clear {
+            min-height: 40px;
+        }
+
+        .order-card-header {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 10px;
+            padding: 14px;
+        }
+
+        .order-products {
+            padding: 4px 13px;
+        }
+
+        .order-product {
+            gap: 11px;
+        }
+
+        .order-product-image {
+            width: 55px;
+            height: 72px;
+        }
+
+        .order-product-name {
+            font-size: 12px;
+        }
+
+        .order-product-price {
+            font-size: 12px;
+        }
+
+        .order-card-footer {
+            align-items: flex-start;
+            flex-direction: column;
+            padding: 14px;
+        }
+
+        .order-address {
+            max-width: 100%;
+        }
+
+        .order-total {
+            width: 100%;
+            text-align: left;
+        }
+
+        .order-actions {
+            justify-content: flex-start;
+            padding: 12px 14px;
+        }
+
+        .purchase-empty {
             padding: 45px 12px;
         }
     }
 </style>
 
-<div class="history-page">
-    <div class="history-container">
+<div class="purchase-page">
+    <div class="purchase-container">
 
-        <!-- PAGE HEADER -->
-        <div class="history-heading">
-            <div class="history-heading-content">
-                <div class="history-eyebrow">BOOKORA · MY ACCOUNT</div>
-                <h2>📦 Lịch sử mua hàng</h2>
-                <p>Theo dõi đơn hàng và xem lại thông tin những cuốn sách bạn đã đặt mua.</p>
+        <!-- HEADER -->
+        <div class="purchase-heading">
+            <div class="purchase-heading-content">
+                <div class="purchase-eyebrow">BOOKORA · MY ACCOUNT</div>
+                <h2>📦 Đơn hàng của tôi</h2>
+                <p>Theo dõi trạng thái đơn hàng và xem lại những cuốn sách bạn đã đặt mua.</p>
             </div>
         </div>
 
-        <!-- ORDER HISTORY -->
-        <div class="history-card">
+        <div class="purchase-card">
 
-            <div class="history-card-header">
+            <!-- CARD HEADER -->
+            <div class="purchase-card-header">
                 <div>
-                    <h3 class="history-card-title">Đơn hàng của tôi</h3>
-                    <div class="history-card-subtitle">
-                        Thông tin các đơn hàng đã được đặt tại BookOra
+                    <h3 class="purchase-card-title">Quản lý đơn hàng</h3>
+                    <div class="purchase-card-subtitle">
+                        Theo dõi quá trình xử lý và giao nhận đơn hàng tại BookOra
                     </div>
                 </div>
 
-                <div class="history-label">
-                    <span>📚</span>
-                    Lịch sử đơn hàng
+                <div class="purchase-total-label">
+                    📚 Tổng cộng @totalOrders đơn hàng
                 </div>
             </div>
 
+            <!-- STATUS TABS -->
+            <div class="purchase-tabs">
+                <a href="@Url.Action("Index", "PurchaseHistory")"
+                   class="purchase-tab @(string.IsNullOrEmpty(currentStatus) ? "active" : "")">
+                    Tất cả
+                    <span class="tab-count">@totalOrders</span>
+                </a>
+
+                <a href="@Url.Action("Index", "PurchaseHistory", new { status = "unpaid" })"
+                   class="purchase-tab @(currentStatus == "unpaid" ? "active" : "")">
+                    Chờ thanh toán
+                    <span class="tab-count">@unpaidOrders</span>
+                </a>
+
+                <a href="@Url.Action("Index", "PurchaseHistory", new { status = "processing" })"
+                   class="purchase-tab @(currentStatus == "processing" ? "active" : "")">
+                    Đang xử lý
+                    <span class="tab-count">@processingOrders</span>
+                </a>
+
+                <a href="@Url.Action("Index", "PurchaseHistory", new { status = "shipping" })"
+                   class="purchase-tab @(currentStatus == "shipping" ? "active" : "")">
+                    Đang vận chuyển
+                    <span class="tab-count">@shippingOrders</span>
+                </a>
+
+                <a href="@Url.Action("Index", "PurchaseHistory", new { status = "delivered" })"
+                   class="purchase-tab @(currentStatus == "delivered" ? "active" : "")">
+                    Đã giao
+                    <span class="tab-count">@deliveredOrders</span>
+                </a>
+
+                <a href="@Url.Action("Index", "PurchaseHistory", new { status = "cancelled" })"
+                   class="purchase-tab @(currentStatus == "cancelled" ? "active" : "")">
+                    Đã hủy
+                    <span class="tab-count">@cancelledOrders</span>
+                </a>
+            </div>
+
+            <!-- SEARCH -->
+            @using (Html.BeginForm("Index", "PurchaseHistory", FormMethod.Get, new { @class = "purchase-search" }))
+            {
+                <input type="hidden" name="status" value="@currentStatus" />
+
+                <input type="text"
+                       name="searchString"
+                       value="@searchString"
+                       class="purchase-search-input"
+                       placeholder="Nhập mã đơn hàng hoặc tên sản phẩm..." />
+
+                <button type="submit" class="purchase-search-btn">
+                    🔍 Tìm kiếm
+                </button>
+
+                if (!string.IsNullOrWhiteSpace(searchString))
+                {
+                    <a href="@Url.Action("Index", "PurchaseHistory", new { status = currentStatus })"
+                       class="purchase-clear">
+                        Xóa tìm kiếm
+                    </a>
+                }
+            }
+
+            <!-- ORDER LIST -->
             @if (Model == null || !Model.Any())
             {
-                <div class="history-empty">
-                    <div class="empty-icon">🛍️</div>
+                <div class="purchase-empty">
+                    <div class="purchase-empty-icon">🛍️</div>
 
-                    <h4>Bạn chưa có đơn hàng nào</h4>
+                    @if (!string.IsNullOrWhiteSpace(searchString))
+                    {
+                        <h4>Không tìm thấy đơn hàng</h4>
+                        <p>
+                            Không có đơn hàng nào phù hợp với từ khóa
+                            "<strong>@searchString</strong>".
+                            Bạn hãy thử tìm kiếm bằng mã đơn hàng hoặc tên sách khác nhé.
+                        </p>
+                    }
+                    else if (!string.IsNullOrEmpty(currentStatus))
+                    {
+                        <h4>Chưa có đơn hàng trong mục này</h4>
+                        <p>
+                            Hiện tại bạn chưa có đơn hàng nào thuộc trạng thái này.
+                            Các đơn hàng mới sẽ được cập nhật tại đây.
+                        </p>
+                    }
+                    else
+                    {
+                        <h4>Bạn chưa có đơn hàng nào</h4>
+                        <p>
+                            Những đơn hàng bạn đặt sẽ được hiển thị tại đây.
+                            Hãy khám phá bộ sưu tập sách của BookOra nhé!
+                        </p>
+                    }
 
-                    <p>
-                        Những đơn hàng bạn đặt sẽ được hiển thị tại đây.
-                        Hãy khám phá bộ sưu tập sách của BookOra nhé!
-                    </p>
-
-                    <a href="@Url.Action("ProductList", "Home")"
-                       class="btn-shopping">
+                    <a href="@Url.Action("ProductList", "Home")" class="btn-shopping">
                         Khám phá sách
                         <span>→</span>
                     </a>
@@ -439,86 +847,202 @@
             }
             else
             {
-                <div class="history-table-wrapper">
-                    <table class="history-table">
-                        <thead>
-                            <tr>
-                                <th>MÃ ĐƠN HÀNG</th>
-                                <th>NGÀY ĐẶT</th>
-                                <th>TỔNG TIỀN</th>
-                                <th>TRẠNG THÁI</th>
-                                <th>ĐỊA CHỈ GIAO HÀNG</th>
-                                <th>THAO TÁC</th>
-                            </tr>
-                        </thead>
+                foreach (var item in Model)
+                {
+                    // Xác định trạng thái giao hàng của đơn hàng
+                    string statusText = string.IsNullOrWhiteSpace(item.OrderStatus)
+                        ? "Đang xử lý"
+                        : item.OrderStatus.Trim();
 
-                        <tbody>
-                            @foreach (var item in Model)
+                    string statusClass = "status-processing";
+                    string statusIcon = "⏳";
+
+                    if (statusText == "Đã hủy")
+                    {
+                        statusClass = "status-cancelled";
+                        statusIcon = "✕";
+                    }
+                    else if (statusText == "Đang vận chuyển")
+                    {
+                        statusClass = "status-shipping";
+                        statusIcon = "🚚";
+                    }
+                    else if (statusText == "Đã giao")
+                    {
+                        statusClass = "status-delivered";
+                        statusIcon = "✓";
+                    }
+
+                    // Xác định trạng thái thanh toán
+                    bool isPaid = item.PaymentStatus != null
+                        && item.PaymentStatus.Trim() == "Đã thanh toán";
+
+                    <div class="order-card">
+
+                        <!-- ORDER HEADER -->
+                        <div class="order-card-header">
+                            <div>
+                                <div class="order-code">
+                                    Đơn hàng #@item.OrderID
+                                </div>
+
+                                <div class="order-date">
+                                    📅 Ngày đặt:
+                                    @item.OrderDate.ToString("dd/MM/yyyy HH:mm")
+                                </div>
+                            </div>
+
+                            <div class="order-header-badges">
+
+                                <span class="order-status @statusClass">
+                                    @statusIcon @statusText
+                                </span>
+
+                                @if (isPaid)
+                                {
+                                    <span class="order-status status-paid">
+                                        ✓ Đã thanh toán
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="order-status status-unpaid">
+                                        ⏳ Chưa thanh toán
+                                    </span>
+                                }
+
+                            </div>
+                        </div>
+
+                        <!-- ORDER PRODUCTS -->
+                        <div class="order-products">
+                            @if (item.OrderDetails != null && item.OrderDetails.Any())
                             {
-                                <tr>
-                                    <td class="order-id">
-                                        #@item.OrderID
-                                    </td>
+                                foreach (var detail in item.OrderDetails)
+                                {
+                                    if (detail.Product != null)
+                                    {
+                                        string imagePath = detail.Product.ProductImage;
 
-                                    <td class="order-date">
-                                        @item.OrderDate.ToString("dd/MM/yyyy HH:mm")
-                                    </td>
+                                        <div class="order-product">
 
-                                    <td class="order-total">
-                                        @item.TotalAmount.ToString("N0") đ
-                                    </td>
+                                            <div class="order-product-image">
+                                                @if (!string.IsNullOrWhiteSpace(imagePath))
+                                                {
+                                                    <img src="@Url.Content(imagePath)"
+                                                         alt="@detail.Product.ProductName"
+                                                         class="order-book-image" />
+                                                }
+                                                else
+                                                {
+                                                    <span class="order-product-placeholder">📖</span>
+                                                }
+                                            </div>
 
-                                    <td>
-                                        @if (item.PaymentStatus != null &&
-                                             item.PaymentStatus.Trim() == "Đã thanh toán")
-                                        {
-                                            <span class="status-paid">
-                                                ✓ Đã thanh toán
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <span class="status-unpaid">
-                                                ⏳ @(string.IsNullOrWhiteSpace(item.PaymentStatus)
-                                                    ? "Chưa xác định"
-                                                    : item.PaymentStatus)
-                                            </span>
-                                        }
-                                    </td>
+                                            <div class="order-product-info">
+                                                <span class="order-product-name">
+                                                    @detail.Product.ProductName
+                                                </span>
 
-                                    <td class="order-address">
-                                        @(string.IsNullOrWhiteSpace(item.AddressDelivery)
-                                            ? "Chưa có địa chỉ"
-                                            : item.AddressDelivery)
-                                    </td>
+                                                <div class="order-product-meta">
+                                                    <span>
+                                                        Số lượng: x@(detail.Quantity)
+                                                    </span>
 
-                                    <td>
-                                        <a href="@Url.Action("Details", "PurchaseHistory", new { id = item.OrderID })"
-                                           class="btn-history-detail">
-                                            Xem chi tiết
-                                            <span>→</span>
-                                        </a>
-                                    </td>
-                                </tr>
+                                                    <span>
+                                                        Đơn giá:
+                                                        @detail.UnitPrice.ToString("N0") đ
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div class="order-product-price">
+                                                @((detail.UnitPrice * detail.Quantity).ToString("N0")) đ
+                                            </div>
+
+                                        </div>
+                                    }
+                                }
                             }
-                        </tbody>
-                    </table>
-                </div>
+                            else
+                            {
+                                <div style="padding:18px 0;color:#8490a3;font-size:13px;">
+                                    Không có thông tin sản phẩm trong đơn hàng này.
+                                </div>
+                            }
+                        </div>
+
+                        <!-- ORDER FOOTER -->
+                        <div class="order-card-footer">
+
+                            <div class="order-address">
+                                <strong>📍 Địa chỉ giao hàng:</strong><br />
+                                @(string.IsNullOrWhiteSpace(item.AddressDelivery)
+                                    ? "Chưa có địa chỉ giao hàng"
+                                    : item.AddressDelivery)
+                            </div>
+
+                            <div class="order-total">
+                                <div class="order-total-label">Tổng thanh toán</div>
+                                <div class="order-total-price">
+                                    @item.TotalAmount.ToString("N0") đ
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- ACTIONS -->
+                        <div class="order-actions">
+
+                            @if (statusText != "Đã hủy")
+                            {
+                                using (Html.BeginForm(
+                                    "BuyAgain",
+                                    "PurchaseHistory",
+                                    new { id = item.OrderID },
+                                    FormMethod.Post,
+                                    new { @class = "buy-again-form" }))
+                                {
+                                    @Html.AntiForgeryToken()
+
+                                    <button type="submit" class="btn-order-again">
+                                        🛒 Mua lại
+                                    </button>
+                                }
+                            }
+
+                            <a href="@Url.Action("Details", "PurchaseHistory", new { id = item.OrderID })"
+                               class="btn-order-detail">
+                                Xem chi tiết
+                                <span>→</span>
+                            </a>
+
+                        </div>
+
+                    </div>
+                }
 
                 <!-- PAGINATION -->
-                <div class="history-pagination">
+                <div class="purchase-pagination">
                     @Html.PagedListPager(
                              Model,
-                             page => Url.Action("Index", new { page })
+                             page => Url.Action("Index", "PurchaseHistory", new
+                             {
+                                 page = page,
+                                 status = currentStatus,
+                                 searchString = searchString
+                             })
                          )
                 </div>
 
-                <div class="history-note">
+                <!-- NOTE -->
+                <div class="purchase-note">
                     <span>ℹ️</span>
                     <div>
                         <strong>Lưu ý:</strong>
-                        Bạn có thể chọn <strong>Xem chi tiết</strong> để kiểm tra
-                        thông tin sản phẩm, số lượng và thông tin giao hàng của từng đơn hàng.
+                        Trạng thái đơn hàng sẽ được cập nhật khi cửa hàng xử lý đơn.
+                        Bạn có thể chọn <strong>Xem chi tiết</strong> để kiểm tra đầy đủ thông tin
+                        hoặc chọn <strong>Mua lại</strong> để thêm các sản phẩm của đơn hàng vào giỏ hàng.
                     </div>
                 </div>
             }

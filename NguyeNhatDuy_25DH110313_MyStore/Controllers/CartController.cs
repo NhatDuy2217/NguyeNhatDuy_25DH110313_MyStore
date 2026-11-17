@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using System.Diagnostics;
 
 namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
 {
@@ -22,6 +23,7 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
             return (List<CartItem>)Session["Cart"];
         }
 
+        // GET: Cart
         // Hiển thị giỏ hàng
         public ActionResult Index()
         {
@@ -29,26 +31,22 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
             return View(cart);
         }
 
+        // POST: Cart/AddToCart
         // Thêm sản phẩm vào giỏ hàng
         [HttpPost]
         public ActionResult AddToCart(int id, int quantity = 1)
         {
             var product = db.Products.Find(id);
 
-            if (product == null)
+            if (product == null || !product.IsActive)
             {
-                return HttpNotFound();
+                TempData["CartError"] =
+                    "Sản phẩm không tồn tại hoặc hiện không còn kinh doanh.";
+
+                return RedirectToAction("Index");
             }
 
-            if (quantity < 1)
-            {
-                quantity = 1;
-            }
-
-            if (quantity > 99)
-            {
-                quantity = 99;
-            }
+            quantity = Math.Max(1, Math.Min(quantity, 99));
 
             var cart = GetCart();
 
@@ -58,12 +56,9 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
 
             if (existingItem != null)
             {
-                existingItem.Quantity += quantity;
-
-                if (existingItem.Quantity > 99)
-                {
-                    existingItem.Quantity = 99;
-                }
+                existingItem.Quantity = Math.Min(
+                    existingItem.Quantity + quantity, 99
+                );
             }
             else
             {
@@ -82,6 +77,7 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
             return RedirectToAction("Index");
         }
 
+        // POST: Cart/UpdateQuantity
         // Cập nhật số lượng sản phẩm
         [HttpPost]
         public ActionResult UpdateQuantity(int productID, int quantity)
@@ -109,6 +105,7 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
             return RedirectToAction("Index");
         }
 
+        // POST: Cart/RemoveFromCart
         // Xóa một sản phẩm khỏi giỏ hàng
         [HttpPost]
         public ActionResult RemoveFromCart(int productID)
@@ -129,6 +126,7 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
             return RedirectToAction("Index");
         }
 
+        // POST: Cart/ClearCart
         // Xóa toàn bộ giỏ hàng
         [HttpPost]
         public ActionResult ClearCart()
@@ -142,7 +140,6 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
         // Hiển thị trang xác nhận đặt hàng
         public ActionResult Checkout()
         {
-            // Kiểm tra đăng nhập
             if (Session["Username"] == null ||
                 Session["UserRole"] == null ||
                 Session["UserRole"].ToString() != "Customer")
@@ -191,7 +188,7 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
 
             var cart = GetCart();
 
-            if (cart.Count == 0)
+            if (cart == null || cart.Count == 0)
             {
                 TempData["CartError"] = "Giỏ hàng của bạn đang trống.";
                 return RedirectToAction("Index");
@@ -210,10 +207,10 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
                     "Không tìm thấy thông tin khách hàng."
                 );
 
-                return View(customer);
+                return View(model);
             }
 
-            // Kiểm tra thông tin giao hàng
+            // Kiểm tra dữ liệu giao hàng
             if (model == null ||
                 string.IsNullOrWhiteSpace(model.CustomerName) ||
                 string.IsNullOrWhiteSpace(model.CustomerPhone) ||
@@ -225,7 +222,18 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
                     "Vui lòng nhập đầy đủ thông tin giao hàng."
                 );
 
-                return View(customer);
+                return View(model ?? customer);
+            }
+
+            // Kiểm tra số lượng trong giỏ hàng
+            if (cart.Any(x => x.Quantity < 1 || x.Quantity > 99))
+            {
+                ModelState.AddModelError(
+                    "",
+                    "Số lượng sản phẩm không hợp lệ."
+                );
+
+                return View(model);
             }
 
             try
@@ -234,29 +242,20 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
 
                 var orderDetails = new List<OrderDetail>();
 
-                // Lấy giá sản phẩm mới nhất từ database
+                // Lấy thông tin và giá mới nhất từ database
                 foreach (var item in cart)
                 {
-                    if (item.Quantity < 1 || item.Quantity > 99)
-                    {
-                        ModelState.AddModelError(
-                            "",
-                            "Số lượng sản phẩm không hợp lệ."
-                        );
-
-                        return View(customer);
-                    }
-
                     var product = db.Products.Find(item.ProductID);
 
-                    if (product == null)
+                    if (product == null || !product.IsActive)
                     {
                         ModelState.AddModelError(
                             "",
-                            "Một sản phẩm trong giỏ hàng không còn tồn tại."
+                            "Sản phẩm \"" + item.ProductName +
+                            "\" không còn kinh doanh. Vui lòng kiểm tra lại giỏ hàng."
                         );
 
-                        return View(customer);
+                        return View(model);
                     }
 
                     decimal unitPrice = product.ProductPrice;
@@ -271,52 +270,81 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
                     });
                 }
 
-                // Cập nhật thông tin khách hàng
-                customer.CustomerName = model.CustomerName.Trim();
-                customer.CustomerPhone = model.CustomerPhone.Trim();
-                customer.CustomerEmail = model.CustomerEmail.Trim();
-                customer.CustomerAddress = model.CustomerAddress.Trim();
-
-                // Tạo đơn hàng
-                Order order = new Order
+                // Bắt đầu transaction
+                using (var transaction = db.Database.BeginTransaction())
                 {
-                    CustomerID = customer.CustomerID,
-                    OrderDate = DateTime.Now,
-                    TotalAmount = totalAmount,
-                    PaymentStatus = "Chưa thanh toán",
-                    AddressDelivery = model.CustomerAddress.Trim()
-                };
+                    try
+                    {
+                        // Cập nhật thông tin khách hàng
+                        customer.CustomerName = model.CustomerName.Trim();
+                        customer.CustomerPhone = model.CustomerPhone.Trim();
+                        customer.CustomerEmail = model.CustomerEmail.Trim();
+                        customer.CustomerAddress = model.CustomerAddress.Trim();
 
-                // Gắn các chi tiết đơn hàng
-                foreach (var detail in orderDetails)
-                {
-                    order.OrderDetails.Add(detail);
+                        // Tạo đơn hàng mới
+                        Order order = new Order
+                        {
+                            CustomerID = customer.CustomerID,
+                            OrderDate = DateTime.Now,
+                            TotalAmount = totalAmount,
+
+                            // Trạng thái thanh toán
+                            PaymentStatus = "Chưa thanh toán",
+
+                            // Trạng thái xử lý đơn hàng
+                            OrderStatus = "Đang xử lý",
+
+                            // Địa chỉ giao hàng
+                            AddressDelivery = model.CustomerAddress.Trim()
+                        };
+
+                        // Thêm chi tiết sản phẩm vào đơn hàng
+                        foreach (var detail in orderDetails)
+                        {
+                            order.OrderDetails.Add(detail);
+                        }
+
+                        // Lưu đơn hàng
+                        db.Orders.Add(order);
+
+                        // Lưu khách hàng, đơn hàng và chi tiết đơn hàng
+                        db.SaveChanges();
+
+                        // Xác nhận transaction
+                        transaction.Commit();
+
+                        // Chỉ xóa giỏ hàng khi lưu thành công
+                        Session["Cart"] = new List<CartItem>();
+
+                        TempData["OrderSuccess"] =
+                            "Đặt hàng thành công! Mã đơn hàng: " +
+                            order.OrderID;
+
+                        return RedirectToAction("OrderSuccess");
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
-
-                db.Orders.Add(order);
-
-                // Lưu đơn hàng và chi tiết đơn hàng
-                db.SaveChanges();
-
-                // Chỉ xóa giỏ hàng sau khi lưu thành công
-                Session["Cart"] = new List<CartItem>();
-
-                TempData["OrderSuccess"] =
-                    "Đặt hàng thành công! Mã đơn hàng: " + order.OrderID;
-
-                return RedirectToAction("OrderSuccess");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                // Ghi lỗi chi tiết vào Output của Visual Studio
+                Debug.WriteLine("LỖI ĐẶT HÀNG:");
+                Debug.WriteLine(ex.ToString());
+
                 ModelState.AddModelError(
                     "",
                     "Đã xảy ra lỗi khi đặt hàng. Vui lòng thử lại."
                 );
 
-                return View(customer);
+                return View(model);
             }
         }
 
+        // GET: Cart/OrderSuccess
         // Trang thông báo đặt hàng thành công
         public ActionResult OrderSuccess()
         {
@@ -330,6 +358,7 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
             return View();
         }
 
+        // Giải phóng database
         protected override void Dispose(bool disposing)
         {
             if (disposing)
