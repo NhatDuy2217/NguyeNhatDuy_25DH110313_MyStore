@@ -32,7 +32,7 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
         }
 
         // POST: Cart/AddToCart
-        // Thêm sản phẩm vào giỏ hàng
+        // Thêm sản phẩm vào giỏ hàng thông thường
         [HttpPost]
         public ActionResult AddToCart(int id, int quantity = 1)
         {
@@ -59,6 +59,10 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
                 existingItem.Quantity = Math.Min(
                     existingItem.Quantity + quantity, 99
                 );
+
+                existingItem.ProductName = product.ProductName;
+                existingItem.ProductImage = product.ProductImage;
+                existingItem.UnitPrice = product.ProductPrice;
             }
             else
             {
@@ -73,6 +77,45 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
             }
 
             Session["Cart"] = cart;
+
+            return RedirectToAction("Index");
+        }
+
+        // POST: Cart/BuyAgain/5
+        // Mua lại một sản phẩm với số lượng luôn bằng 1
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult BuyAgain(int id)
+        {
+            var product = db.Products.Find(id);
+
+            if (product == null || !product.IsActive)
+            {
+                TempData["CartError"] =
+                    "Sản phẩm không tồn tại hoặc hiện không còn kinh doanh.";
+
+                return RedirectToAction("Index", "PurchaseHistory");
+            }
+
+            var cart = GetCart();
+
+            // Xóa tất cả dòng sản phẩm trùng trong giỏ hàng
+            cart.RemoveAll(x => x.ProductID == product.ProductID);
+
+            // Thêm lại sản phẩm với số lượng đúng bằng 1
+            cart.Add(new CartItem
+            {
+                ProductID = product.ProductID,
+                ProductName = product.ProductName,
+                ProductImage = product.ProductImage,
+                UnitPrice = product.ProductPrice,
+                Quantity = 1
+            });
+
+            Session["Cart"] = cart;
+
+            TempData["CartSuccess"] =
+                "Đã thêm sản phẩm vào giỏ hàng với số lượng 1.";
 
             return RedirectToAction("Index");
         }
@@ -112,14 +155,7 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
         {
             var cart = GetCart();
 
-            var item = cart.FirstOrDefault(
-                x => x.ProductID == productID
-            );
-
-            if (item != null)
-            {
-                cart.Remove(item);
-            }
+            cart.RemoveAll(x => x.ProductID == productID);
 
             Session["Cart"] = cart;
 
@@ -129,6 +165,7 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
         // POST: Cart/ClearCart
         // Xóa toàn bộ giỏ hàng
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult ClearCart()
         {
             Session["Cart"] = new List<CartItem>();
@@ -287,14 +324,8 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
                             CustomerID = customer.CustomerID,
                             OrderDate = DateTime.Now,
                             TotalAmount = totalAmount,
-
-                            // Trạng thái thanh toán
                             PaymentStatus = "Chưa thanh toán",
-
-                            // Trạng thái xử lý đơn hàng
                             OrderStatus = "Đang xử lý",
-
-                            // Địa chỉ giao hàng
                             AddressDelivery = model.CustomerAddress.Trim()
                         };
 
@@ -304,13 +335,10 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
                             order.OrderDetails.Add(detail);
                         }
 
-                        // Lưu đơn hàng
                         db.Orders.Add(order);
 
-                        // Lưu khách hàng, đơn hàng và chi tiết đơn hàng
                         db.SaveChanges();
 
-                        // Xác nhận transaction
                         transaction.Commit();
 
                         // Chỉ xóa giỏ hàng khi lưu thành công
@@ -331,7 +359,6 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
             }
             catch (Exception ex)
             {
-                // Ghi lỗi chi tiết vào Output của Visual Studio
                 Debug.WriteLine("LỖI ĐẶT HÀNG:");
                 Debug.WriteLine(ex.ToString());
 

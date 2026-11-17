@@ -37,7 +37,6 @@
         margin: 0 auto;
     }
 
-    /* HEADER */
     .purchase-heading {
         position: relative;
         overflow: hidden;
@@ -86,7 +85,6 @@
         font-size: 14px;
     }
 
-    /* MAIN CARD */
     .purchase-card {
         padding: 27px;
         background: #fff;
@@ -129,7 +127,6 @@
         white-space: nowrap;
     }
 
-    /* STATUS TABS */
     .purchase-tabs {
         display: flex;
         gap: 7px;
@@ -189,7 +186,6 @@
         background: #fff;
     }
 
-    /* SEARCH */
     .purchase-search {
         display: flex;
         gap: 10px;
@@ -254,7 +250,6 @@
             background: #e8f0fb;
         }
 
-    /* ORDER CARD */
     .order-card {
         overflow: hidden;
         margin-bottom: 18px;
@@ -303,7 +298,6 @@
         gap: 8px;
     }
 
-    /* STATUS BADGES */
     .order-status {
         display: inline-flex;
         align-items: center;
@@ -316,7 +310,8 @@
         white-space: nowrap;
     }
 
-    .status-paid {
+    .status-paid,
+    .status-delivered {
         color: #16804a;
         background: #e7f8ef;
     }
@@ -336,17 +331,11 @@
         background: #e4f8fa;
     }
 
-    .status-delivered {
-        color: #16804a;
-        background: #e7f8ef;
-    }
-
     .status-cancelled {
         color: #c0392b;
         background: #ffeded;
     }
 
-    /* PRODUCTS */
     .order-products {
         padding: 5px 19px;
     }
@@ -417,7 +406,6 @@
         white-space: nowrap;
     }
 
-    /* ORDER FOOTER */
     .order-card-footer {
         display: flex;
         align-items: center;
@@ -457,7 +445,6 @@
         font-weight: 800;
     }
 
-    /* ACTIONS */
     .order-actions {
         display: flex;
         justify-content: flex-end;
@@ -511,7 +498,6 @@
         margin: 0;
     }
 
-    /* EMPTY */
     .purchase-empty {
         padding: 65px 20px;
         text-align: center;
@@ -565,7 +551,6 @@
             box-shadow: 0 7px 16px rgba(36, 89, 166, .2);
         }
 
-    /* PAGINATION */
     .purchase-pagination {
         display: flex;
         justify-content: center;
@@ -607,7 +592,6 @@
             background: #347bd0;
         }
 
-    /* NOTE */
     .purchase-note {
         display: flex;
         align-items: flex-start;
@@ -849,7 +833,7 @@
             {
                 foreach (var item in Model)
                 {
-                    // Xác định trạng thái giao hàng của đơn hàng
+                    // Xác định trạng thái giao hàng
                     string statusText = string.IsNullOrWhiteSpace(item.OrderStatus)
                         ? "Đang xử lý"
                         : item.OrderStatus.Trim();
@@ -893,7 +877,6 @@
                             </div>
 
                             <div class="order-header-badges">
-
                                 <span class="order-status @statusClass">
                                     @statusIcon @statusText
                                 </span>
@@ -910,7 +893,6 @@
                                         ⏳ Chưa thanh toán
                                     </span>
                                 }
-
                             </div>
                         </div>
 
@@ -925,7 +907,6 @@
                                         string imagePath = detail.Product.ProductImage;
 
                                         <div class="order-product">
-
                                             <div class="order-product-image">
                                                 @if (!string.IsNullOrWhiteSpace(imagePath))
                                                 {
@@ -959,7 +940,6 @@
                                             <div class="order-product-price">
                                                 @((detail.UnitPrice * detail.Quantity).ToString("N0")) đ
                                             </div>
-
                                         </div>
                                     }
                                 }
@@ -974,7 +954,6 @@
 
                         <!-- ORDER FOOTER -->
                         <div class="order-card-footer">
-
                             <div class="order-address">
                                 <strong>📍 Địa chỉ giao hàng:</strong><br />
                                 @(string.IsNullOrWhiteSpace(item.AddressDelivery)
@@ -988,7 +967,6 @@
                                     @item.TotalAmount.ToString("N0") đ
                                 </div>
                             </div>
-
                         </div>
 
                         <!-- ACTIONS -->
@@ -1016,9 +994,7 @@
                                 Xem chi tiết
                                 <span>→</span>
                             </a>
-
                         </div>
-
                     </div>
                 }
 
@@ -1043,6 +1019,7 @@
                         Trạng thái đơn hàng sẽ được cập nhật khi cửa hàng xử lý đơn.
                         Bạn có thể chọn <strong>Xem chi tiết</strong> để kiểm tra đầy đủ thông tin
                         hoặc chọn <strong>Mua lại</strong> để thêm các sản phẩm của đơn hàng vào giỏ hàng.
+                        Khi mua lại, mỗi sản phẩm sẽ được thêm với số lượng là 1.
                     </div>
                 </div>
             }

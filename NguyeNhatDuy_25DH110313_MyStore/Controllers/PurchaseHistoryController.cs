@@ -123,6 +123,7 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
             ViewBag.CurrentStatus = status ?? "";
             ViewBag.SearchString = searchString;
 
+            // Sắp xếp đơn hàng mới nhất lên đầu
             orders = orders
                 .OrderByDescending(o => o.OrderDate)
                 .ThenByDescending(o => o.OrderID);
@@ -162,7 +163,7 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
         }
 
         // POST: PurchaseHistory/BuyAgain/5
-        // Thêm lại các sản phẩm trong đơn hàng vào giỏ hàng
+        // Mua lại các sản phẩm trong đơn hàng với số lượng luôn bằng 1
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult BuyAgain(int id)
@@ -174,6 +175,7 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
+            // Lấy đơn hàng thuộc khách hàng đang đăng nhập
             var order = db.Orders
                 .Include(o => o.OrderDetails.Select(od => od.Product))
                 .FirstOrDefault(o =>
@@ -186,6 +188,7 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
                 return HttpNotFound();
             }
 
+            // Lấy giỏ hàng hiện tại
             var cart = Session["Cart"] as List<CartItem>;
 
             if (cart == null)
@@ -193,42 +196,58 @@ namespace NguyeNhatDuy_25DH110313_MyStore.Controllers
                 cart = new List<CartItem>();
             }
 
-            foreach (var detail in order.OrderDetails)
+            // Lấy danh sách sản phẩm còn kinh doanh
+            // Đồng thời loại bỏ sản phẩm trùng trong đơn hàng cũ
+            var products = order.OrderDetails
+                .Where(d => d.Product != null && d.Product.IsActive)
+                .Select(d => d.Product)
+                .GroupBy(p => p.ProductID)
+                .Select(g => g.First())
+                .ToList();
+
+            int addedCount = 0;
+
+            // Duyệt qua từng sản phẩm trong đơn hàng cũ
+            foreach (var product in products)
             {
-                var product = detail.Product;
-
-                // Chỉ thêm sản phẩm còn đang kinh doanh
-                if (product == null || !product.IsActive)
-                {
-                    continue;
-                }
-
-                var existingItem = cart.FirstOrDefault(
-                    x => x.ProductID == product.ProductID
+                // Xóa tất cả dòng sản phẩm trùng trong giỏ hàng
+                cart.RemoveAll(x =>
+                    x.ProductID == product.ProductID
                 );
 
-                if (existingItem != null)
+                // Thêm lại sản phẩm với số lượng đúng bằng 1
+                cart.Add(new CartItem
                 {
-                    existingItem.Quantity += detail.Quantity;
-                }
-                else
-                {
-                    cart.Add(new CartItem
-                    {
-                        ProductID = product.ProductID,
-                        ProductName = product.ProductName,
-                        ProductImage = product.ProductImage,
-                        UnitPrice = product.ProductPrice,
-                        Quantity = detail.Quantity
-                    });
-                }
+                    ProductID = product.ProductID,
+                    ProductName = product.ProductName,
+                    ProductImage = product.ProductImage,
+                    UnitPrice = product.ProductPrice,
+                    Quantity = 1
+                });
+
+                addedCount++;
             }
 
+            // Lưu giỏ hàng vào Session
             Session["Cart"] = cart;
+
+            // Thông báo kết quả
+            if (addedCount == 0)
+            {
+                TempData["CartError"] =
+                    "Không có sản phẩm nào trong đơn hàng cũ còn kinh doanh.";
+            }
+            else
+            {
+                TempData["CartSuccess"] =
+                    "Đã thêm " + addedCount +
+                    " sản phẩm vào giỏ hàng. Mỗi sản phẩm có số lượng là 1.";
+            }
 
             return RedirectToAction("Index", "Cart");
         }
 
+        // Giải phóng database
         protected override void Dispose(bool disposing)
         {
             if (disposing)
